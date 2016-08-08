@@ -3,18 +3,39 @@
 
 {% extends "base.html" %}
 {% block main %}
-<h1> input.html </h1>
+	<h2> input.html </h2>
 
 	<form action="/posturl" method="post">
 
 	<label for="iUrl">URL:</label>
-		<input name="iUrl" type="url"  />
+	<input id="iurl" name="iUrl" type="url" onchange="getTitle(this.value)"/>
 
 	<label for="iLabel">Label:</label>
-		<input name="iLabel" type="text" />
+	<input name="iLabel" type="text" />
 
 	<button type="submit">Submit</button>
 
 	</form>
 
+
+	<script type="text/javascript">
+
+	var title;
+
+	function getTitle(url){
+
+		console.log(url);
+		$.post('/fetchtitle', { 'iUrl': url}, function(data){
+
+			title = data.title;
+			console.log('Title:' + title);
+
+		});
+	};
+
+
+	</script>
 {% endblock %}
+
+
+
