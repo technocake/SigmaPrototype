@@ -108,7 +108,9 @@ def post_user():
 def fetch_title():
     last_request = session.get('last_request', datetime.now())
     now = datetime.now()
-    print(last_request - now)
+    elapsed = (now-last_request).total_seconds()
+    if elapsed <= 2: 
+        return jsonify(title="")
     try:
         url = request.form.get('iUrl', None)
         title = sigma.fetch_title(url)
