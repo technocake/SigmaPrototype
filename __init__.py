@@ -11,7 +11,8 @@
 	               for en gitt request.
                                          ----- Jonas ----- """
 
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, \
+                   redirect, session, jsonify
 import pickle
 import sigma
 
@@ -45,7 +46,6 @@ def input_url():
 
 	return render_template('input.html')
 
-
 @app.route('/posturl', methods=['POST'])
 def post_url():
 	user="technocake"
@@ -59,12 +59,27 @@ def post_url():
 			return 'NOT OK'
 	
 
-
 @app.route('/viewurl')
 def view_links():
 	user='technocake'
 	links = sigma.get_links(user)
 	return render_template('search.html', links=links)
+
+
+# ---------- JAVASCRIPT AJAX ROUTES -------------
+
+@app.route('/fetchtitle', methods=['POST'])
+def fetch_title():
+
+	try:
+		url = request.form.get('iUrl', None)
+		title = sigma.fetch_title(url)
+
+		return jsonify(title=title)
+
+	except Exception as e:
+        return jsonify(result="Server ERROR: " + str(e))
+
 
 
 if __name__ == '__main__':
