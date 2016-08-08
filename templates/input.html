@@ -3,12 +3,12 @@
 
 {% extends "base.html" %}
 {% block main %}
-	<h2> input.html </h2>
+	<h2 id="livetitle"> input.html </h2>
 
 	<form action="/posturl" method="post">
 
 	<label for="iUrl">URL:</label>
-	<input id="iurl" name="iUrl" type="url" onchange="getTitle(this.value)"/>
+	<input id="iurl" name="iUrl" type="url" onkeyup="getTitle(this.value)"/>
 
 	<label for="iLabel">Label:</label>
 	<input name="iLabel" type="text" />
@@ -21,16 +21,24 @@
 	<script type="text/javascript">
 
 	var title;
+	var old_url;
+
+	var $livetitle = $('#livetitle');
 
 	function getTitle(url){
 
+		if (url != old_url){
+		old_url = url;
 		console.log(url);
 		$.post('/fetchtitle', { 'iUrl': url}, function(data){
 
 			title = data.title;
 			console.log('Title:' + title);
 
+			$livetitle.html(title);
+
 		});
+		}
 	};
 
 
