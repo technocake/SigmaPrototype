@@ -49,13 +49,22 @@ def input_url():
 @app.route('/posturl', methods=['POST'])
 def post_url():
 	user="technocake"
-	return  str(sigma.get_links(user))
+	url = request.form.get('iUrl', None)
+	if url:
+		# Saves it in the users links file.
+		try:
+			sigma.save_link(url=url, user=user)
+			return 'OK'
+		except:
+			return 'NOT OK'
+	
 
 
 @app.route('/viewurl')
 def view_links():
-	
-	return render_template('search.html')
+	user='technocake'
+	links = sigma.get_links(user)
+	return render_template('search.html', links=links)
 
 
 if __name__ == '__main__':
