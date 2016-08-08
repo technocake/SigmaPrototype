@@ -13,7 +13,6 @@
 
 from flask import Flask, render_template, request, url_for, \
                    redirect, session, jsonify
-import pickle
 import sigma
 
 app = Flask(__name__)   # obligatorisk 

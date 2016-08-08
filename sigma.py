@@ -1,7 +1,12 @@
 #!usr/bin/env python3
 # -*- coding:utf-8 -*-
 import codecs
-import cPickle
+
+try:
+    import cPickle as pickle
+except:
+    import pickle
+
 from werkzeug import secure_filename
 import requests
 import requests_cache
