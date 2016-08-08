@@ -8,7 +8,7 @@ Dato: 04-08-16
 
 *Tidspunkt: 12:30 - 15.00*
 *Sted: HIB - c228*
-*Deltakere: Jonas, Robin, ?Han siste som eg e sykt irritert at eg ikkje husker navnet på?*
+*Deltakere: Jonas, Robin, Carl-Henrik*
 *Agenda: Få på plass en prototype*
 
 ### Referat:
