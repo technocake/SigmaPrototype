@@ -18,6 +18,7 @@ import os
 import sigma
 import auth
 from functools import wraps
+from  datetime import datetime
 
 le_key = os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
@@ -105,6 +106,7 @@ def post_user():
 @app.route('/fetchtitle', methods=['POST'])
 @login_required
 def fetch_title():
+    last_request = session.get('last_request', datetime.now())
 
     try:
         url = request.form.get('iUrl', None)
