@@ -20,6 +20,7 @@ app = Flask(__name__)   # obligatorisk
 
 @app.route('/')
 def index():
+	# ryddig.
 	return redirect(url_for('post_url'))
 
 @app.route('/posturl')
@@ -32,5 +33,10 @@ def view_links():
 
 	return 'Search through all your links. </br><input type="search"/>'
 
+
+if __name__ == '__main__':
+	import webbrowser
+	webbrowser.open("http://localhost:5000")
+	app.run(debug=True)
 
 # EOF
