@@ -14,11 +14,23 @@
 from flask import Flask, render_template, request, url_for, \
                    redirect, session, jsonify
 import sigma
+import auth
+from functools import wrap
 
 
 from  datetime import datetime
 
 app = Flask(__name__)   # obligatorisk 
+
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'innlogget' in session:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for('index'))
+    return wrap
 
 
 """ Every route is defined like this 
@@ -31,25 +43,37 @@ app = Flask(__name__)   # obligatorisk
 @app.route('/')
 def index():
     # ryddig.
-    return redirect(url_for('input_url'))
+    if 'innlogget' in session:
+        return redirect(url_for('meny'))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/login')
 def login():
-
     return render_template('login.html')
 
 @app.route('/meny')
+@login_required
 def meny():
 
     return render_template('base.html')
 
 @app.route('/inputurl')
+@login_required
 def input_url():
 
     return render_template('input.html')
+    
+@app.route('/viewurl')
+@login_required
+def view_links():
+    user='technocake'
+    links = sigma.get_links(user)
+    return render_template('search.html', links=links)
 
 @app.route('/posturl', methods=['POST'])
+@login_required
 def post_url():
     user="technocake"
     url = request.form.get('iUrl', None)
@@ -60,18 +84,21 @@ def post_url():
             return 'OK'
         except:
             return 'NOT OK'
-    
 
-@app.route('/viewurl')
-def view_links():
-    user='technocake'
-    links = sigma.get_links(user)
-    return render_template('search.html', links=links)
+@app.route('/postuser')
+@login_required
+def post_user():
+
+    user = request.form.get('iUser', None)
+    session['innlogget'] = auth.authenticate(user, None)
+
+    return redirect(url_for('meny'))
 
 
 # ---------- JAVASCRIPT AJAX ROUTES -------------
 
 @app.route('/fetchtitle', methods=['POST'])
+@login_required
 def fetch_title():
     last_request = session.get('last_request', datetime.now())
 
