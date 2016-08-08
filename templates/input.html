@@ -4,4 +4,15 @@
 {% extends "base.html" %}
 {% block main %}
 	<h1> input.html </h1>
+
+	<form action="/posturl" method="post">
+
+	<label for="iUrl">URL:</label>
+		<input name="iUrl" type="url"  />
+
+	<label for="iLabel">Label:</label>
+		<input name="iLabel" type="text" />
+
+	</form>
+
 {% endblock %}
