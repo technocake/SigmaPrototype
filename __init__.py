@@ -21,7 +21,7 @@ app = Flask(__name__)   # obligatorisk
 """ Every route is defined like this 
     @app.route('/url')
 
-    To access the @app.route, you send a HttpRequest with this url
+    To access the function, you send a HttpRequest with this url
       http://www.domainname.com + /url 
                                         ----- Jonas ----- """
 
@@ -29,6 +29,7 @@ app = Flask(__name__)   # obligatorisk
 def index():
     # ryddig.
     return redirect(url_for('input_url'))
+
 
 @app.route('/login')
 def login():
