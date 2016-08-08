@@ -21,7 +21,7 @@ app = Flask(__name__)   # obligatorisk
 @app.route('/')
 def index():
 	# ryddig.
-	return redirect(url_for('meny'))
+	return redirect(url_for('inputurl'))
 
 @app.route('/login')
 def login():
