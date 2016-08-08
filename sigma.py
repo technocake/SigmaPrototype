@@ -3,6 +3,14 @@
 import codecs
 import cPickle
 from werkzeug import secure_filename
+import requests
+import requests_cache
+from bs4 import BeautifulSoup
+# This will make outguing web requests be cached. 
+# if a url is downloaded twice, only the first time will grab it off the internet.
+# the second time from a local stored cache.
+requests_cache.install_cache("sigma-dev-0.1")
+
 
 # sigma.py
 
@@ -47,8 +55,27 @@ def get_links(user):
 	return links
 
 
+def fetch_title(url):
+	""" 
+			Responsible for retrieveing the  title of a url. 
+	"""
+	r = requests.get(url)
+	if r:
+		soup = BeautifulSoup(r.text, 'html.parser')
+		try:
+			title = soup.select("title")[0].string
+		except:
+			self.title=""
+	else:
+		self.title=""
+	return title
+
+
 if __name__ == '__main__':
 	#testing saving a linksfile:
-	save_link(url="http://hw.no.com", user="technocake")
+	#save_link(url="http://hw.no.com", user="technocake")
 
 	print( get_links('technocake') )
+
+	# Schumanns Sonate
+	print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
