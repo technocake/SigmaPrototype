@@ -10,4 +10,4 @@ Beskrivelse:
 ## Jonas - URLS 
 
 ### Github
-   **Markdown Cheatsheet**: [To page --->](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#h1) - 04-08-16
+   Markdown Cheatsheet: [---> To page <---](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) - 04-08-16
