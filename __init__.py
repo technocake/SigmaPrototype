@@ -21,24 +21,28 @@ app = Flask(__name__)   # obligatorisk
 @app.route('/')
 def index():
 	# ryddig.
-	return redirect(url_for('post_url'))
+	return redirect(url_for('meny'))
 
-@app.route('/test')
-def test():
+@app.route('/login')
+def login():
+
+	return render_template('login.html')
+
+@app.route('/meny')
+def meny():
 
 	return render_template('base.html')
 
-@app.route('/posturl')
-def post_url():
+@app.route('/inputurl')
+def input_url():
 
-	return 'Post your new link here! </br><input type="text"/>'
+	return render_template('input.html')
 
 
-@app.route('/viewlinks')
+@app.route('/viewurl')
 def view_links():
 	
-
-	return 'Search through all your links. </br><input type="search"/>'
+	return render_template('search.html')
 
 
 if __name__ == '__main__':
