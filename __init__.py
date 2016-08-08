@@ -9,7 +9,7 @@
 	             En kontroller får input/request i form av en URL, f.eks www.google.com,
 	              fra en klient. Kontrolleren bestemmer hva som skal returneres til klienten
 	               for en gitt request.
-"""
+                                         ----- Jonas ----- """
 
 from flask import Flask, render_template, request, url_for, redirect
 import pickle
@@ -18,6 +18,12 @@ import sigma
 app = Flask(__name__)   # obligatorisk 
 
 
+""" Every route is defined like this 
+    @app.route('/url')
+
+    To access the @app.route, you send a HttpRequest with this url
+      http://www.domainname.com + /url 
+                                        ----- Jonas ----- """
 
 @app.route('/')
 def index():
@@ -53,7 +59,7 @@ def view_links():
 
 
 if __name__ == '__main__':
-	import webbrowser
+	import webbrowser # Webbrowser makes you able to open browser with specified url.
 	webbrowser.open("http://localhost:5000")
 	app.run(debug=True)
 
