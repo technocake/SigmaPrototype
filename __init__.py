@@ -13,7 +13,6 @@
 
 from flask import Flask, render_template, request, url_for, redirect
 import pickle
-import config
 
 app = Flask(__name__)   # obligatorisk 
 
