@@ -13,6 +13,7 @@
 
 from flask import Flask, render_template, request, url_for, redirect
 import pickle
+import sigma
 
 app = Flask(__name__)   # obligatorisk 
 
@@ -21,7 +22,7 @@ app = Flask(__name__)   # obligatorisk
 @app.route('/')
 def index():
 	# ryddig.
-	return redirect(url_for('inputurl'))
+	return redirect(url_for('input_url'))
 
 @app.route('/login')
 def login():
@@ -37,6 +38,12 @@ def meny():
 def input_url():
 
 	return render_template('input.html')
+
+
+@app.route('/posturl', methods=['POST'])
+def post_url():
+	user="technocake"
+	return  str(sigma.get_links(user))
 
 
 @app.route('/viewurl')

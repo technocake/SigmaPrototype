@@ -39,10 +39,12 @@ def get_links(user):
 	# strips hacker attempts away from input. 
 	linksfile = secure_filename('%s.links'%(user))
 
-	with codecs.open(linksfile) as userfile: 
-		links = cPickle.loads(userfile.read())
+	try:
+		with codecs.open(linksfile) as userfile: 
+			links = cPickle.loads(userfile.read())
+	except IOError:
+		links = []
 	return links
-
 
 
 if __name__ == '__main__':
