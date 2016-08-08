@@ -5,10 +5,14 @@
 html, body {width: 100%; height: 100%;}
 
 
-body {display: flex; justify-content: center; align-items: center;}
+body {display: flex; 
+	justify-content: center; 
+	align-items: center;
+	margin: 0 10 0 0 ;}
 
 main {border: 1px solid black;
-		flex: 0 1 600px;}
+		flex: 0 1 600px;
+		text-align: center;}
 
 .buffer {border: 1px solid pink;
 			flex: 1	;}
