@@ -1,0 +1,6 @@
+## Scenario: Implementing front end url validation before submiting to backend using html5
+
+In this scenario
+
+
+http://stackoverflow.com/questions/12470622/how-can-i-check-the-validity-of-an-html5-form-that-does-not-contain-a-submit-but#12470712

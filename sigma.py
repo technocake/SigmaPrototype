@@ -55,9 +55,11 @@ def get_links(user):
 	return links
 
 
+
 def fetch_title(url):
 	""" 
 			Responsible for retrieveing the  title of a url. 
+			based on graph.py.
 	"""
 	r = requests.get(url)
 	if r:
@@ -65,9 +67,9 @@ def fetch_title(url):
 		try:
 			title = soup.select("title")[0].string
 		except:
-			self.title=""
+			title=""
 	else:
-		self.title=""
+		title=""
 	return title
 
 
