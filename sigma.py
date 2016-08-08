@@ -66,6 +66,9 @@ def fetch_title(url):
 			Responsible for retrieveing the  title of a url. 
 			based on graph.py.
 	"""
+    # validate url.
+    if "http" not in url or len(url) <= 11:
+        return ""
 	r = requests.get(url)
 	if r:
 		soup = BeautifulSoup(r.text, 'html.parser')

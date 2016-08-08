@@ -15,6 +15,9 @@ from flask import Flask, render_template, request, url_for, \
                    redirect, session, jsonify
 import sigma
 
+
+from  datetime import datetime
+
 app = Flask(__name__)   # obligatorisk 
 
 
@@ -70,6 +73,7 @@ def view_links():
 
 @app.route('/fetchtitle', methods=['POST'])
 def fetch_title():
+    last_request = session.get('last_request', datetime.now())
 
     try:
         url = request.form.get('iUrl', None)
