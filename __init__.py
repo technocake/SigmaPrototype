@@ -13,11 +13,15 @@
 
 from flask import Flask, render_template, request, url_for, \
                    redirect, session, jsonify
+
+import os
 import sigma
 import auth
-from functools import wrap
+from functools import wraps
 
+le_key = os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
+app.secret_key = le_key
 
 
 def login_required(f):
@@ -37,6 +41,8 @@ def login_required(f):
       http://www.domainname.com + /url 
                                         ----- Jonas ----- """
 
+#  ----- Render main views -----
+
 @app.route('/')
 def index():
     # ryddig.
@@ -44,7 +50,6 @@ def index():
         return redirect(url_for('meny'))
     else:
         return redirect(url_for('login'))
-
 
 @app.route('/login')
 def login():
@@ -69,6 +74,8 @@ def view_links():
     links = sigma.get_links(user)
     return render_template('search.html', links=links)
 
+# ---- POST requests ----
+
 @app.route('/posturl', methods=['POST'])
 @login_required
 def post_url():
@@ -83,11 +90,12 @@ def post_url():
             return 'NOT OK'
 
 @app.route('/postuser')
-@login_required
 def post_user():
 
     user = request.form.get('iUser', None)
-    session['innlogget'] = auth.authenticate(user, None)
+    if (auth.authenticate(user, None)):
+        session['innlogget'] = True
+        session['user'] = user
 
     return redirect(url_for('meny'))
 
@@ -107,7 +115,7 @@ def fetch_title():
     except Exception as e:
         return jsonify(result="Server ERROR: " + str(e))
 
-
+# -------------------------------------------------
 
 if __name__ == '__main__':
     import webbrowser # Webbrowser makes you able to open browser with specified url.
