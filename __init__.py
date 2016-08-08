@@ -17,6 +17,7 @@ from flask import Flask, render_template, request, url_for, \
 import os
 import sigma
 import auth
+import gc
 from functools import wraps
 from  datetime import datetime
 
@@ -74,6 +75,14 @@ def view_links():
     user='technocake'
     links = sigma.get_links(user)
     return render_template('search.html', links=links)
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.clear()
+    gc.collect()  
+    return redirect(url_for('index'))
+ 
 
 # ---- POST requests ----
 
