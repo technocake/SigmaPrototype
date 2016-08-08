@@ -20,72 +20,72 @@ requests_cache.install_cache("sigma-dev-0.1")
 # sigma.py
 
 def save_link(url, user):
-	""" 
-		Responsible for putting the link somewhere safe. 
-		associated with the user.
-	"""
-	# strips hacker attempts away from input. 
-	linksfile = secure_filename('%s.links'%(user))
-	
+    """ 
+        Responsible for putting the link somewhere safe. 
+        associated with the user.
+    """
+    # strips hacker attempts away from input. 
+    linksfile = secure_filename('%s.links'%(user))
+    
 
-	# First, read the list of links from the users link file. 
-	try:
-		with codecs.open(linksfile, 'r+') as userfile: 
-			links = pickle.loads(userfile.read())
-	except:
-		# If the file does not exist, create an empty list of links.
-		links = []
+    # First, read the list of links from the users link file. 
+    try:
+        with codecs.open(linksfile, 'r+') as userfile: 
+            links = pickle.loads(userfile.read())
+    except:
+        # If the file does not exist, create an empty list of links.
+        links = []
 
-	links.append(url)
+    links.append(url)
 
-	with codecs.open(linksfile, 'w+') as userfile: 
-		userfile.write(pickle.dumps(links))
+    with codecs.open(linksfile, 'w+') as userfile: 
+        userfile.write(pickle.dumps(links))
 
 
 
 
 def get_links(user):
-	""" 
-		Responsible for retrieveing the links from somewhere safe. 
-		associated with the user.
-	"""
-	# strips hacker attempts away from input. 
-	linksfile = secure_filename('%s.links'%(user))
+    """ 
+        Responsible for retrieveing the links from somewhere safe. 
+        associated with the user.
+    """
+    # strips hacker attempts away from input. 
+    linksfile = secure_filename('%s.links'%(user))
 
-	try:
-		with codecs.open(linksfile) as userfile: 
-			links = pickle.loads(userfile.read())
-	except IOError:
-		links = []
-	return links
+    try:
+        with codecs.open(linksfile) as userfile: 
+            links = pickle.loads(userfile.read())
+    except IOError:
+        links = []
+    return links
 
 
 
 def fetch_title(url):
-	""" 
-			Responsible for retrieveing the  title of a url. 
-			based on graph.py.
-	"""
+    """ 
+            Responsible for retrieveing the  title of a url. 
+            based on graph.py.
+    """
     # validate url.
     if "http" not in url or len(url) <= 11:
-        return ""
-	r = requests.get(url)
-	if r:
-		soup = BeautifulSoup(r.text, 'html.parser')
-		try:
-			title = soup.select("title")[0].string
-		except:
-			title=""
-	else:
-		title=""
-	return title
+       return ""
+    r = requests.get(url)
+    if r:
+        soup = BeautifulSoup(r.text, 'html.parser')
+        try:
+            title = soup.select("title")[0].string
+        except:
+            title=""
+    else:
+        title=""
+    return title
 
 
 if __name__ == '__main__':
-	#testing saving a linksfile:
-	#save_link(url="http://hw.no.com", user="technocake")
+    #testing saving a linksfile:
+    #save_link(url="http://hw.no.com", user="technocake")
 
-	print( get_links('technocake') )
+    print( get_links('technocake') )
 
-	# Schumanns Sonate
-	print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
+    # Schumanns Sonate
+    print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
