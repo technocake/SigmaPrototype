@@ -24,6 +24,11 @@ def index():
 	# ryddig.
 	return redirect(url_for('post_url'))
 
+@app.route('/test')
+def test():
+
+	return render_template('base.html')
+
 @app.route('/posturl')
 def post_url():
 
