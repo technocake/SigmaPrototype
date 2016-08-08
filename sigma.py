@@ -31,7 +31,7 @@ def save_link(url, user):
 	# First, read the list of links from the users link file. 
 	try:
 		with codecs.open(linksfile, 'r+') as userfile: 
-			links = cPickle.loads(userfile.read())
+			links = pickle.loads(userfile.read())
 	except:
 		# If the file does not exist, create an empty list of links.
 		links = []
@@ -39,7 +39,7 @@ def save_link(url, user):
 	links.append(url)
 
 	with codecs.open(linksfile, 'w+') as userfile: 
-		userfile.write(cPickle.dumps(links))
+		userfile.write(pickle.dumps(links))
 
 
 
@@ -54,7 +54,7 @@ def get_links(user):
 
 	try:
 		with codecs.open(linksfile) as userfile: 
-			links = cPickle.loads(userfile.read())
+			links = pickle.loads(userfile.read())
 	except IOError:
 		links = []
 	return links
