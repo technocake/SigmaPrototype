@@ -13,6 +13,7 @@
 
 from flask import Flask, render_template, request, url_for, redirect
 import pickle
+import config
 
 app = Flask(__name__)   # obligatorisk 
 
@@ -28,8 +29,10 @@ def post_url():
 
 	return 'Post your new link here! </br><input type="text"/>'
 
+
 @app.route('/viewlinks')
 def view_links():
+	
 
 	return 'Search through all your links. </br><input type="search"/>'
 
