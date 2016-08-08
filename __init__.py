@@ -90,7 +90,7 @@ def post_url():
         except:
             return 'NOT OK'
 
-@app.route('/postuser')
+@app.route('/postuser', methods=['POST'])
 def post_user():
 
     user = request.form.get('iUser', None)
