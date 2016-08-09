@@ -11,7 +11,7 @@ from werkzeug import secure_filename
 import requests
 import requests_cache
 from bs4 import BeautifulSoup
-from urlparse import urlparse
+# from urlparse import urlparse
 
 # This will make outguing web requests be cached. 
 # if a url is downloaded twice, only the first time will grab it off the internet.

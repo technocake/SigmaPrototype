@@ -2,34 +2,26 @@
 
 
 {% extends "base.html" %}
-{% block main %}
-	<div class="inputs">
+{% block body %}
 
-	<form action="/posturl" method="post">
+	<div class="maindiv">
+		<input class="megainput" type="text" placeholder="url __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'url __'"/>
+	</div>
 
-		<input class="iurl" name="iUrl" placeholder="url here"type="text" onkeyup="getTitle(this.value)"/>
-
-		<label for="label_top">Overordnet tema</label>
-		<input name="label_top" type="text" />
-		<label for="label_sub">Undertema</label>
-		<input name="label_sub" type="text" />
-
-	<button type="submit">Submit</button>
-
-	</form>
+	<div class="maindiv">
+		<input class="megainput" type="text" placeholder="search __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'search __'"/>
 	</div>
 
 
-	<script type="text/javascript">
+<script type="text/javascript">
 
 	var title;
 	var old_url;
 	
 	var main_style = {
-	 'display':'flex', 
-	'justify-content': 'space-around',
-	'flex' : '0 1 800px',
-	'min-height' : '500px'
+	 'display':' flex';
+	'flex-direction': 'column';
+	'align-items': 'center';
 	}
 
 	var $livetitle = $('#livetitle');
@@ -54,7 +46,7 @@
 	};
 
 
-	</script>
+</script>
 {% endblock %}
 
 
