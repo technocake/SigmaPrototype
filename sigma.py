@@ -11,6 +11,15 @@ from werkzeug import secure_filename
 import requests
 import requests_cache
 from bs4 import BeautifulSoup
+
+
+try:
+    ## Python 3
+    from urllib.parse import urlparse
+except:
+    ## Python 2
+    from urlparse import urlparse
+
 # from urlparse import urlparse
 
 # This will make outguing web requests be cached. 
