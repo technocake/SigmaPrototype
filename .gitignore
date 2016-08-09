@@ -1,3 +1,9 @@
 config.py
 *.pyc
+
+#### NO DATA. 
+# Let's not check in data to the source-code.
+# The request-cache module uses a sqlite file to store previously fetched urls.
+# .links files are (currently) used to store the links of the users. 
+*.sqlite
 *.links
