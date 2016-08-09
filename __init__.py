@@ -50,7 +50,7 @@ def login_required(f):
 def index():
     # ryddig.
     if 'innlogget' in session:
-        return redirect(url_for('meny'))
+        return redirect(url_for('input_url'))
     else:
         return redirect(url_for('login'))
 
@@ -111,7 +111,7 @@ def post_user():
         session['user'] = user
         session['last_request'] = time.time()
 
-    return redirect(url_for('meny'))
+    return redirect(url_for('input_url'))
 
 
 # ---------- JAVASCRIPT AJAX ROUTES -------------

@@ -3,27 +3,38 @@
 
 {% extends "base.html" %}
 {% block main %}
-	<h2 id="livetitle"> input.html </h2>
+	<div class="inputs">
 
 	<form action="/posturl" method="post">
 
-	<label for="iUrl">URL:</label>
-	<input id="iurl" name="iUrl" type="url" onkeyup="getTitle(this.value)"/>
+		<input class="iurl" name="iUrl" placeholder="url here"type="text" onkeyup="getTitle(this.value)"/>
 
-	<label for="iLabel">Label:</label>
-	<input name="iLabel" type="text" />
+		<label for="label_top">Overordnet tema</label>
+		<input name="label_top" type="text" />
+		<label for="label_sub">Undertema</label>
+		<input name="label_sub" type="text" />
 
 	<button type="submit">Submit</button>
 
 	</form>
+	</div>
 
 
 	<script type="text/javascript">
 
 	var title;
 	var old_url;
+	
+	var main_style = {
+	 'display':'flex', 
+	'justify-content': 'space-around',
+	'flex' : '0 1 800px',
+	'min-height' : '500px'
+	}
 
 	var $livetitle = $('#livetitle');
+	var $main = $('main');
+	$main.css(main_style);
 
 	function getTitle(url){
 

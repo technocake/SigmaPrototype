@@ -10,21 +10,22 @@ body {display: flex;
 	align-items: center;
 	margin: 0 10 0 0 ;}
 
-main {border: 1px solid black; 
+main { border: 1px solid black; 
 	flex: 0 1 600px; 
-	text-align: center;
-	 display:flex; 
-	justify-content: space-around;
-	align-items: center;}
+	text-align: center; }
 
 .buffer {border: 1px solid pink;
 			flex: 1	;}
 
 a {text-decoration: none; color: grey;}
 
-a:hover{
-	background-color: lightgrey; 
-}
+a:hover {
+	background-color: lightgrey; }
+
+.iurl { font-size: 40px;
+	text-align: center; 
+	margin: 5px; border: 1px solid red; 
+	width: 100%; height:20%;}
 
 
 
