@@ -108,7 +108,7 @@ def post_user():
     if (auth.authenticate(user, None)):
         session['innlogget'] = True
         session['user'] = user
-        session['last_request'] = 0.0
+        session['last_request'] = time.time()
 
     return redirect(url_for('meny'))
 
@@ -122,16 +122,16 @@ def fetch_title():
         time.clock() - returns a floating point number of time since epoch
                     in seconds. Accuracy in microseconds.
     -- Jonas """
-
-    now = time.clock()
-    elapsed = now - session['last_request']
-
-    if elapsed <= 2: 
-        return jsonify(title="Elapsed: " + str(now))
     try:
+        now = time.time()
+        elapsed = now - session['last_request']
+
+        if elapsed <= 2: 
+            return jsonify(title="Too fast!")
+        
         url = request.form.get('iUrl', None)
         title = sigma.fetch_title(url)
-        session['last_request'] = time.clock()
+        session['last_request'] = time.time()
 
         return jsonify(title=title)
 
