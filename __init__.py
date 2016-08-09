@@ -130,7 +130,7 @@ def fetch_title():
         if elapsed <= 2: 
             return jsonify(title="Too fast!")
         
-        url = request.form.get('iUrl', None)
+        url = request.form.get('url', None)
         title = sigma.fetch_title(url)
         session['last_request'] = time.time()
 

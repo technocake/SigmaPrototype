@@ -5,44 +5,52 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput" type="text" placeholder="url __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'url __'"/>
+		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'url __'" onkeyup="getTitle(this.value)"/>
 	</div>
 
 	<div class="maindiv">
-		<input class="megainput" type="text" placeholder="search __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'search __'"/>
+		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'search __'" onkeyup="search(this.value)"/>
 	</div>
 
 
 <script type="text/javascript">
 
-	var title;
-	var old_url;
-	
-	var main_style = {
-	 'display':' flex';
-	'flex-direction': 'column';
-	'align-items': 'center';
-	}
+	/* Initiating a global MYAPP object. This object is supposed to hold
+	  all variables that otherwise would be global.
+	  By doing it like this we end having just 1 global variable named
+	   MYAPP. And all other variables are MYAPP.somevariable. 
+	   GLOBAL variables are evil, thats why we do it. - Jonas */
 
-	var $livetitle = $('#livetitle');
-	var $main = $('main');
-	$main.css(main_style);
+	MYAPP = {
+		'$urlinput' : $('.urlinput'),
+		'$searchinput' : $('.searchinput')
+	};
 
-	function getTitle(url){
+	function getTitle(iurl){
+		var title;
+		var old_url;
 
-		if (url != old_url){
-		old_url = url;
-		console.log(url);
-		$.post('/fetchtitle', { 'iUrl': url}, function(data){
+		MYAPP.$urlinput.blur();
 
-			title = data.title;
+		if (iurl != old_url){
+			old_url = iurl;
+			console.log(iurl);
+			$.post('/fetchtitle', { 'url': iurl}, function(data){
 
-			console.log('Title:' + title, 'type: ' + typeof title);
+				title = data.title;
+				console.log('Title:' + title, 'type: ' + typeof title);
+				
+				MYAPP.$urlinput.val(title);
 
-			$livetitle.html(title);
 
-		});
+			});
 		}
+	};
+
+	function search(istring) {
+
+		console.log(istring);
+		return 0;
 	};
 
 
