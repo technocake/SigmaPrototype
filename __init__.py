@@ -139,6 +139,23 @@ def fetch_title():
     except Exception as e:
         return jsonify(title="Server ERROR: " + str(e))
 
+
+
+@app.route('/fetchmeta', methods=['POST'])
+#@login_required
+def fetch_meta():
+    """ 
+        Returns a filtered set of meta data about a given url.
+    -- Robin """
+    url = request.form.get('iUrl', None)
+    filters = request.form.get('filter', None)
+    # Not implemented filters yet. It dumps everything we got.
+    meta = sigma.fetch_meta(url)
+    # This will build a json response based on all the 
+    # attributes in the LinkMeta object.
+    return jsonify(data=meta.__dict__)
+
+
 # -------------------------------------------------
 
 if __name__ == '__main__':
