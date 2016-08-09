@@ -13,14 +13,13 @@
 
 from flask import Flask, render_template, request, url_for, \
                    redirect, session, jsonify
-
 import os
-import sigma
-import auth
-import gc
+import gc # flask and garbage collection is not a good combo, clear session should invite a gc.collect()
 from functools import wraps
 from  datetime import datetime
 import time
+import sigma
+import auth
 
 le_key = os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
@@ -70,13 +69,15 @@ def meny():
 def input_url():
 
     return render_template('input.html')
+
     
 @app.route('/viewurl')
 @login_required
 def view_links():
-    user='technocake'
+    user=session['user']
     links = sigma.get_links(user)
     return render_template('search.html', links=links)
+
 
 @app.route('/logout')
 @login_required
@@ -91,7 +92,7 @@ def logout():
 @app.route('/posturl', methods=['POST'])
 @login_required
 def post_url():
-    user="technocake"
+    user=session['user']
     url = request.form.get('iUrl', None)
     if url:
         # Saves it in the users links file.

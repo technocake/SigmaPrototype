@@ -7,3 +7,4 @@ config.py
 # .links files are (currently) used to store the links of the users. 
 *.sqlite
 *.links
+__pycache__
