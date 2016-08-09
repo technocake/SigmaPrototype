@@ -49,8 +49,10 @@ def get_links(user):
         Responsible for retrieveing the links from somewhere safe. 
         associated with the user.
     """
-    # strips hacker attempts away from input. 
+    # secure_filename('some.file') strips hacker attempts away from input. 
     linksfile = secure_filename('%s.links'%(user))
+
+    # Here we should check if file exists with -> os.path.isfile(path)
 
     try:
         with codecs.open(linksfile) as userfile: 
