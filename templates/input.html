@@ -30,19 +30,19 @@
 
 	function onblurHandler(element){
 		var $ele = $(element);
+
 		if ($ele.hasClass('urlinput')){
 			$ele.attr('placeholder', 'url __');
 			$ele.val(MYAPP.old_title);
 		} else {
 			$ele.attr('placeholder', 'search __');
 		};
-		
 	};
 
 	function onfocusHandler(element){
 		var $ele = $(element);
-		$ele.attr('placeholder', '');
 
+		$ele.attr('placeholder', '');
 		if ($ele.hasClass('urlinput')){
 			$ele.val(MYAPP.old_url);
 		} else {
@@ -75,6 +75,27 @@
 		return 0;
 	};
 
+	$(document).ready(function(){
+
+		/* setInterval function that executes every second, 
+		    tp create a blinking animation.
+		    PS: I disabled this for now, because it didnt
+		        look that good.
+		        
+		var blinker = true;
+		setInterval(function(){
+
+			if (blinker){
+				MYAPP.$urlinput.attr('placeholder', 'url')
+				blinker = false;
+			} else {
+				MYAPP.$urlinput.attr('placeholder', 'url __')
+				blinker = true;
+			};
+		}, 1000);
+		*/
+
+	});
 
 </script>
 {% endblock %}
