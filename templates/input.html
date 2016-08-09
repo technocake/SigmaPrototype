@@ -33,7 +33,8 @@
 		$.post('/fetchtitle', { 'iUrl': url}, function(data){
 
 			title = data.title;
-			console.log('Title:' + title);
+
+			console.log('Title:' + title, 'type: ' + typeof title);
 
 			$livetitle.html(title);
 

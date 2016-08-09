@@ -36,7 +36,8 @@ def login_required(f):
     return wrap
 
 
-""" Every route is defined like this 
+""" 
+    Every route is defined like this 
     @app.route('/url')
 
     To access the function, you send a HttpRequest with this url
