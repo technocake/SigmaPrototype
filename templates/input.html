@@ -5,11 +5,11 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'url __'" onkeyup="getTitle(this.value)"/>
+		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="getTitle(this.value)"/>
 	</div>
 
 	<div class="maindiv">
-		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="this.placeholder = ''" onblur="this.placeholder = 'search __'" onkeyup="search(this.value)"/>
+		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="search(this.value)"/>
 	</div>
 
 
@@ -22,18 +22,41 @@
 	   GLOBAL variables are evil, thats why we do it. - Jonas */
 
 	MYAPP = {
-		'$urlinput' : $('.urlinput'),
-		'$searchinput' : $('.searchinput')
+		$urlinput : $('.urlinput'),
+		$searchinput : $('.searchinput'),
+		old_url : '',
+		old_title : ''
+	};
+
+	function onblurHandler(element){
+		var $ele = $(element);
+		if ($ele.hasClass('urlinput')){
+			$ele.attr('placeholder', 'url __');
+			$ele.val(MYAPP.old_title);
+		} else {
+			$ele.attr('placeholder', 'search __');
+		};
+		
+	};
+
+	function onfocusHandler(element){
+		var $ele = $(element);
+		$ele.attr('placeholder', '');
+
+		if ($ele.hasClass('urlinput')){
+			$ele.val(MYAPP.old_url);
+		} else {
+			$ele.val('');
+		};
 	};
 
 	function getTitle(iurl){
 		var title;
-		var old_url;
 
 		MYAPP.$urlinput.blur();
 
-		if (iurl != old_url){
-			old_url = iurl;
+		if (iurl != MYAPP.old_url){
+			MYAPP.old_url = iurl;
 			console.log(iurl);
 			$.post('/fetchtitle', { 'url': iurl}, function(data){
 
@@ -41,8 +64,7 @@
 				console.log('Title:' + title, 'type: ' + typeof title);
 				
 				MYAPP.$urlinput.val(title);
-
-
+				MYAPP.old_title = title;
 			});
 		}
 	};
