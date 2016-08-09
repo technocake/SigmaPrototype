@@ -20,6 +20,7 @@ import auth
 import gc
 from functools import wraps
 from  datetime import datetime
+import time
 
 le_key = os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
@@ -107,6 +108,7 @@ def post_user():
     if (auth.authenticate(user, None)):
         session['innlogget'] = True
         session['user'] = user
+        session['last_request'] = 0.0
 
     return redirect(url_for('meny'))
 
@@ -116,19 +118,25 @@ def post_user():
 @app.route('/fetchtitle', methods=['POST'])
 @login_required
 def fetch_title():
-    last_request = session.get('last_request', datetime.now())
-    now = datetime.now()
-    elapsed = (now-last_request).total_seconds()
+    """ 
+        time.clock() - returns a floating point number of time since epoch
+                    in seconds. Accuracy in microseconds.
+    -- Jonas """
+
+    now = time.clock()
+    elapsed = now - session['last_request']
+
     if elapsed <= 2: 
-        return jsonify(title="")
+        return jsonify(title="Elapsed: " + str(now))
     try:
         url = request.form.get('iUrl', None)
         title = sigma.fetch_title(url)
+        session['last_request'] = time.clock()
 
         return jsonify(title=title)
 
     except Exception as e:
-        return jsonify(result="Server ERROR: " + str(e))
+        return jsonify(title="Server ERROR: " + str(e))
 
 # -------------------------------------------------
 
