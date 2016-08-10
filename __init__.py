@@ -54,15 +54,19 @@ def index():
     else:
         return redirect(url_for('login'))
 
+
 @app.route('/login')
 def login():
+
     return render_template('login.html')
+
 
 @app.route('/meny')
 @login_required
 def meny():
 
     return render_template('base.html')
+
 
 @app.route('/inputurl')
 @login_required
@@ -74,6 +78,7 @@ def input_url():
 @app.route('/logout')
 @login_required
 def logout():
+
     session.clear()
     gc.collect()  
     return redirect(url_for('index'))
@@ -165,7 +170,6 @@ def fetch_meta():
                 }
             }
     
-
     -- Robin 
     """
     url = request.form.get('url', None)

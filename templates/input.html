@@ -4,7 +4,10 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="getMeta(this.value)"/>
+		<input class="megainput urlinput" type="text" placeholder="url __" 
+				onfocus="onfocusHandler(this)" 
+				onblur="onblurHandler(this)" 
+				onkeyup="getMeta(this.value)"/>
 
 		<div class="metainfo">	
 			<div class="kolonne1">
@@ -24,7 +27,10 @@
 
 
 	<div class="maindiv">
-		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="search(this.value)"/>
+		<input class="megainput searchinput" type="text" placeholder="search __" 
+		       onfocus="onfocusHandler(this)" 
+		       onblur="onblurHandler(this)" 
+		       onkeyup="search(this.value)"/>
 
 		<table class="tableview">
 			<thead>
@@ -45,7 +51,7 @@
 	/* Initiating a global APP-object. This object is supposed to hold
 	  all variables that otherwise would be global.
 	  By doing it like this we end having just 1 global variable named
-	   MYAPP. And all other variables are MYAPP.somevariable. 
+	   APP. And all other variables are APP.somevariable. 
 	   GLOBAL variables are evil, thats why we do it. - Jonas */
 
 	APP = {
@@ -82,6 +88,7 @@
 		};
 	};
 
+	// View1 - Constructs a list-view of all links.
 	function constructTable(){
 		var thtml;
 		var links = APP.links;
@@ -106,7 +113,6 @@
 		APP.old_url = '';
 		APP.$urlinput.val('');
 		APP.$metainfo.hide();
-		APP.$tbody.html('');
 	};
 
 	// --- AJAX request functions ---
@@ -127,6 +133,7 @@
     				console.log(data.status);
     				APP.links = data.links;
     				resetInput();
+    				APP.$tbody.html('');
     				constructTable();
     				
     			},
@@ -137,17 +144,20 @@
 	function getMeta(iurl){
 		var title;
 
-		APP.$urlinput.blur();
-
 		// Reset page if url is empty
 		if (iurl === ''){
 			resetInput();
 			return 0;
 		};
 
-		if (iurl != APP.old_url ){
+		console.log(iurl);
+		// Next line has a regex pattern that verifies if iurl is really a valid url.
+		var pattern = /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+
+		if (iurl != APP.old_url && pattern.test(iurl)){
+			console.log('Valid URL entered!');
 			APP.old_url = iurl;
-			console.log(iurl);
+
 			$.post('/fetchmeta', { 'url': iurl}, 
 
 				function(data){
@@ -166,17 +176,22 @@
 					APP.old_title = meta.title;
 					APP.old_favicon = meta.favicon;
 					APP.meta = meta;
+
+					// Blur the input-field to notify the user that a correct url has been entered.
+					APP.$urlinput.blur();
 				}
 			);
 		};
 	};
 
+	// Not active
 	function search(istring) {
 
 		console.log(istring);
 		return 0;
 	};
 
+	// Init function
 	$(document).ready(function(){
 
 		APP.$metainfo.hide();
@@ -186,25 +201,6 @@
 			APP.links = data.links;
 			constructTable();
 		});
-
-		/* setInterval function that executes every second, 
-		    tp create a blinking animation.
-		    PS: I disabled this for now, because it didnt
-		        look that good.
-		        
-		var blinker = true;
-		setInterval(function(){
-
-			if (blinker){
-				MYAPP.$urlinput.attr('placeholder', 'url')
-				blinker = false;
-			} else {
-				MYAPP.$urlinput.attr('placeholder', 'url __')
-				blinker = true;
-			};
-		}, 1000);
-		*/
-
 	});
 
 </script>
