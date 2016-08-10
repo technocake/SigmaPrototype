@@ -73,14 +73,14 @@
 
 	function postUrl(){
 
-		console.log('Lagre:' + APP.old_url + APP.meta);
+		json_data = {
+			 'url' : APP.old_url, 
+			 'meta' : APP.meta 
+		};
 
-		$.post('/postmeta', 
-			{ 'url' : APP.old_url, 
-			 'meta' : APP.meta }, 
-			function(data){
-				console.log('Hei');
-			});
+		$.post('/postmeta', JSON.stringify(json_data), function(data){
+				console.log(data.result);
+			}, "json");
 
 	};
 
@@ -101,25 +101,27 @@
 		if (iurl != APP.old_url ){
 			APP.old_url = iurl;
 			console.log(iurl);
-			$.post('/fetchmeta', { 'url': iurl}, function(data){
+			$.post('/fetchmeta', { 'url': iurl}, 
 
-				var meta = data.meta;
-				console.log('Title:' + meta.title, 'type: ' + typeof meta.title);
-				
-				// SHOW metadata
-				APP.$urlinput.val(meta.title);
-				$('#favicon').attr('src', meta.favicon);
-				$('#domain').html(meta.domain);
-				$('#description').html(meta.description);
-				$('#topics').html('<div>'+meta.main_topic+'</div><div>topic2</div><div>topic3</div>');
-				APP.$metainfo.show();
+				function(data){
+					var meta = data.meta;
+					console.log('Title:' + meta.title, 'type: ' + typeof meta.title);
+					
+					// SHOW metadata
+					APP.$urlinput.val(meta.title);
+					$('#favicon').attr('src', meta.favicon);
+					$('#domain').html(meta.domain);
+					$('#description').html(meta.description);
+					$('#topics').html('<div>'+meta.main_topic+'</div><div>topic2</div><div>topic3</div>');
+					APP.$metainfo.show();
 
-				// CACHE data for later
-				APP.old_title = meta.title;
-				APP.old_favicon = meta.favicon;
-				APP.meta = meta;
-			});
-		}
+					// CACHE data for later
+					APP.old_title = meta.title;
+					APP.old_favicon = meta.favicon;
+					APP.meta = meta;
+				}
+			);
+		};
 	};
 
 	function search(istring) {
