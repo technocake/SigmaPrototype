@@ -89,15 +89,15 @@ def logout():
 
 # ---- POST requests ----
 
-@app.route('/posturl', methods=['POST'])
+@app.route('/postmeta', methods=['POST'])
 @login_required
-def post_url():
-    user=session['user']
-    url = request.form.get('iUrl', None)
+def post_meta():
+    user = session['user']
+    meta = request.form.get('meta', None)
     if url:
         # Saves it in the users links file.
         try:
-            sigma.save_link(url=url, user=user)
+            sigma.save_link(meta=meta, user=user)
             return 'OK'
         except:
             return 'NOT OK'

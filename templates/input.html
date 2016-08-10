@@ -18,7 +18,8 @@
 				<div id="topics"></div>
 				<div id="top"><input type="text" placeholder="Main-topic"/></div>
 				<div id="sub"><input type="text" placeholder="Sub-topic"/></div>
-			</div>	
+			</div>
+			<img class="plusicon" width="100px" height="100px" src="static/plus-icon.png" onclick="postUrl()"/>
 		</div>
 
 
@@ -41,7 +42,9 @@
 		$searchinput : $('.searchinput'),
 		$metainfo : $('.metainfo'),
 		old_url : '',
-		old_title : ''
+		old_title : '',
+		old_favicon : '',
+		meta : ''
 	};
 
 	function onblurHandler(element){
@@ -64,6 +67,20 @@
 		} else {
 			$ele.val('');
 		};
+	};
+
+	// --- AJAX request functions ---
+
+	function postUrl(){
+
+		$.post('/postmeta', 
+			{ 'meta' : APP.meta}, 
+			function(data){
+
+				console.log('Success');
+
+			});
+
 	};
 
 	function getMeta(iurl){
@@ -98,6 +115,8 @@
 
 				// CACHE data for later
 				APP.old_title = meta.title;
+				APP.old_favicon = meta.favicon;
+				APP.meta = meta;
 			});
 		}
 	};
