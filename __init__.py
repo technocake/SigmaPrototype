@@ -99,8 +99,7 @@ def maps():
     
     # adding the url pointing to each map, using url_for
     # (not implemented yet)
-    for m in range(len(maps)):
-        maps[m].url = "http://example.com"
+    
     
     return render_template('maps.html', maps=maps)
 

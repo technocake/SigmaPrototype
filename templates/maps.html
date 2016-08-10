@@ -6,7 +6,10 @@
 	<div class="maindiv">
 	<ol class="maps-list"> 
 	{% for map in maps %}
-		<li class="map-thumbnail"><a href="{{ map.url }}">
+		<li class="map-thumbnail">
+			<a href="{{ url_for('show_map', 
+									user=session['user'], 
+									mapid=map.main_topic) }}">
 			<h3>{{ map.main_topic }}</h3>
 			<p> {{ map.description }} </p>
 		</a>
