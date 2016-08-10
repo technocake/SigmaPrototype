@@ -9,8 +9,11 @@
 
 		<div class="metainfo">	
 			<div class="kolonne1">
-				<img id="favicon" src="#"/>
-				<div id="domain">domain</div>
+				<div style="display:flex;">
+					
+					<div id="domain">domain</div> 
+					<img id="favicon" width="25px" height="25px" src="#"/>
+				</div>
 				<div id="description">description</div>
 			</div>
 			<div class="kolonne2">
@@ -83,11 +86,11 @@
 				$('#favicon').attr('src', meta.favicon);
 				$('#domain').html(meta.domain);
 				$('#description').html(meta.description);
-				$('#topics').html('<div>Topic1</div><div>topic2</div><div>topic3</div>');
+				$('#topics').html('<div>'+meta.main_topic+'</div><div>topic2</div><div>topic3</div>');
 				APP.$metainfo.show();
 
 				// CACHE data for later
-				APP.old_title = title;
+				APP.old_title = meta.title;
 			});
 		}
 	};
