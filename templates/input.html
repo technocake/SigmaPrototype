@@ -5,12 +5,27 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="getTitle(this.value)"/>
-	</div>
+		<input class="megainput urlinput" type="text" placeholder="url __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="getMeta(this.value)"/>
+
+		<div class="metainfo">	
+			<div class="kolonne1">
+				<div id="favicon">favicon</div>
+				<div id="domain">domain</div>
+				<div id="description">description</div>
+			</div>
+			<div class="kolonne2">
+				<div id="topics">topics</div>
+				<div id="top">Top-topic</div>
+				<div id="sub">Sub-topic</div>
+			</div>	
+		</div>
+
 
 	<div class="maindiv">
 		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="search(this.value)"/>
 	</div>
+
+
 
 
 <script type="text/javascript">
@@ -21,9 +36,10 @@
 	   MYAPP. And all other variables are MYAPP.somevariable. 
 	   GLOBAL variables are evil, thats why we do it. - Jonas */
 
-	MYAPP = {
+	APP = {
 		$urlinput : $('.urlinput'),
 		$searchinput : $('.searchinput'),
+		$metainfo : $('.metainfo'),
 		old_url : '',
 		old_title : ''
 	};
@@ -33,7 +49,7 @@
 
 		if ($ele.hasClass('urlinput')){
 			$ele.attr('placeholder', 'url __');
-			$ele.val(MYAPP.old_title);
+			$ele.val(APP.old_title);
 		} else {
 			$ele.attr('placeholder', 'search __');
 		};
@@ -44,27 +60,34 @@
 
 		$ele.attr('placeholder', '');
 		if ($ele.hasClass('urlinput')){
-			$ele.val(MYAPP.old_url);
+			$ele.val(APP.old_url);
 		} else {
 			$ele.val('');
 		};
 	};
 
-	function getTitle(iurl){
+	function getMeta(iurl){
 		var title;
 
-		MYAPP.$urlinput.blur();
+		APP.$urlinput.blur();
 
-		if (iurl != MYAPP.old_url){
-			MYAPP.old_url = iurl;
+		if (iurl != APP.old_url){
+			APP.old_url = iurl;
 			console.log(iurl);
-			$.post('/fetchtitle', { 'url': iurl}, function(data){
+			$.post('/fetchmeta', { 'url': iurl}, function(data){
 
-				title = data.title;
+				title = data.data.title;
 				console.log('Title:' + title, 'type: ' + typeof title);
 				
-				MYAPP.$urlinput.val(title);
-				MYAPP.old_title = title;
+				// SHOW metadata
+				APP.$urlinput.val(title);
+				$('#favicon').html();
+				$('#domain').html();
+				$('#description').html();
+				$('#topics').html();
+
+				// CACHE data for later
+				APP.old_title = title;
 			});
 		}
 	};
@@ -76,6 +99,8 @@
 	};
 
 	$(document).ready(function(){
+
+		APP.$metainfo.hide();
 
 		/* setInterval function that executes every second, 
 		    tp create a blinking animation.

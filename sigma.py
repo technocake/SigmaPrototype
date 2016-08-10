@@ -172,7 +172,6 @@ class LinkMeta():
         main_topic = classifier.main_topic(topics)
         return (topics, main_topic)
 
-
     def parse(self):
         """ Extracting intels about ze link for you madamme / sir. """
         
