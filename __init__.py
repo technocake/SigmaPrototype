@@ -161,7 +161,7 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         le_map = sigma.get_map(user, mapid) 
 
-        return jsonify(status='Getmap OK', le_map=le_map)
+        return jsonify(status='Getmap OK: mapid: '+mapid, le_map=le_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str())
