@@ -7,22 +7,24 @@
 		<input class="megainput urlinput" type="text" placeholder="url __" 
 				onfocus="onfocusHandler(this)" 
 				onblur="onblurHandler(this)" 
-				onkeyup="getMeta(this.value)"/>
+				onkeyup="getMeta(this.value)" 
+				onclick="this.select()"/>
+
 
 		<div class="metainfo">	
 			<div class="kolonne1">
 				<div style="display:flex;">
-					<div id="domain"></div> 
 					<img id="favicon" width="25px" height="25px" src="#"/>
+					<div id="domain"></div> 
 				</div>
-				<div id="description"></div>
+				<h3>Description:</h3><div id="description"></div>
 			</div>
 			<div class="kolonne2">
 				<div id="topics"></div>
 				<div id="top"><input type="text" placeholder="Main-topic"/></div>
 				<div id="sub"><input type="text" placeholder="Sub-topic"/></div>
 			</div>
-			<img class="plusicon" width="100px" height="100px" src="static/plus-icon.png" onclick="postUrl()"/>
+			<img class="plusicon" width="100px" height="100px" src="static/plus-icon.png" onclick="postMeta()"/>
 		</div>
 
 
@@ -85,7 +87,6 @@
 
 	function onfocusHandler(element){
 		var $ele = $(element);
-
 		$ele.attr('placeholder', '');
 		if ($ele.hasClass('urlinput')){
 			$ele.val(APP.old_url);
@@ -101,7 +102,6 @@
 
 		var i = 0;
 		for (var link in links){
-			console.log(links[link]);
 
 			if (links[link]['favicon']){
 				le_link = links[link]['favicon'];
@@ -130,7 +130,7 @@
 
 	// --- AJAX request functions ---
 
-	function postUrl(){
+	function postMeta(){
 		// Debug
 		//console.log('Url:' + APP.old_url+'Meta:'+ JSON.stringify(APP.meta));
 		json_data = {
@@ -180,7 +180,7 @@
 						APP.$urlinput.val(meta.title);
 						$('#favicon').attr('src', meta.favicon);
 						$('#domain').html(meta.domain);
-						$('#description').html('Description:' + meta.description);
+						$('#description').html(meta.description);
 						$('#topics').html('<div>'+meta.main_topic+'</div><div>topic2</div><div>topic3</div>');
 						APP.$metainfo.show();
 
