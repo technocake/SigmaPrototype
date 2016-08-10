@@ -9,14 +9,14 @@
 
 		<div class="metainfo">	
 			<div class="kolonne1">
-				<div id="favicon">favicon</div>
+				<img id="favicon" src="#"/>
 				<div id="domain">domain</div>
 				<div id="description">description</div>
 			</div>
 			<div class="kolonne2">
 				<div id="topics">topics</div>
-				<div id="top">Top-topic</div>
-				<div id="sub">Sub-topic</div>
+				<div id="top"><input type="text" placeholder="topic - main"/></div>
+				<div id="sub"><input type="text" placeholder="topic - sub"/></div>
 			</div>	
 		</div>
 
@@ -27,10 +27,9 @@
 
 
 
-
 <script type="text/javascript">
 
-	/* Initiating a global MYAPP object. This object is supposed to hold
+	/* Initiating a global APP-object. This object is supposed to hold
 	  all variables that otherwise would be global.
 	  By doing it like this we end having just 1 global variable named
 	   MYAPP. And all other variables are MYAPP.somevariable. 
@@ -76,15 +75,16 @@
 			console.log(iurl);
 			$.post('/fetchmeta', { 'url': iurl}, function(data){
 
-				title = data.data.title;
-				console.log('Title:' + title, 'type: ' + typeof title);
+				var meta = data.data;
+				console.log('Title:' + meta.title, 'type: ' + typeof meta.title);
 				
 				// SHOW metadata
-				APP.$urlinput.val(title);
-				$('#favicon').html();
-				$('#domain').html();
-				$('#description').html();
-				$('#topics').html();
+				APP.$urlinput.val(meta.title);
+				$('#favicon').attr('src', meta.favicon);
+				$('#domain').html(meta.domain);
+				$('#description').html(meta.description);
+				$('#topics').html('<div>Topic1</div><div>topic2</div><div>topic3</div>');
+				APP.$metainfo.show();
 
 				// CACHE data for later
 				APP.old_title = title;
