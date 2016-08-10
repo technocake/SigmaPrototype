@@ -209,8 +209,10 @@ class LinkMeta():
 
             # If description meta tag was found, then get the content attribute and save it to db entry
             if meta_desc:
-                description = meta_desc.get('content').encode('utf-8')
+                description = meta_desc.get('content')
         return description
+
+
 
 
     def fetch_favicon(self):
@@ -268,4 +270,4 @@ if __name__ == '__main__':
     print( link.domain )
     print( link.favicon )
     print( link.topics )
-    print( link.description )
+    print( link.description.encode('utf-8') )
