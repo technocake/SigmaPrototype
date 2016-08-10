@@ -7,5 +7,5 @@ def authenticate(user, password):
 	""" 
 		This function is responsible to handle authentication reuquests.
 	"""
-	return user in ["technocake", "jonas", "carl-henrik"]
+	return user in ["technocake", "jonas", "carl-henrik", "kjell"]
 

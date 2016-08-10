@@ -141,14 +141,16 @@
 		// Debug
 		//console.log('Url:' + APP.old_url+'Meta:'+ JSON.stringify(APP.meta));
 		
+
 		var json_meta = {
 			 'url' : APP.old_url, 
 			 'meta' : APP.meta 
 		};
 
-		var json_topics = {
-			'main_topic' : APP.$maintop.val(),
-			'sub_sopic' : APP.$subtop.val()
+		var topics = {
+			le_map : [],
+			main : APP.$maintop.val(),
+			sub : APP.$subtop.val()
 		}
 
 		$.ajax('/postmeta', {
@@ -165,8 +167,27 @@
 			error : function(xhr){ console.log(xhr.status);}
 			});
 
-		$.ajax('/posttopics', {
-			data : JSON.stringify(json_topics),
+		$.post('/getmap', { 'main_topic' : topics.main }, 
+
+			function(data){
+				console.log(data.status);
+
+				topics.le_map = data.le_map;
+				console.log(topics.le_map)
+
+				try{
+					topics.le_map[topics.sub].push(APP.old_url);
+				} catch (error) {
+					console.log(error);
+
+					var tempname = topics.sub;
+					var temp = { tempname : [] };
+					topics.le_map.push(temp);
+				};
+			});
+
+		$.ajax('/postmap', {
+			data : JSON.stringify(topics),
 			contentType : 'application/json',
 			type : 'POST',
 			success : function(data){

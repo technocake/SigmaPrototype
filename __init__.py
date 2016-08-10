@@ -145,19 +145,43 @@ def post_meta():
         # Saves it in the users links file.
         try:
             links = sigma.save_link(id=url, meta=meta, user=user)
-            return jsonify(links=links, status='Meta OK')
+            return jsonify(links=links, status='Postmeta OK')
         except Exception as e:
             return jsonify(status='Meta error:' + str(e))
     return 'Missing Url and Meta'
 
 
-@app.route('/posttopics', methods=['POST'])
+@app.route('/getmap', methods=['POST'])
 @login_required
-def post_topics():
+def get_map():
+
+    user = session['user']
+
     try:
-        return jsonify(status='Topics OK')
+        mapid = request.form.get('main_topic', None)
+        le_map = sigma.get_map(user, mapid) 
+
+        return jsonify(status='Getmap OK', le_map=le_map)
+
     except Exception as e:
-        return jsonify(status='Topics error:' + str())
+        return jsonify(status='Getmap error:' + str())
+
+
+@app.route('/postmap', methods=['POST'])
+@login_required
+def post_map():
+
+    user = session['user']
+
+    try:
+        le_map = json['le_map']
+        mapid = json['main']
+
+        sigma.save_map(user, mapid, le_map)
+        return jsonify(status='Postmap OK')
+    except Exception as e:
+        return jsonify(status='Postmap error:' + str())
+
 
 
 @app.route('/fetchtitle', methods=['POST'])
