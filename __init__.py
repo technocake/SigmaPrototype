@@ -114,25 +114,6 @@ def map(user, mapid):
 
 # ---- POST requests ----
 
-@app.route('/postmeta', methods=['POST'])
-@login_required
-def post_meta():
-    user = session['user']
-    json = request.get_json()
-
-    meta = json['meta']
-    url = json['url']
-
-    if url and meta:
-        # Saves it in the users links file.
-        try:
-            links = sigma.save_link(id=url, meta=meta, user=user)
-            return jsonify(links=links, status='OK')
-        except Exception as e:
-            return jsonify(status='NOT OK.' + str(e))
-    return 'Missing Url and Meta'
-
-
 @app.route('/postuser', methods=['POST'])
 def post_user():
 
@@ -146,6 +127,33 @@ def post_user():
 
 
 # ---------- JAVASCRIPT AJAX ROUTES -------------
+
+@app.route('/postmeta', methods=['POST'])
+@login_required
+def post_meta():
+    user = session['user']
+    json = request.get_json()
+
+    meta = json['meta']
+    url = json['url']
+
+    if url and meta:
+        # Saves it in the users links file.
+        try:
+            links = sigma.save_link(id=url, meta=meta, user=user)
+            return jsonify(links=links, status='Meta OK')
+        except Exception as e:
+            return jsonify(status='Meta error:' + str(e))
+    return 'Missing Url and Meta'
+
+
+@app.route('/posttopics', methods=['POST'])
+@login_required
+def post_topics():
+    try:
+        return jsonify(status='Topics OK')
+    except Exception as e:
+        return jsonify(status='Topics error:' + str())
 
 @app.route('/fetchtitle', methods=['POST'])
 @login_required
@@ -226,6 +234,7 @@ def fetch_links():
         return jsonify(links=links, status='OK')
     except Exception as e:
         return jsonify(status='Not OK - ' + str(e))
+
 # -------------------------------------------------
 
 if __name__ == '__main__':
