@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+{% block body %}
+<!-- Css added to sigmastyle, at bottom !-->
+	
+	<div class="maindiv">
+	<p> {{ map.description }} </p>
+
+	<h1> {{ map.main_topic }}</h1>
+	<ol class="sub-topics-list"> 
+	{% for subtopic in map.subtopics %}
+		<li class="sub-topic">
+			<h2>{{ subtopic }}</h2>  <!-- repr !-->
+			<ol>
+				{% for link in subtopic.links}
+		</li>
+
+	{% endfor %}
+	</ol>
+	</div>
+	
+
+{% endblock %}

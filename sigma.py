@@ -137,7 +137,7 @@ def fetch_meta(url, filter=None):
     return link
 
 
-def save_map(user, mapid, map):
+def save_map(user, mapid, the_map):
     """
         Saves a knowledgemap
     """
@@ -154,7 +154,7 @@ def save_map(user, mapid, map):
         # If the file does not exist, create an empty list of links.
         maps = {}
 
-    maps[mapid] = map
+    maps[mapid] = the_map.__dict__
 
     with codecs.open(mapsfile, 'wb') as userfile: 
         pickle.dump(maps, userfile) # simpler syntax
@@ -169,11 +169,13 @@ def get_map(user, mapid):
     try:
         with codecs.open(mapsfile, 'rb') as userfile: 
             maps = pickle.loads(userfile.read())
-            map = maps.get(mapid, None)
+            mapdict = maps.get(mapid, None)
+            the_map = KnowledgeMap()
+            the_map.__dict__ = mapdict
+            # If the file does not exist, create an empty list of links.
     except:
-        # If the file does not exist, create an empty list of links.
-        map = None
-    return map
+        the_map = None
+    return the_map
 
 
 def get_maps(user):
@@ -183,7 +185,16 @@ def get_maps(user):
     mapsfile = secure_filename('%s.maps'%(user))
     try:
         with codecs.open(mapsfile, 'rb') as userfile: 
-            maps = pickle.loads(userfile.read())
+            dict_maps = pickle.loads(userfile.read())
+            # Due to a issue with pickling a class
+            # in a sub module and depickling in the flask module
+            # the stored data is the __dict__ of the Knowledgemap
+            # This is then converted to a Knowledgemap object.
+            maps = {}
+            for k,v in dict_maps.items():
+                the_map = KnowledgeMap()
+                the_map.__dict__ = v
+                maps[k] = the_map
     except:
         # If the file does not exist, create an empty list of links.
         maps = {}
@@ -296,14 +307,29 @@ class LinkMeta():
 
 class KnowledgeMap():
     """ The class to hold a knowledge map """
-    def __init__(self, main_topic, description=None):
+    def __init__(self, main_topic=None, description=None):
         self.main_topic = main_topic
-        self.subtopics = []
         self.description = description
+        self.subtopics = [] # expects a list of Topic instances
 
 
-
-
+class Topic():
+    """ 
+        Representing a topic or subtopic. 
+        contains - 
+        
+        text
+            the textual value of the topic
+        links
+            list of LinkMeta objects associated to this node
+        subtopics
+            list of Topic's 
+    """
+    def __init__(self, text, links=None, subtopics=None):
+        self.text = text
+        self.links = [] if links is None else links
+        self.subtopics = [] if subtopics is None else subtopics
+    
 
 
 if __name__ == '__main__':
@@ -318,6 +344,7 @@ if __name__ == '__main__':
     # Save the map
     our_first_map = KnowledgeMap('Python', "basic python mind map")
     map_id = our_first_map.main_topic
+    save_map("technocake", map_id, our_first_map)
     
     our_second_map = KnowledgeMap('Java', "basic Java mind map")
     map_id = our_second_map.main_topic
@@ -332,7 +359,6 @@ if __name__ == '__main__':
     # Get all maps
     print( get_maps("technocake"))
     
-    print( get_maps("technocake")['Python'].main_topic )
     # link meta testing
     #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
     #print( link.title )

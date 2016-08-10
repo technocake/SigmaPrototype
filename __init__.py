@@ -21,7 +21,7 @@ import time
 import sigma
 import auth
 
-le_key = os.urandom(24)
+le_key = '1337' # os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
 app.secret_key = le_key
 
@@ -99,21 +99,23 @@ def maps():
     
     # adding the url pointing to each map, using url_for
     # (not implemented yet)
-    for m in range(len(maps)):
-        maps[m].url = "http://example.com"
+    
     
     return render_template('maps.html', maps=maps)
 
 
 @app.route('/<user>/map/<mapid>')
 @login_required
-def map(user, mapid):
+def show_map(user, mapid):
     # the url is built with user added to it to
     # be ready for the future when we might dare to
     # share our maps. 
     user = session['user']
-    map = sigma.get_map(user, mapid)
-    return map.main_topic
+    the_map = sigma.get_map(user, mapid)
+    if the_map is None:
+        return "There is no map with this main_topic"
+    #the_map = sigma.KnowledgeMap("Python", "flask")
+    return the_map.main_topic
  
 
 # --------- FORM POST request ROUTES -----------------
@@ -181,6 +183,7 @@ def post_map():
         return jsonify(status='Postmap OK')
     except Exception as e:
         return jsonify(status='Postmap error:' + str())
+
 
 
 
