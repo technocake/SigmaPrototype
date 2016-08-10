@@ -1,6 +1,5 @@
 <!--  input.html -->
 
-
 {% extends "base.html" %}
 {% block body %}
 
@@ -10,16 +9,15 @@
 		<div class="metainfo">	
 			<div class="kolonne1">
 				<div style="display:flex;">
-					
-					<div id="domain">domain</div> 
+					<div id="domain"></div> 
 					<img id="favicon" width="25px" height="25px" src="#"/>
 				</div>
-				<div id="description">description</div>
+				<div id="description"></div>
 			</div>
 			<div class="kolonne2">
-				<div id="topics">topics</div>
-				<div id="top"><input type="text" placeholder="topic - main"/></div>
-				<div id="sub"><input type="text" placeholder="topic - sub"/></div>
+				<div id="topics"></div>
+				<div id="top"><input type="text" placeholder="Main-topic"/></div>
+				<div id="sub"><input type="text" placeholder="Sub-topic"/></div>
 			</div>	
 		</div>
 
@@ -73,7 +71,16 @@
 
 		APP.$urlinput.blur();
 
-		if (iurl != APP.old_url){
+		// Reset page if url is empty
+		if (iurl === ''){
+			APP.old_title = '';
+			APP.old_url = '';
+			APP.$urlinput.val('');
+			APP.$metainfo.hide();
+			return 0;
+		};
+
+		if (iurl != APP.old_url ){
 			APP.old_url = iurl;
 			console.log(iurl);
 			$.post('/fetchmeta', { 'url': iurl}, function(data){
