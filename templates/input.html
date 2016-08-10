@@ -75,7 +75,7 @@
 			console.log(iurl);
 			$.post('/fetchmeta', { 'url': iurl}, function(data){
 
-				var meta = data.data;
+				var meta = data.meta;
 				console.log('Title:' + meta.title, 'type: ' + typeof meta.title);
 				
 				// SHOW metadata
