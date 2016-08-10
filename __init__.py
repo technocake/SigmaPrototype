@@ -26,6 +26,8 @@ app = Flask(__name__)   # obligatorisk
 app.secret_key = le_key
 
 
+# ----------- LOGIN WRAP -----------
+
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -36,6 +38,9 @@ def login_required(f):
     return wrap
 
 
+##################################################
+# ------------- HTTP request ROUTES -------------#
+# ---------------------------------------------- #
 """ 
     Every route is defined like this 
     @app.route('/url')
@@ -44,7 +49,7 @@ def login_required(f):
       http://www.domainname.com + /url 
                                         ----- Jonas ----- """
 
-#  ----- Render main views -----
+# ---------------- MISC ROUTES ---------------------
 
 @app.route('/')
 def index():
@@ -54,6 +59,17 @@ def index():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/logout')
+@login_required
+def logout():
+
+    session.clear()
+    gc.collect()  
+    return redirect(url_for('index'))
+
+
+# --------- RENDER TEMPLATE view ROUTES ------------
 
 @app.route('/login')
 def login():
@@ -75,15 +91,6 @@ def input_url():
     return render_template('input.html')
 
 
-@app.route('/logout')
-@login_required
-def logout():
-
-    session.clear()
-    gc.collect()  
-    return redirect(url_for('index'))
- 
-
 @app.route('/maps')
 @login_required
 def maps():
@@ -96,9 +103,6 @@ def maps():
         maps[m].url = "http://example.com"
     
     return render_template('maps.html', maps=maps)
-
-
-
 
 
 @app.route('/<user>/map/<mapid>')
@@ -115,7 +119,7 @@ def show_map(user, mapid):
     return the_map.main_topic
  
 
-# ---- POST requests ----
+# --------- FORM POST request ROUTES -----------------
 
 @app.route('/postuser', methods=['POST'])
 def post_user():
@@ -129,7 +133,7 @@ def post_user():
     return redirect(url_for('input_url'))
 
 
-# ---------- JAVASCRIPT AJAX ROUTES -------------
+# ---------- AJAX POST/GET request ROUTES -------------
 
 @app.route('/postmeta', methods=['POST'])
 @login_required
@@ -165,8 +169,7 @@ def post_topics():
 def fetch_title():
     """ 
         time.clock() - returns a floating point number of time since epoch
-                    in seconds. Accuracy in microseconds.
-    -- Jonas """
+                    in seconds. Accuracy in microseconds.  -- Jonas """
     try:
         now = time.time()
         elapsed = now - session['last_request']
@@ -182,7 +185,6 @@ def fetch_title():
 
     except Exception as e:
         return jsonify(title="Server ERROR: " + str(e))
-
 
 
 @app.route('/fetchmeta', methods=['POST'])
@@ -230,7 +232,7 @@ def fetch_meta():
         return jsonify(status="Server ERROR: " + str(e))
 
 
-@app.route('/fetchlinks')
+@app.route('/fetchlinks', methods=['GET'])
 @login_required
 def fetch_links():
     user = session['user']
@@ -240,7 +242,10 @@ def fetch_links():
     except Exception as e:
         return jsonify(status='Not OK - ' + str(e))
 
-# -------------------------------------------------
+# ------------------------------------------------ #
+# ------------------- LAST ROUTE ----------------- #
+####################################################
+
 
 if __name__ == '__main__':
     import webbrowser # Webbrowser makes you able to open browser with specified url.
