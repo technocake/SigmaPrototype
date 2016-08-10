@@ -176,7 +176,8 @@ class LinkMeta():
 
 
     def classify_topics(self):
-        topics = classifier.classify(self.url, depth=2)
+        topics = classifier.classify(self.url)
+        #topics = classifier.classify(self.url, depth=2)
         return topics
 
 
