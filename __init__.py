@@ -168,17 +168,25 @@ def fetch_meta():
                         statusCode: 2000
                     }   
                 }
-            }
-    
-    -- Robin 
-    """
-    url = request.form.get('url', None)
-    filters = request.form.get('filter', None)
-    # Not implemented filters yet. It dumps everything we got.
-    meta = sigma.fetch_meta(url)
-    # This will build a json response based on all the 
-    # attributes in the LinkMeta object.
-    return jsonify(meta=meta.__dict__)
+            }                            -- Robin """
+    try:
+        now = time.time()
+        elapsed = now - session['last_request']
+
+        if elapsed <= 2: 
+            return jsonify(status="Too fast!")
+
+        session['last_request'] = time.time()
+        url = request.form.get('url', None)
+        filters = request.form.get('filter', None)
+        # Not implemented filters yet. It dumps everything we got.
+        meta = sigma.fetch_meta(url)
+        # This will build a json response based on all the 
+        # attributes in the LinkMeta object.
+        return jsonify(meta=meta.__dict__, status="OK!")
+
+    except Exception as e:
+        return jsonify(status="Server ERROR: " + str(e))
 
 
 @app.route('/fetchlinks')
