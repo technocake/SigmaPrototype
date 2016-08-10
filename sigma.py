@@ -259,7 +259,7 @@ if __name__ == '__main__':
     #testing saving a linksfile:
     #save_link(url="http://hw.no.com", user="technocake")
 
-    #print( get_links('technocake') )
+    print( get_links('technocake') )
 
     # Schumanns Sonate
     #print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
