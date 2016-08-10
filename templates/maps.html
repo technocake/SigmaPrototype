@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+{% block body %}
+<!-- Css added to sigmastyle, at bottom !-->
+	<h1> maps </h1>
+	<div class="maindiv">
+	<ol class="maps-list"> 
+	{% for map in maps %}
+		<li class="map-thumbnail"><a href="{{ map.url }}">
+			<h3>{{ map.main_topic }}</h3>
+			<p> {{ map.description }} </p>
+		</a>
+		</li>
+	</ol>
+	{% endfor %}
+	</div>
+	
+
+{% endblock %}

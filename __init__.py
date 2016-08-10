@@ -84,6 +84,19 @@ def logout():
     return redirect(url_for('index'))
  
 
+@app.route('/maps')
+@login_required
+def maps():
+    user = session['user']
+    maps = sigma.get_maps(user).values()
+    
+    # adding the url pointing to each map, using url_for
+    # (not implemented yet)
+    for m in range(len(maps)):
+        maps[m].url = "http://example.com"
+    
+    return render_template('maps.html', maps=maps)
+
 # ---- POST requests ----
 
 @app.route('/postmeta', methods=['POST'])

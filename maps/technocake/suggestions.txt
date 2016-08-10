@@ -1,0 +1,9 @@
+user: technocake
+## auto suggesting map for the link
+desc:	To map a link to a map, the main topic may be suggested based on what the
+		user types and the current set of the users maps. 
+		
+
+http://stackoverflow.com/questions/6459832/html-form-text-input-suggestions-box
+comment: Automation may be done using suggestions / auto complete in input fields. 
+

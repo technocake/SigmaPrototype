@@ -64,3 +64,17 @@ a:hover {
 
 
 
+/* rules for maps.html */
+ol.maps-list {
+ 	/* the list of maps. */
+}
+
+.maps-list li {
+	display: inline-block;
+	border: 1px solid black;
+}
+
+.map-thumbnail h3 {
+	/* main topic of map in the list of maps */
+}
+

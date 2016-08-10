@@ -138,8 +138,57 @@ def fetch_meta(url, filter=None):
 
 
 
+def save_map(user, mapid, map):
+    """
+        Saves a knowledgemap
+    """
+
+    # strips hacker attempts away from input. 
+    mapsfile = secure_filename('%s.maps'%(user))
+    
+
+    # First, read the list of links from the users link file. 
+    try:
+        with codecs.open(mapsfile, 'rb') as userfile: 
+            maps = pickle.loads(userfile.read())
+    except:
+        # If the file does not exist, create an empty list of links.
+        maps = {}
+
+    maps[mapid] = map
+
+    with codecs.open(mapsfile, 'wb') as userfile: 
+        pickle.dump(maps, userfile) # simpler syntax
+        # userfile.write(pickle.dumps(links, userfile))
 
 
+def get_map(user, mapid):
+    """
+        Retrieves a requested map
+    """
+    mapsfile = secure_filename('%s.maps'%(user))
+    try:
+        with codecs.open(mapsfile, 'rb') as userfile: 
+            maps = pickle.loads(userfile.read())
+            map = maps.get(mapid, None)
+    except:
+        # If the file does not exist, create an empty list of links.
+        map = None
+    return map
+
+
+def get_maps(user):
+    """ 
+        Retrieves all maps from user
+    """
+    mapsfile = secure_filename('%s.maps'%(user))
+    try:
+        with codecs.open(mapsfile, 'rb') as userfile: 
+            maps = pickle.loads(userfile.read())
+    except:
+        # If the file does not exist, create an empty list of links.
+        maps = {}
+    return maps
 
 
 def fetch_title(url):
@@ -252,6 +301,14 @@ class LinkMeta():
 
 
 
+class KnowledgeMap():
+    """ The class to hold a knowledge map """
+    def __init__(self, main_topic, description=None):
+        self.main_topic = main_topic
+        self.subtopics = []
+        self.description = description
+
+
 
 
 
@@ -260,15 +317,30 @@ if __name__ == '__main__':
     #testing saving a linksfile:
     #save_link(url="http://hw.no.com", user="technocake")
 
-    print( get_links('technocake') )
+    #print( get_links('technocake') )
 
     # Schumanns Sonate
     #print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
 
+    # Save the map
+    our_first_map = KnowledgeMap('Python', "basic python mind map")
+    map_id = our_first_map.main_topic
+    save_map("technocake", map_id, our_first_map)
 
-    link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
-    print( link.title )
-    print( link.domain )
-    print( link.favicon )
-    print( link.topics )
-    print( link.description.encode('utf-8') )
+
+    # Get it back
+    the_first_map = get_map("technocake", map_id)
+    print (the_first_map)
+    
+
+    # Get all maps
+    print( get_maps("technocake"))
+    
+
+    # link meta testing
+    #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
+    #print( link.title )
+    #print( link.domain )
+    #print( link.favicon )
+    #print( link.topics )
+    #print( link.description.encode('utf-8') )
