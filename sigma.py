@@ -137,7 +137,6 @@ def fetch_meta(url, filter=None):
     return link
 
 
-
 def save_map(user, mapid, map):
     """
         Saves a knowledgemap
@@ -211,12 +210,10 @@ def fetch_title(url):
     return title
 
 
-
-
-
 ########################################
 #   CLASSES
 ########################################
+
 
 class LinkMeta():
     """ A class to hold meta info about a link """
@@ -263,8 +260,6 @@ class LinkMeta():
         return description
 
 
-
-
     def fetch_favicon(self):
         """ 
             favicons.ico are supposed to be at the top folder of a websites domain.
@@ -284,8 +279,6 @@ class LinkMeta():
             return favurl
         else:
             return ""
-
-
 
 
     def __repr__(self):

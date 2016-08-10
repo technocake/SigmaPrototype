@@ -98,9 +98,6 @@ def maps():
     return render_template('maps.html', maps=maps)
 
 
-
-
-
 @app.route('/<user>/map/<mapid>')
 @login_required
 def map(user, mapid):
@@ -155,13 +152,13 @@ def post_topics():
     except Exception as e:
         return jsonify(status='Topics error:' + str())
 
+
 @app.route('/fetchtitle', methods=['POST'])
 @login_required
 def fetch_title():
     """ 
         time.clock() - returns a floating point number of time since epoch
-                    in seconds. Accuracy in microseconds.
-    -- Jonas """
+                    in seconds. Accuracy in microseconds.  -- Jonas """
     try:
         now = time.time()
         elapsed = now - session['last_request']
@@ -177,7 +174,6 @@ def fetch_title():
 
     except Exception as e:
         return jsonify(title="Server ERROR: " + str(e))
-
 
 
 @app.route('/fetchmeta', methods=['POST'])
