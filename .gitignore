@@ -8,3 +8,10 @@ config.py
 *.sqlite
 *.links
 __pycache__
+
+
+#### NO SECRETS
+# Apikeys are sensitivy informations. Let's not include those.
+# And, as an additional note, use the filename format: "<service>.api-key.txt"
+# for future api-keys to future services.
+*.api-key.txt

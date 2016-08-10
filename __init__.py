@@ -146,14 +146,37 @@ def fetch_title():
 def fetch_meta():
     """ 
         Returns a filtered set of meta data about a given url.
-    -- Robin """
+        I.e:
+            {
+                meta: {
+                    title: "A fish flying to the moon",
+                    domain: "fishcanfly.com",
+                    favicon: "https://fishcanfly.com/favicon.ico",
+        
+                    topics: {
+                        cls1: {
+                                Fish: 0.99999,
+                                moon: 0.00001
+                             },
+                        success: True,
+                        errorMessage: '',
+                        version: '1.01',
+                        textCoverage: 0.441786,
+                        statusCode: 2000
+                    }   
+                }
+            }
+    
+
+    -- Robin 
+    """
     url = request.form.get('url', None)
     filters = request.form.get('filter', None)
     # Not implemented filters yet. It dumps everything we got.
     meta = sigma.fetch_meta(url)
     # This will build a json response based on all the 
     # attributes in the LinkMeta object.
-    return jsonify(data=meta.__dict__)
+    return jsonify(meta=meta.__dict__)
 
 
 # -------------------------------------------------

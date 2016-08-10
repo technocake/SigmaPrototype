@@ -1,5 +1,19 @@
 #!usr/bin/env python3
 # -*- coding:utf-8 -*-
+# sigma.py
+#
+############################################################
+#   This module functions as the Sigma engine. 
+#   It fasciliates functionality to make meaning 
+#   out of urls. 
+#
+#   The Sigma Engine is currently used by the webinterface (__init__.py), 
+#   but it is designed such that it is independent of it's 
+#   user interface. One could integrate this module in 
+#   other programs, even those without a user interface.
+#
+#   -- Robin
+#############################################################
 import codecs
 
 try:
@@ -11,7 +25,7 @@ from werkzeug import secure_filename
 import requests
 import requests_cache
 from bs4 import BeautifulSoup
-
+import classification
 
 try:
     ## Python 3
@@ -26,9 +40,20 @@ except:
 # if a url is downloaded twice, only the first time will grab it off the internet.
 # the second time from a local stored cache.
 requests_cache.install_cache("sigma-dev-0.1")
+# Builds a topic classifier
+api_key = classification.get_api_key()
+# Make it
+classifier = classification.ComputerTopicsClassifier(api_key)
 
 
-# sigma.py
+
+
+#####################################
+#       API / INTERFACE
+#   These methods are the interface 
+#   between the flask(webinterface) 
+#   and the sigma engine.
+#####################################
 
 def save_link(url, user):
     """ 
@@ -129,15 +154,12 @@ def fetch_title(url):
     return title
 
 
-def fetch_favicon(url):
-    """ 
-            Responsible for retrieveing the  favicon (url) of a url. 
-    """
-    # get domain
-    # add /favicon.ico
-    # return that
 
 
+
+########################################
+#   CLASSES
+########################################
 
 class LinkMeta():
     """ A class to hold meta info about a link """
@@ -145,6 +167,10 @@ class LinkMeta():
         self.url = url
         self.urlparts = urlparse(url)
 
+    def classify_topics(self):
+        topics = classifier.classify(self.url)
+        main_topic = classifier.main_topic(topics)
+        return (topics, main_topic)
 
 
     def parse(self):
@@ -155,13 +181,27 @@ class LinkMeta():
             self.title = fetch_title(self.url)
             self.domain = self.fetch_domain()
             self.favicon = self.fetch_favicon()
+            self.topics, self.main_topic = self.classify_topics()
         return self
 
 
     def fetch_domain(self):
         return self.urlparts.netloc.split(":")[0]
 
+
     def fetch_favicon(self):
+        """ 
+            favicons.ico are supposed to be at the top folder of a websites domain.
+            forexample http://komsys.org/favicon.ico
+
+            This is also the case if the url in question is deeper down, as in the
+            example:
+            http://komsys.org/15/26/how-to-be-a-cool-engineer
+
+            So this function does the following:
+            1. Attempts to fetch the favicon on http://<domain>/favicon.ico
+            2. returns this url if it got an icon, or an empty string if not.
+        """    
         favurl = "%s://%s/favicon.ico" % (self.urlparts.scheme, self.domain)
         r = requests.get(favurl)
         if r:
@@ -203,3 +243,5 @@ if __name__ == '__main__':
     print( link.title )
     print( link.domain )
     print( link.favicon )
+    print( link.topics )
+    print( link.main_topic )
