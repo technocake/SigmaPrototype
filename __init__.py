@@ -94,10 +94,12 @@ def logout():
 def post_meta():
     user = session['user']
     meta = request.form.get('meta', None)
-    if url:
+    url = request.form.get('url', None)
+
+    if url and meta:
         # Saves it in the users links file.
         try:
-            sigma.save_link(meta=meta, user=user)
+            sigma.save_link(id=url, meta=meta, user=user)
             return 'OK'
         except:
             return 'NOT OK'

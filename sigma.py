@@ -55,10 +55,17 @@ classifier = classification.TopicsClassifier(api_key)
 #   and the sigma engine.
 #####################################
 
-def save_link(url, user):
+def save_link(id, meta, user):
     """ 
         Responsible for putting the link somewhere safe. 
         associated with the user.
+
+        id:
+            the id of the url (currently the id IS the url)
+        meta:
+            a dict full of metadata about this url.
+        user:
+            the username string.
     """
     # strips hacker attempts away from input. 
     linksfile = secure_filename('%s.links'%(user))
@@ -70,9 +77,9 @@ def save_link(url, user):
             links = pickle.loads(userfile.read())
     except:
         # If the file does not exist, create an empty list of links.
-        links = []
+        links = {}
 
-    links.append(url)
+    links[id] = meta
 
     with codecs.open(linksfile, 'w+') as userfile: 
         userfile.write(pickle.dumps(links))
@@ -94,7 +101,7 @@ def get_links(user):
         with codecs.open(linksfile) as userfile: 
             links = pickle.loads(userfile.read())
     except IOError:
-        links = []
+        links = {}
     return links
 
 
