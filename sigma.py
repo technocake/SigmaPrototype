@@ -190,11 +190,27 @@ class LinkMeta():
             self.domain = self.fetch_domain()
             self.favicon = self.fetch_favicon()
             self.topics = self.classify_topics()
+            self.description = self.fetch_description()
         return self
 
 
     def fetch_domain(self):
         return self.urlparts.netloc.split(":")[0]
+
+
+    def fetch_description(self):
+        description = ""
+
+        r = requests.get(self.url)
+        if r:
+            soup = BeautifulSoup(r.text, 'html.parser')
+            # First get the meta description tag
+            meta_desc = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'})
+
+            # If description meta tag was found, then get the content attribute and save it to db entry
+            if meta_desc:
+                description = meta_desc.get('content').encode('utf-8')
+        return description
 
 
     def fetch_favicon(self):
@@ -252,3 +268,4 @@ if __name__ == '__main__':
     print( link.domain )
     print( link.favicon )
     print( link.topics )
+    print( link.description )
