@@ -33,7 +33,7 @@ a:hover {
 	background-color: transparent;
 	border: 0px solid; ;
 	border-bottom: 1px solid grey;
-	margin-bottom: 20px;
+	margin: 20px 0px 40px 0px;
 	flex: 0 1 70px;
 	width: 90%;
 	font-size: 30px;
@@ -54,6 +54,7 @@ a:hover {
 	flex: 0 1 200px;
 }
 
+#domain {font-size: 20px;}
 
 
 
