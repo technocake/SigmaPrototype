@@ -73,12 +73,13 @@
 
 	function postUrl(){
 
+		console.log('Lagre:' + APP.old_url + APP.meta);
+
 		$.post('/postmeta', 
-			{ 'meta' : APP.meta}, 
+			{ 'url' : APP.old_url, 
+			 'meta' : APP.meta }, 
 			function(data){
-
-				console.log('Success');
-
+				console.log('Hei');
 			});
 
 	};
