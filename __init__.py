@@ -97,6 +97,21 @@ def maps():
     
     return render_template('maps.html', maps=maps)
 
+
+
+
+
+@app.route('/<user>/map/<mapid>')
+@login_required
+def map(user, mapid):
+    # the url is built with user added to it to
+    # be ready for the future when we might dare to
+    # share our maps. 
+    user = session['user']
+    map = sigma.get_map(user, mapid)
+    return map.main_topic
+ 
+
 # ---- POST requests ----
 
 @app.route('/postmeta', methods=['POST'])

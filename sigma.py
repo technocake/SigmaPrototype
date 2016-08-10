@@ -325,7 +325,10 @@ if __name__ == '__main__':
     # Save the map
     our_first_map = KnowledgeMap('Python', "basic python mind map")
     map_id = our_first_map.main_topic
-    save_map("technocake", map_id, our_first_map)
+    
+    our_second_map = KnowledgeMap('Java', "basic Java mind map")
+    map_id = our_second_map.main_topic
+    save_map("technocake", map_id, our_second_map)
 
 
     # Get it back
@@ -336,7 +339,7 @@ if __name__ == '__main__':
     # Get all maps
     print( get_maps("technocake"))
     
-
+    print( get_maps("technocake")['Python'].main_topic )
     # link meta testing
     #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
     #print( link.title )
