@@ -43,7 +43,7 @@ requests_cache.install_cache("sigma-dev-0.1")
 # Builds a topic classifier
 api_key = classification.get_api_key()
 # Make it
-classifier = classification.ComputerTopicsClassifier(api_key)
+classifier = classification.TopicsClassifier(api_key)
 
 
 
@@ -167,10 +167,12 @@ class LinkMeta():
         self.url = url
         self.urlparts = urlparse(url)
 
+
     def classify_topics(self):
         topics = classifier.classify(self.url)
         main_topic = classifier.main_topic(topics)
         return (topics, main_topic)
+
 
     def parse(self):
         """ Extracting intels about ze link for you madamme / sir. """

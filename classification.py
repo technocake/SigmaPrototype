@@ -28,6 +28,8 @@ def just_classify(theurl):
 	return category, topic
 
 
+
+
 def get_api_key():
 	folder = os.path.dirname(__file__)
 	with open(os.path.join(folder, 'uclassify.api-key.txt')) as api_key_file:
