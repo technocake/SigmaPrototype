@@ -173,18 +173,10 @@
 				console.log(data.status);
 
 				topics.le_map = data.le_map;
-				console.log(topics.le_map)
+				console.log('Map-->: ' + topics.le_map);
 
-				try{
-					topics.le_map[topics.sub].push(APP.old_url);
-				} catch (error) {
-					console.log(error);
-
-					var tempname = topics.sub;
-					var temp = { tempname : [] };
-					topics.le_map.push(temp);
-				};
-			});
+				}
+			);
 
 		$.ajax('/postmap', {
 			data : JSON.stringify(topics),
