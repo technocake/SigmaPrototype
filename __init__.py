@@ -94,10 +94,10 @@ def logout():
 def post_meta():
     user = session['user']
     json = request.get_json()
-    
+
     meta = json['meta']
     url = json['url']
-    
+
     if url and meta:
         # Saves it in the users links file.
         try:
@@ -184,6 +184,11 @@ def fetch_meta():
     # attributes in the LinkMeta object.
     return jsonify(meta=meta.__dict__)
 
+
+@app.route('/fetchlinks', methods=['POST'])
+@login_required
+def fetch_links():
+    return jsonify(links='Hello World')
 
 # -------------------------------------------------
 
