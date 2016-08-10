@@ -309,12 +309,27 @@ class KnowledgeMap():
     """ The class to hold a knowledge map """
     def __init__(self, main_topic=None, description=None):
         self.main_topic = main_topic
-        self.subtopics = []
         self.description = description
+        self.subtopics = [] # expects a list of Topic instances
 
 
-
-
+class Topic():
+    """ 
+        Representing a topic or subtopic. 
+        contains - 
+        
+        text
+            the textual value of the topic
+        links
+            list of LinkMeta objects associated to this node
+        subtopics
+            list of Topic's 
+    """
+    def __init__(self, text, links=None, subtopics=None):
+        self.text = text
+        self.links = [] if links is None else links
+        self.subtopics = [] if subtopics is None else subtopics
+    
 
 
 if __name__ == '__main__':
