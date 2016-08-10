@@ -10,21 +10,26 @@
 				onkeyup="getMeta(this.value)" 
 				onclick="this.select()"/>
 
-
 		<div class="metainfo">	
+
 			<div class="kolonne1">
 				<div style="display:flex;">
 					<img id="favicon" width="25px" height="25px" src="#"/>
-					<div id="domain"></div> 
+					<div id="domain">
+					</div> 
 				</div>
-				<h3>Description:</h3><div id="description"></div>
+				<h3>Description:</h3>
+				<div id="description"></div>
 			</div>
+
 			<div class="kolonne2">
-				<div id="topics"></div>
-				<div id="top"><input type="text" placeholder="Main-topic"/></div>
-				<div id="sub"><input type="text" placeholder="Sub-topic"/></div>
+				<input class="topicinput maintopic" type="text" placeholder="Main topic"/>
+				<input class="topicinput subtopic" type="text" placeholder="Sub topic"/>
 			</div>
-			<img class="plusicon" width="100px" height="100px" src="static/plus-icon.png" onclick="postMeta()"/>
+			<div>
+				<img class="plusicon" width="100px" height="100px" 
+				     src="static/plus-icon.png" onclick="postMeta()"/>
+			</div>
 		</div>
 
 
@@ -67,6 +72,8 @@
 		$searchinput : $('.searchinput'),
 		$metainfo : $('.metainfo'),
 		$tbody : $('.tableview tbody'),
+		$maintop : $('.maintopic'),
+		$subtop : $('.subtopic'),
 		old_url : '',
 		old_title : '',
 		old_favicon : '',
@@ -133,25 +140,42 @@
 	function postMeta(){
 		// Debug
 		//console.log('Url:' + APP.old_url+'Meta:'+ JSON.stringify(APP.meta));
-		json_data = {
+		
+		var json_meta = {
 			 'url' : APP.old_url, 
 			 'meta' : APP.meta 
 		};
 
+		var json_topics = {
+			'main_topic' : APP.$maintop.val(),
+			'sub_sopic' : APP.$subtop.val()
+		}
+
 		$.ajax('/postmeta', {
-				data : JSON.stringify(json_data),
-    			contentType : 'application/json',
-    			type : 'POST',
-    			success: function(data){ 
-    				console.log(data.status);
-    				APP.links = data.links;
-    				resetInput();
-    				APP.$tbody.html('');
-    				constructTable();
-    				
-    			},
-				error : function(xhr){ console.log(xhr.status);}
-				});
+			data : JSON.stringify(json_meta),
+			contentType : 'application/json',
+			type : 'POST',
+			success: function(data){ 
+				console.log(data.status);
+				APP.links = data.links;
+				resetInput();
+				APP.$tbody.html('');
+				constructTable();
+			},
+			error : function(xhr){ console.log(xhr.status);}
+			});
+
+		$.ajax('/posttopics', {
+			data : JSON.stringify(json_topics),
+			contentType : 'application/json',
+			type : 'POST',
+			success : function(data){
+				console.log(data.status);
+			},
+			error : function(xhr){
+				console.log(xhr.status);
+			}
+		});
 	};
 
 	function getMeta(iurl){
@@ -174,14 +198,13 @@
 				function(data){
 					if(data.meta){
 						var meta = data.meta;
-						console.log('Status: ' + data.status);
+						console.log('Url: ' + data.status);
 						
 						// SHOW metadata
 						APP.$urlinput.val(meta.title);
 						$('#favicon').attr('src', meta.favicon);
 						$('#domain').html(meta.domain);
 						$('#description').html(meta.description);
-						$('#topics').html('<div>'+meta.main_topic+'</div><div>topic2</div><div>topic3</div>');
 						APP.$metainfo.show();
 
 						// CACHE data for later
