@@ -176,9 +176,8 @@ class LinkMeta():
 
 
     def classify_topics(self):
-        topics = classifier.classify(self.url)
-        main_topic = classifier.main_topic(topics)
-        return (topics, main_topic)
+        topics = classifier.classify(self.url, depth=2)
+        return topics
 
 
     def parse(self):
@@ -189,7 +188,7 @@ class LinkMeta():
             self.title = fetch_title(self.url)
             self.domain = self.fetch_domain()
             self.favicon = self.fetch_favicon()
-            self.topics, self.main_topic = self.classify_topics()
+            self.topics = self.classify_topics()
         return self
 
 

@@ -99,6 +99,17 @@ for category in "Art, Busines, Computer, Game, Health, Home, Recreation, Science
 	'''.format(category, category.lower()))
 
 
+##########################################################################
+#	Depth classifier
+##########################################################################
+
+class TopicDepthClassifier():
+	def __init__(self, api_key):
+		self.api_key = api_key
+		self.classifiers = [TopicsClassifier(api_key)]
+
+
+
 ########################################################################
 #	Language
 ########################################################################
