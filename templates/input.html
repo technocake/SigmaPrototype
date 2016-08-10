@@ -25,6 +25,17 @@
 
 	<div class="maindiv">
 		<input class="megainput searchinput" type="text" placeholder="search __" onfocus="onfocusHandler(this)" onblur="onblurHandler(this)" onkeyup="search(this.value)"/>
+
+		<table class="tableview">
+			<thead>
+				<th></th>
+				<th></th>
+				<th></th>
+			</thead>
+			<tbody>
+					
+			</tbody>
+		</table> 
 	</div>
 
 
@@ -41,10 +52,12 @@
 		$urlinput : $('.urlinput'),
 		$searchinput : $('.searchinput'),
 		$metainfo : $('.metainfo'),
+		$tbody : $('.tableview tbody'),
 		old_url : '',
 		old_title : '',
 		old_favicon : '',
-		meta : ''
+		meta : '',
+		links : {}
 	};
 
 	function onblurHandler(element){
@@ -69,26 +82,55 @@
 		};
 	};
 
+	function constructTable(){
+		var thtml;
+		var links = APP.links;
+
+		var i = 0;
+		for (var link in links){
+			console.log(links[link]);
+			thtml = '<tr>'+
+						'<td><img width="40px" height="40px" src="'+links[link]['favicon']+'"/></td>'+
+						'<td>'+links[link]['title']+'</td>'+
+						'<td><a id="link'+i+'" class="linkholder" href="#"><img width="25px" height="25px" src="static/external_link.png"/></a></td>'+
+					'</tr>';
+			APP.$tbody.append(thtml);
+			$('#link'+i).attr('href', links[link]['url']);
+			i ++;
+		};
+		return 0;
+	}
+
+	function resetInput(){
+		APP.old_title = '';
+		APP.old_url = '';
+		APP.$urlinput.val('');
+		APP.$metainfo.hide();
+		APP.$tbody.html('');
+	};
+
 	// --- AJAX request functions ---
 
 	function postUrl(){
-
+		// Debug
+		//console.log('Url:' + APP.old_url+'Meta:'+ JSON.stringify(APP.meta));
 		json_data = {
 			 'url' : APP.old_url, 
 			 'meta' : APP.meta 
 		};
 
-		//$.post('/postmeta', JSON.stringify(json_data), function(data){
-		//		console.log(data.result);
-		//	}, "json");
-
-		// Added
 		$.ajax('/postmeta', {
 				data : JSON.stringify(json_data),
     			contentType : 'application/json',
     			type : 'POST',
-    			success: function(data){ console.log('Hello')},
-				error : function(){}
+    			success: function(data){ 
+    				console.log(data.status);
+    				APP.links = data.links;
+    				resetInput();
+    				constructTable();
+    				
+    			},
+				error : function(xhr){ console.log(xhr.status);}
 				});
 	};
 
@@ -99,10 +141,7 @@
 
 		// Reset page if url is empty
 		if (iurl === ''){
-			APP.old_title = '';
-			APP.old_url = '';
-			APP.$urlinput.val('');
-			APP.$metainfo.hide();
+			resetInput();
 			return 0;
 		};
 
@@ -141,6 +180,12 @@
 	$(document).ready(function(){
 
 		APP.$metainfo.hide();
+
+		$.get('/fetchlinks', function(data){
+			console.log('Status:' + data.status)
+			APP.links = data.links;
+			constructTable();
+		});
 
 		/* setInterval function that executes every second, 
 		    tp create a blinking animation.

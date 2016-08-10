@@ -17,7 +17,8 @@ a {
 	color: grey;}
 
 a:hover {
-	background-color: lightgrey; }
+	background-color: lightgreen;
+}
 
 
 /* rules for input.html*/
@@ -52,6 +53,11 @@ a:hover {
 .metainfo .kolonne2 {
 	border: 1px solid pink;
 	flex: 0 1 200px;
+}
+
+.linkholder {
+	height: 30px;
+	width: 30px;
 }
 
 #domain {font-size: 20px;}

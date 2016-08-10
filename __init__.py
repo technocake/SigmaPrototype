@@ -70,14 +70,6 @@ def input_url():
 
     return render_template('input.html')
 
-    
-@app.route('/viewurl')
-@login_required
-def view_links():
-    user=session['user']
-    links = sigma.get_links(user)
-    return render_template('search.html', links=links)
-
 
 @app.route('/logout')
 @login_required
@@ -101,10 +93,10 @@ def post_meta():
     if url and meta:
         # Saves it in the users links file.
         try:
-            sigma.save_link(id=url, meta=meta, user=user)
-            return jsonify(result='OK')
-        except:
-            return jsonify(result='NOT OK')
+            links = sigma.save_link(id=url, meta=meta, user=user)
+            return jsonify(links=links, status='OK')
+        except Exception as e:
+            return jsonify(status='NOT OK.' + str(e))
     return 'Missing Url and Meta'
 
 
@@ -185,11 +177,15 @@ def fetch_meta():
     return jsonify(meta=meta.__dict__)
 
 
-@app.route('/fetchlinks', methods=['POST'])
+@app.route('/fetchlinks')
 @login_required
 def fetch_links():
-    return jsonify(links='Hello World')
-
+    user = session['user']
+    try:
+        links = sigma.get_links(user)
+        return jsonify(links=links, status='OK')
+    except Exception as e:
+        return jsonify(status='Not OK - ' + str(e))
 # -------------------------------------------------
 
 if __name__ == '__main__':
