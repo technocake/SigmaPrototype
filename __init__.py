@@ -93,9 +93,10 @@ def logout():
 @login_required
 def post_meta():
     user = session['user']
-    meta = request.form.get('meta', None)
-    url = request.form.get('url', None)
-
+    json = request.get_json()
+    meta = json.meta
+    url = json.url
+    print (meta, url)
     if url and meta:
         # Saves it in the users links file.
         try:
@@ -103,6 +104,7 @@ def post_meta():
             return 'OK'
         except:
             return 'NOT OK'
+    return 'Missing Url and Meta'
 
 
 @app.route('/postuser', methods=['POST'])

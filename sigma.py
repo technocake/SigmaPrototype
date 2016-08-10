@@ -252,4 +252,3 @@ if __name__ == '__main__':
     print( link.domain )
     print( link.favicon )
     print( link.topics )
-    print( link.main_topic )
