@@ -101,9 +101,9 @@ def post_meta():
         # Saves it in the users links file.
         try:
             sigma.save_link(id=url, meta=meta, user=user)
-            return 'OK'
+            return jsonify(result='OK')
         except:
-            return 'NOT OK'
+            return jsonify(result='NOT OK')
     return 'Missing Url and Meta'
 
 
