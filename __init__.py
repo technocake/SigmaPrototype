@@ -94,9 +94,10 @@ def logout():
 def post_meta():
     user = session['user']
     json = request.get_json()
-    meta = json.meta
-    url = json.url
-    print (meta, url)
+    
+    meta = json['meta']
+    url = json['url']
+    
     if url and meta:
         # Saves it in the users links file.
         try:
