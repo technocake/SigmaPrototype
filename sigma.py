@@ -73,7 +73,7 @@ def save_link(id, meta, user):
 
     # First, read the list of links from the users link file. 
     try:
-        with codecs.open(linksfile, 'r+') as userfile: 
+        with codecs.open(linksfile, 'rb') as userfile: 
             links = pickle.loads(userfile.read())
     except:
         # If the file does not exist, create an empty list of links.
@@ -81,10 +81,11 @@ def save_link(id, meta, user):
 
     links[id] = meta
 
-    with codecs.open(linksfile, 'w+') as userfile: 
-        userfile.write(pickle.dumps(links))
+    with codecs.open(linksfile, 'wb') as userfile: 
+        pickle.dump(links, userfile) # simpler syntax
+        # userfile.write(pickle.dumps(links, userfile))
 
-
+    return links
 
 
 def get_links(user):
@@ -98,7 +99,7 @@ def get_links(user):
     # Here we should check if file exists with -> os.path.isfile(path)
 
     try:
-        with codecs.open(linksfile) as userfile: 
+        with codecs.open(linksfile, 'rb') as userfile: 
             links = pickle.loads(userfile.read())
     except IOError:
         links = {}
