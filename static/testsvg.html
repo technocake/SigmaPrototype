@@ -9,21 +9,29 @@
 </head>
 <body>
 
-
 	<svg id="s" xmlns="http://www.w3.org/2000/svg"/>
+	</svg>
+
+</body>
+
+<script type="text/javascript">
+	    
+$(document).ready(function(){
 
 
-	<script type="text/javascript">
-		var ww = 0;
-	 	var wh = 0;
+		// GLOBALS
+		var ww;
+	 	var wh;
+	 	var main_topic = 'Games programming';
+	 	var s;
 
+	 	// MISC functions
 		 function updateWwWh(){
 		 	ww = window.innerWidth; 
 			wh = window.innerHeight;
 			console.log('Width: ' + ww + ' Height: ' + wh);
 		}
-		updateWwWh();
-
+		
 	    function makeSVG(tag, attrs) {
 	        var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
 	        for (var k in attrs)
@@ -31,29 +39,105 @@
 	        return el; 
 	    }
 
-	    var s = document.getElementById('s');
-	    s.setAttribute('width', ww);
-	    s.setAttribute('height', wh);
-	    var circle = makeSVG('circle', {id: 'center', cx: ww/2, cy: wh/2, r: 40, stroke: 'black'});	
-	</script>
-
-	</svg>
 
 
+	    // INIT function
+	    function initSVG(map){
 
-</body>
+	    	// Update world width and height
+	    	updateWwWh();
+
+	    	// LOAD/SET SVG global OBJECT
+	    	s = document.getElementById('s');
+	    	s.setAttribute('width', ww);
+	    	s.setAttribute('height', wh);
+
+	    	// console log
+	    	console.log(map);
+
+	    	// Make main node
+	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
+	    	s.appendChild(main_node);
+
+	    	// Variables
+	    	var mnx;           // x and y value of main node
+	    	var mny;           // 
+	    	var radx;		   // radius x and y of sub perimeter
+	    	var rady;          // 
+	    	var sub_coords = [];// 2d array of xy values = [['x1,y1'],['x2,y2'],...]
+	    	var sub_doms = [];
+	    	var alpha;         // holds value of the angle
+	    	var step;          // how much each step changes the angle
+	    	var nowx;		   // Final xy value of every subnode
+	    	var nowy;		   //
+	    	var urlrad;        // radius of url
+	    	var subkeys_array; // Array of key names =['subtopic1', 'subtopic2', ..]
+	    	var urlkeys_array; //					= ['url1', 'url2', ....]
+	    	var subarr_length  // lenght of array
+	    	var urlarr_length  // 
+	    	var subkey;	       // Single key name = 'subtopic'
+	    	var urlkey;        // 				  = 'url'
+	    	var subnode;       // DOM SVG circle element
+	    	var urlnode;       // 
+	    	var i; 			   // counter
+	    	var j;			   //
+
+	    	// Get x and y of main nodes
+	    	mnx = main_node.getAttribute('cx');
+	    	mny = main_node.getAttribute('cy');
+
+	    	// Isolate subtopics, calculate lenght
+	    	subkeys_array = Object.keys(map.subtopics);
+	    	subarr_length = subkeys_array.length;
+
+	    	// Create coordinates of all sub nodes
+	    	step = (2 * Math.PI) / subarr_length;
+
+	    	for (i=0; i < subarr_length; i++){
+
+	    		nowx = parseInt(mnx + (radx * Math.cos(alpha)));
+	    		nowy = parseInt(mny - (rady * Math.cos(alpha)));
+
+	    		sub_coords.push([nowx, nowy]);
+	    		alpha += step;
+	    	};
+
+	    	// Create sub node DOM objects
+	    	console.log('coords: ' + sub_coords);
+	    	i = 0;
+	    	for (xy in sub_coords){
+	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[xy][0], cy: sub_coords[xy][1], r: 4, stroke: 'black'});
+	    		s.appendChild(sub_doms[i]);
+	    		i++;
+	    	};
 
 
 
-<script type="text/javascript">
-	    
-$(document).ready(function(){
 
-});
+	    	// End of function
+	    	console.log('SVG initialized');
+		};
+
+		function updateSVG(){
+			
+		};
+
+	    $.post('/getmap', { main_topic : main_topic }, function(data){
+
+	    	if (data.status === 'Getmap OK'){
+
+		    	initSVG(data.map);
+
+		    } else {
+		    	console.log(data.status);
+		    };
+
+		});
+	});
+
+
 
 </script>
-
-
 
 
 </html>
@@ -62,9 +146,13 @@ $(document).ready(function(){
  	
 
 /*
-http://stackoverflow.com/questions/3642035/jquerys-append-not-working-with-svg-element
 
+2. Its seems that javascript can access SVG elements the same way as any other element.
 
+1. This link thought me how to use javascript in SVG - http://stackoverflow.com/questions/3642035/jquerys-append-not-working-with-svg-element
+
+links: 
+http://www.w3schools.com/svg/svg_circle.asp
 
 */
 
