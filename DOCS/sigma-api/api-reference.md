@@ -1,10 +1,10 @@
 #### Sigma API references
 
-### Knowledge Maps
-## endpoints:
+# Knowledge Maps
+### endpoints:
 
 
-# POST updatemap
+## POST updatemap
 
 ## Description
 updates or creates a map.
@@ -47,7 +47,7 @@ Status code 200, along with a JSON array containing
     POST /updateMap
 
 **Payload**
-    ``` json
+``` json
 {
   "main_topic": "Javascript",
   "subtopic": "arrays",
