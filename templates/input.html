@@ -23,8 +23,8 @@
 			</div>
 
 			<div class="kolonne2">
-				<input class="topicinput maintopic" type="text" placeholder="Main topic"/>
-				<input class="topicinput subtopic" type="text" placeholder="Sub topic"/>
+				<input id="maintopicinput" class="topicinput maintopic" type="text" placeholder="Main topic"/>
+				<input id="subtopicinput" class="topicinput subtopic" type="text" placeholder="Sub topic"/>
 			</div>
 			<div>
 				<img class="plusicon" width="100px" height="100px" 
@@ -281,8 +281,11 @@
 		// building taglist for autocompletion
 		$.get('/tags', function(data){
 			APP.tags = data.tags;
-			$( "#urlinput" ).autocomplete({
-      			source: APP.tags
+			$( "#maintopicinput" ).autocomplete({
+				source: APP.tags
+    		});
+    		$( "#subtopicinput" ).autocomplete({
+				source: APP.tags
     		});
 		});
 	});
