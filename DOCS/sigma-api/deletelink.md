@@ -3,7 +3,7 @@
 ## POST deletelink
 
 ## Description
-updates a subtopic in a map.
+Deletes a url attached to a subtopic in a map.
 
 ***
 
