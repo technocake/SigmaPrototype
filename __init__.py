@@ -97,10 +97,6 @@ def maps():
     user = session['user']
     maps = sigma.get_maps(user).values()
     
-    # adding the url pointing to each map, using url_for
-    # (not implemented yet)
-    
-    
     return render_template('maps.html', maps=maps)
 
 
@@ -109,7 +105,7 @@ def maps():
 def show_map(user, mapid):
     # the url is built with user added to it to
     # be ready for the future when we might dare to
-    # share our maps. 
+    # share our maps.
     user = session['user']
     the_map = sigma.get_map(user, mapid)
     if the_map is None:
@@ -163,9 +159,9 @@ def get_map():
 
     try:
         mapid = request.form.get('main_topic', None)
-        le_map = sigma.get_map(user, mapid) 
+        the_map = sigma.get_map(user, mapid) 
 
-        return jsonify(status='Getmap OK: mapid: ' + mapid, le_map=le_map)
+        return jsonify(status='Getmap OK: mapid: ' + mapid, le_map=the_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str())

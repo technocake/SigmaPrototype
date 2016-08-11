@@ -162,8 +162,13 @@ def save_map(user, mapid, the_map):
     """
     mapsfile = secure_filename('%s.maps'%(user))
     maps = get_maps(user)
+
+    for k,v in maps.items():
+        mapdict = v.__dict__
+        print("mapdict",mapdict)
+        maps[k] = mapdict
     maps[mapid] = the_map.__dict__
-    print( the_map.subtopics )
+
     with codecs.open(mapsfile, 'wb') as userfile: 
         pickle.dump(maps, userfile) 
 
@@ -172,16 +177,9 @@ def get_map(user, mapid):
     """
         Retrieves a requested map
     """
-    mapsfile = secure_filename('%s.maps'%(user))
-    try:
-        with codecs.open(mapsfile, 'rb') as userfile: 
-            maps = pickle.loads(userfile.read())
-            mapdict = maps.get(mapid, None)
-            the_map = KnowledgeMap()
-            the_map.__dict__ = mapdict
-            # If the file does not exist, create an empty list of links.
-    except:
-        the_map = None
+
+    maps = get_maps(user)
+    the_map = maps.get(mapid, None)
     return the_map
 
 
@@ -200,9 +198,10 @@ def get_maps(user):
             maps = {}
             for k,v in dict_maps.items():
                 the_map = KnowledgeMap()
+                print( v )
                 the_map.__dict__ = v
                 maps[k] = the_map
-    except:
+    except Exception as e:
         # If the file does not exist, create an empty list of links.
         maps = {}
     return maps
@@ -367,6 +366,7 @@ if __name__ == '__main__':
     our_first_map = KnowledgeMap('Python', "basic python mind map")
     map_id = our_first_map.main_topic
     save_map("technocake", map_id, our_first_map)
+    print(map_id, our_first_map.__dict__)
     
     our_second_map = KnowledgeMap('Java', "basic Java mind map")
     map_id = our_second_map.main_topic
