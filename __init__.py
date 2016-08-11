@@ -172,7 +172,7 @@ def get_map():
 @app.route('/postmap', methods=['POST'])
 @login_required
 def post_map():
-
+    # Not sure if this is used.
     user = session['user']
 
     try:
@@ -183,6 +183,27 @@ def post_map():
         return jsonify(status='Postmap OK')
     except Exception as e:
         return jsonify(status='Postmap error:' + str())
+
+
+
+@app.route('/updatemap', methods=['POST'])
+@login_required
+def update_map():
+
+    user = session['user']
+
+    try:
+        # required params
+        main_topic = json['main_topic']
+        subtopic = json['subtopic']
+        # optional params
+        url = json.get('url', None)
+        # saving
+        new = sigma.update_map(user, main_topic, subtopic, url)
+        return jsonify(status='OK', new=new)
+    except Exception as e:
+        return jsonify(status='NOT OK', error=str(e))
+
 
 
 
