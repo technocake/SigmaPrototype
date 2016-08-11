@@ -135,6 +135,10 @@
 		APP.$metainfo.hide();
 	};
 
+	function redBorderAnimate(){
+
+	}
+
 	// --- AJAX request functions ---
 
 	function postMeta(){	
@@ -142,8 +146,9 @@
 		postMeta() blir trigget av en onclick=""-event 
 		 på class="plusicon".
 		
-		Denne funksjonen reagerer på 4 måter:
-
+		Denne funksjonen reagerer på 5 måter:
+		
+		0 - Skjekke om begge input-feltene for maintopic og subtopic er utfylt.
 		1 - sende en /postmeta med metainformasjon om urlen inkl url.
 		2 - sende en /updatemap med maintopic og subtopic + url.
 		3 - clear input område for å signaliserer at url-en har blitt submitted.
@@ -158,8 +163,10 @@
 		// First of all, check if both topic-fields have a value.
 
 		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
+			console.log('Fill in both topic fields.');
+			APP.$maintop.attr('placeholder', 'Required field');
+			APP.$subtop.attr('placeholder', 'Required field');
 
-			console.log('Fill in both topic fields.')
 			return 0;
 		}
 
@@ -207,6 +214,8 @@
 	};
 
 	function getMeta(iurl){
+
+
 		var title;
 
 		// Reset page if url is empty

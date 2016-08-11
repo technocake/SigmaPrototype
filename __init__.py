@@ -137,6 +137,8 @@ def post_user():
 @app.route('/postmeta', methods=['POST'])
 @login_required
 def post_meta():
+    # POSTparamter is json = {url: '', meta : {<object>metainfo}}
+    
     user = session['user']
     json = request.get_json()
 
@@ -172,6 +174,7 @@ def get_map():
 @app.route('/updatemap', methods=['POST'])
 @login_required
 def update_map():
+    # POSTparamter is json = {url: '', main_topic: '', subtopic: ''}
 
     user = session['user']
     json = request.get_json()
