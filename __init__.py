@@ -189,6 +189,27 @@ def update_map():
     except Exception as e:
         return jsonify(status='Updatemap error:' + str(e))
 
+@app.route('/updatemap', methods=['POST'])
+@login_required
+def update_map():
+
+    user = session['user']
+
+    try:
+        # required params
+        main_topic = json['main_topic']
+        subtopic = json['subtopic']
+        # optional params
+        url = json.get('url', None)
+        # saving
+        new = sigma.update_map(user, main_topic, subtopic, url)
+        return jsonify(status='OK', new=new)
+    except Exception as e:
+        return jsonify(status='NOT OK', error=str(e))
+
+
+
+
 
 @app.route('/fetchtitle', methods=['POST'])
 @login_required

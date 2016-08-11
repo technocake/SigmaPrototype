@@ -137,25 +137,30 @@ def fetch_meta(url, filter=None):
     return link
 
 
+def update_map(user, main_topic, subtopic, url=None):
+    """
+        Updates and or creates a Knowledge map with id <main_topic>
+        returns true if a map was created, false if not.
+    """
+    # does the knowledge map exists?
+    maps = get_maps(user)
+    new = main_topic not in maps.keys()
+    
+    the_map = get_map(user, main_topic)
+    the_map.update(subtopic, url)
+
+    save_map(user, main_topic, the_map)
+    return new
+
+
+
 def save_map(user, mapid, the_map):
     """
         Saves a knowledgemap
     """
-
-    # strips hacker attempts away from input. 
     mapsfile = secure_filename('%s.maps'%(user))
-    
-
-    # First, read the list of links from the users link file. 
-    try:
-        with codecs.open(mapsfile, 'rb') as userfile: 
-            maps = pickle.loads(userfile.read())
-    except:
-        # If the file does not exist, create an empty list of links.
-        maps = {}
-
+    maps = get_maps(user)
     maps[mapid] = the_map.__dict__
-
     with codecs.open(mapsfile, 'wb') as userfile: 
         pickle.dump(maps, userfile) # simpler syntax
         # userfile.write(pickle.dumps(links, userfile))
@@ -310,7 +315,21 @@ class KnowledgeMap():
     def __init__(self, main_topic=None, description=None):
         self.main_topic = main_topic
         self.description = description
-        self.subtopics = [] # expects a list of Topic instances
+        self.subtopics = {} # expects a list of Topic instances
+
+    def update(self, subtopic, url=None):
+        """ 
+            Adds or updates a subtopic node
+            optional url associated with subtopic.
+        """
+        if subtopic in self.subtopics.keys():
+            links = self.subtopics[subtopic]
+        else:
+            links = {}
+        if url is not None:
+            links[url] = url
+        self.subtopics[subtopic] = links
+
 
 
 class Topic():
@@ -352,13 +371,15 @@ if __name__ == '__main__':
 
 
     # Get it back
-    the_first_map = get_map("technocake", map_id)
-    print (the_first_map)
     
+    
+    our_first_map.update('functions', "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html")
 
     # Get all maps
     print( get_maps("technocake"))
     
+
+
     # link meta testing
     #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
     #print( link.title )
