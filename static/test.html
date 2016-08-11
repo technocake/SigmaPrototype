@@ -15,23 +15,23 @@
 
 <script type="text/javascript">
 
-
+	var the_map;
 
 	function processMap(topic){
 
 		var map = {};
 
 		$.post('/getmap', {main_topic : topic}, function(data){
-			
 			console.log(data.status)
 			map = data.map;
-			console.log(data.map);
+			console.log(data.map);             // prints a perfect JSON object.
+			console.log(data.map['subtopic']); // prints undefined
 		});
-
 		return map;
 	};
 
 	the_map = processMap('Games programming');
+
 
 	/* -------------------------------- */
 
@@ -176,8 +176,6 @@
 
 
 	var repr_map = function (){
-
-		console.log(the_map['main_topic']);
 		var prects = perimeter_rects(rect1.x, rect1.y, rect1.radx, rect1.rady, 2);
 	};
 
