@@ -174,16 +174,17 @@ def get_map():
 def update_map():
 
     user = session['user']
+    json = request.get_json()
 
     try:
         url = json['url']
-        main = json['main']
-        sub = json['sub']
+        main = json['main_topic']
+        sub = json['subtopic']
 
         sigma.update_map(user, mapid, le_map)
-        return jsonify(status='Postmap OK')
+        return jsonify(status='Updatemap OK')
     except Exception as e:
-        return jsonify(status='Postmap error:' + str())
+        return jsonify(status='Updatemap error:' + str(e))
 
 
 @app.route('/fetchtitle', methods=['POST'])

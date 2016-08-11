@@ -144,7 +144,7 @@
 		
 		Denne funksjonen reagerer på 4 måter:
 
-		1 - sende en /postmeta med metainformasjon om urlen + urlen.
+		1 - sende en /postmeta med metainformasjon om urlen inkl url.
 		2 - sende en /updatemap med maintopic og subtopic + url.
 		3 - clear input område for å signaliserer at url-en har blitt submitted.
 		4 - update liste med urler slik at den nye url-en dukker opp i listen.
@@ -154,6 +154,14 @@
 		Det er for å være sikker på at url-en som blir lagret i map-modellen
 		 allerede finnes i url-databasen.
 		----------------------------------------------------- jonas --- */
+
+		// First of all, check if both topic-fields have a value.
+
+		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
+
+			console.log('Fill in both topic fields.')
+			return 0;
+		}
 
 		var json_meta = {
 			url : APP.old_url, 
