@@ -164,7 +164,7 @@ def get_map():
         return jsonify(status='Getmap OK: mapid: ' + mapid, map=the_map.__dict__)
 
     except Exception as e:
-        return jsonify(status='Getmap error:' + str())
+        return jsonify(status='Getmap error:' + str(e))
 
 
 @app.route('/updatemap', methods=['POST'])
