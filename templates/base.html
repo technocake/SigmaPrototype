@@ -15,7 +15,9 @@
 <body>
 	{% block body %}
 
+		<h2>Good day, {{ session['user'] }}!</h2>
 		<a href="/inputurl"><h2>Input</h2></a>
+		<a href="/maps"><h2>Maps</h2></a>
 		<a href="/logout"><h2>Logout</h2></a>
 
 	{% endblock %}

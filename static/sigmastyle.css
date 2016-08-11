@@ -78,11 +78,17 @@ a:hover {
 /* rules for maps.html */
 ol.maps-list {
  	/* the list of maps. */
+ 	display:flex;
+ 	flex-wrap: wrap;
 }
 
 .maps-list li {
 	display: inline-block;
 	border: 1px solid black;
+	min-width: 120px;
+	margin: 5px;
+	padding: 5px;
+	text-align: center;
 }
 
 .map-thumbnail h3 {
