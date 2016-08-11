@@ -163,28 +163,28 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         le_map = sigma.get_map(user, mapid) 
 
-        return jsonify(status='Getmap OK', le_map=le_map)
+        return jsonify(status='Getmap OK: mapid: ' + mapid, le_map=le_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str())
 
 
-@app.route('/postmap', methods=['POST'])
+@app.route('/updatemap', methods=['POST'])
 @login_required
-def post_map():
+def update_map():
 
     user = session['user']
+    json = request.get_json()
 
     try:
-        le_map = json['le_map']
-        mapid = json['main']
+        url = json['url']
+        main = json['main_topic']
+        sub = json['subtopic']
 
-        sigma.save_map(user, mapid, le_map)
-        return jsonify(status='Postmap OK')
+        sigma.update_map(user, mapid, le_map)
+        return jsonify(status='Updatemap OK')
     except Exception as e:
-        return jsonify(status='Postmap error:' + str())
-
-
+        return jsonify(status='Updatemap error:' + str(e))
 
 
 @app.route('/fetchtitle', methods=['POST'])

@@ -137,22 +137,44 @@
 
 	// --- AJAX request functions ---
 
-	function postMeta(){
-		// Debug
-		//console.log('Url:' + APP.old_url+'Meta:'+ JSON.stringify(APP.meta));
+	function postMeta(){	
+	/*
+		postMeta() blir trigget av en onclick=""-event 
+		 på class="plusicon".
 		
+		Denne funksjonen reagerer på 4 måter:
 
-		var json_meta = {
-			 'url' : APP.old_url, 
-			 'meta' : APP.meta 
-		};
+		1 - sende en /postmeta med metainformasjon om urlen inkl url.
+		2 - sende en /updatemap med maintopic og subtopic + url.
+		3 - clear input område for å signaliserer at url-en har blitt submitted.
+		4 - update liste med urler slik at den nye url-en dukker opp i listen.
 
-		var topics = {
-			le_map : [],
-			main : APP.$maintop.val(),
-			sub : APP.$subtop.val()
+		Det er viktig at post1 skjer først, deretter post2, 
+		 men bare dersom post1 lyktes.
+		Det er for å være sikker på at url-en som blir lagret i map-modellen
+		 allerede finnes i url-databasen.
+		----------------------------------------------------- jonas --- */
+
+		// First of all, check if both topic-fields have a value.
+
+		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
+
+			console.log('Fill in both topic fields.')
+			return 0;
 		}
 
+		var json_meta = {
+			url : APP.old_url, 
+			meta : APP.meta 
+		};
+
+		var json_topics = {
+			url : APP.old_url,
+			main_topic : APP.$maintop.val(),
+			subtopic : APP.$subtop.val()
+		};
+
+		// Post 1 
 		$.ajax('/postmeta', {
 			data : JSON.stringify(json_meta),
 			contentType : 'application/json',
@@ -160,32 +182,25 @@
 			success: function(data){ 
 				console.log(data.status);
 				APP.links = data.links;
+
 				resetInput();
 				APP.$tbody.html('');
 				constructTable();
+
+				// Post 2 
+				$.ajax('/updatemap', {
+					data : JSON.stringify(json_topics),
+					contentType : 'application/json',
+					type : 'POST',
+					success : function(data){
+						console.log(data.status);
+						},
+					error : function(data){
+						console.log('Status:'+data.status); 
+					}
+				});
 			},
-			error : function(xhr){ console.log(xhr.status);}
-			});
-
-		$.post('/getmap', { 'main_topic' : topics.main }, 
-
-			function(data){
-				console.log(data.status);
-
-				topics.le_map = data.le_map;
-				console.log('Map-->: ' + topics.le_map);
-
-				}
-			);
-
-		$.ajax('/postmap', {
-			data : JSON.stringify(topics),
-			contentType : 'application/json',
-			type : 'POST',
-			success : function(data){
-				console.log(data.status);
-			},
-			error : function(xhr){
+			error : function(xhr){ 
 				console.log(xhr.status);
 			}
 		});
