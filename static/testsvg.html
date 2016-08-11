@@ -12,8 +12,17 @@
 
 	<svg id="s" xmlns="http://www.w3.org/2000/svg"/>
 
+
 	<script type="text/javascript">
-	     
+		var ww = 0;
+	 	var wh = 0;
+
+		 function updateWwWh(){
+		 	ww = window.innerWidth; 
+			wh = window.innerHeight;
+			console.log('Width: ' + ww + ' Height: ' + wh);
+		}
+		updateWwWh();
 
 	    function makeSVG(tag, attrs) {
 	        var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -23,21 +32,29 @@
 	    }
 
 	    var s = document.getElementById('s');
-	    var circle = makeSVG('circle', )	
-
-
-
-
-
-
-
+	    s.setAttribute('width', ww);
+	    s.setAttribute('height', wh);
+	    var circle = makeSVG('circle', {id: 'center', cx: ww/2, cy: wh/2, r: 40, stroke: 'black'});	
 	</script>
-
 
 	</svg>
 
 
+
 </body>
+
+
+
+<script type="text/javascript">
+	    
+$(document).ready(function(){
+
+});
+
+</script>
+
+
+
 
 </html>
 
