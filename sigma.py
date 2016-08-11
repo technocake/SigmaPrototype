@@ -143,12 +143,14 @@ def update_map(user, main_topic, subtopic, url=None):
         returns true if a map was created, false if not.
     """
     # does the knowledge map exists?
-    maps = get_maps(user)
-    new = main_topic not in maps.keys()
-    
+    new = False
     the_map = get_map(user, main_topic)
-    the_map.update(subtopic, url)
 
+    if the_map is None:
+        the_map = KnowledgeMap(main_topic)
+        new = True
+
+    the_map.update(subtopic, url)
     save_map(user, main_topic, the_map)
     return new
 
@@ -161,9 +163,9 @@ def save_map(user, mapid, the_map):
     mapsfile = secure_filename('%s.maps'%(user))
     maps = get_maps(user)
     maps[mapid] = the_map.__dict__
+    print( the_map.subtopics )
     with codecs.open(mapsfile, 'wb') as userfile: 
-        pickle.dump(maps, userfile) # simpler syntax
-        # userfile.write(pickle.dumps(links, userfile))
+        pickle.dump(maps, userfile) 
 
 
 def get_map(user, mapid):
@@ -317,6 +319,7 @@ class KnowledgeMap():
         self.description = description
         self.subtopics = {} # expects a list of Topic instances
 
+
     def update(self, subtopic, url=None):
         """ 
             Adds or updates a subtopic node
@@ -375,6 +378,9 @@ if __name__ == '__main__':
     
     our_first_map.update('functions', "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html")
 
+    update_map("technocake", "Python", "functions", "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html") 
+
+    update_map("technocake", "Python", "functions", "http://www.cse.msu.edu/~cse231/Online/functions.html")
     # Get all maps
     print( get_maps("technocake"))
     
