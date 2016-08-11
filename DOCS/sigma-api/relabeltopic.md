@@ -1,6 +1,6 @@
 
 
-## POST relabel
+## POST relabeltopic
 
 ## Description
 updates a subtopic in a map.
@@ -39,7 +39,7 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    POST /relabel
+    POST /relabeltopic
 
 **Payload**
 ``` json
