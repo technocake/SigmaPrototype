@@ -143,16 +143,17 @@
 		
 
 		var json_meta = {
-			 'url' : APP.old_url, 
-			 'meta' : APP.meta 
+			url : APP.old_url, 
+			meta : APP.meta 
 		};
 
 		var topics = {
-			le_map : [],
+			url : APP.old_url,
 			main : APP.$maintop.val(),
 			sub : APP.$subtop.val()
-		}
+		};
 
+	// Trinn 1 
 		$.ajax('/postmeta', {
 			data : JSON.stringify(json_meta),
 			contentType : 'application/json',
@@ -163,32 +164,23 @@
 				resetInput();
 				APP.$tbody.html('');
 				constructTable();
+
+				$.ajax('/updatemap', {
+					data : JSON.stringify(topics),
+					contentType : 'application/json',
+					type : 'POST',
+					success : function(data){
+						console.log(data.status);
+					},
+					error : function(xhr){
+						console.log(xhr.status);
+					}
+				});
 			},
 			error : function(xhr){ console.log(xhr.status);}
-			});
-
-		$.post('/getmap', { 'main_topic' : topics.main }, 
-
-			function(data){
-				console.log(data.status);
-
-				topics.le_map = data.le_map;
-				console.log('Map-->: ' + topics.le_map);
-
-				}
-			);
-
-		$.ajax('/postmap', {
-			data : JSON.stringify(topics),
-			contentType : 'application/json',
-			type : 'POST',
-			success : function(data){
-				console.log(data.status);
-			},
-			error : function(xhr){
-				console.log(xhr.status);
-			}
 		});
+
+
 	};
 
 	function getMeta(iurl){
