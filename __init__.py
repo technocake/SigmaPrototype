@@ -186,8 +186,6 @@ def update_map():
         return jsonify(status='Postmap error:' + str())
 
 
-
-
 @app.route('/fetchtitle', methods=['POST'])
 @login_required
 def fetch_title():
