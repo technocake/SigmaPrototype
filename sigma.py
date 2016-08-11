@@ -254,8 +254,23 @@ def fetch_title(url):
 
 
 
+#########   -----   TAGS ------ ##############
 
 
+def get_tags(user):
+    maps = get_maps(user)
+    links = get_links(user)
+    tags = []
+
+    for the_map in maps.values():
+        tags.append(the_map.main_topic)
+        for topic in the_map.subtopics.keys():
+            tags.append(topic)
+
+    for linkmeta in links:
+        pass #tags.append(linkmeta.title) utf-8 not json serializable...
+    return tags
+    
 
 ########################################
 #   CLASSES

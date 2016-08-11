@@ -203,6 +203,22 @@ def relabel_topic():
         return jsonify(status='NOT OK', error="error: " + str(e))
 
 
+
+######  -----   TAGS    -----   #######
+
+@app.route('/tags', methods=['GET'])
+@login_required
+def get_tags():
+    user = session['user']
+    try:
+        tags = sigma.get_tags(user)
+        return jsonify(status='OK', tags=tags)
+    except Exception as e:
+        return jsonify(status='NOT OK', error="error: " + str(e))
+
+
+
+
 @app.route('/deletelink', methods=['POST'])
 @login_required
 def delete_link():
@@ -302,7 +318,7 @@ def fetch_links():
         links = sigma.get_links(user)
         return jsonify(links=links, status='OK')
     except Exception as e:
-        return jsonify(status='Not OK - ' + str(e))
+        return jsonify(status='Not OK - ', error="error: " + str(e))
 
 # ------------------------------------------------ #
 # ------------------- LAST ROUTE ----------------- #
