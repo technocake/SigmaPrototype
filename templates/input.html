@@ -4,7 +4,7 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput urlinput" type="text" placeholder="url __" 
+		<input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
 				onfocus="onfocusHandler(this)" 
 				onblur="onblurHandler(this)" 
 				onkeyup="getMeta(this.value)" 
@@ -276,6 +276,14 @@
 			console.log('Status:' + data.status)
 			APP.links = data.links;
 			constructTable();
+		});
+
+		// building taglist for autocompletion
+		$.get('/tags', function(data){
+			APP.tags = data.tags;
+			$( "#urlinput" ).autocomplete({
+      			source: APP.tags
+    		});
 		});
 	});
 
