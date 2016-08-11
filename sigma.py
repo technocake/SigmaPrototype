@@ -207,6 +207,21 @@ def get_maps(user):
     return maps
 
 
+
+
+def relabel_topic(user, map_id, old_topic_text, new_topic_text):
+    """
+        Renames a subtopic text in a  Knowledge map with id <map_id>
+        throws KeyError if map or subtopic doesnt exist.
+    """
+    the_map = get_map(user, map_id)
+    links = the_map.subtopics.pop(old_topic_text)
+    the_map.subtopics[new_topic_text] = links
+    save_map(user, map_id, the_map)
+
+
+
+
 def fetch_title(url):
     """ 
             Responsible for retrieveing the  title of a url. 
@@ -225,6 +240,10 @@ def fetch_title(url):
     else:
         title=""
     return title
+
+
+
+
 
 
 ########################################
@@ -381,6 +400,11 @@ if __name__ == '__main__':
     update_map("technocake", "Python", "functions", "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html") 
 
     update_map("technocake", "Python", "functions", "http://www.cse.msu.edu/~cse231/Online/functions.html")
+
+
+    relabel_topic("technocake", "Python", "functions", "methods")
+    python = get_map("technocake", "Python")
+    print (python.subtopics["methods"])    
     # Get all maps
     print( get_maps("technocake"))
     

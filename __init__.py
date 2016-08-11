@@ -161,7 +161,7 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         the_map = sigma.get_map(user, mapid) 
 
-        return jsonify(status='Getmap OK: mapid: ' + mapid, le_map=the_map)
+        return jsonify(status='Getmap OK: mapid: ' + mapid, map=the_map.__dict__)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str())
@@ -184,6 +184,25 @@ def update_map():
         return jsonify(status='Updatemap OK', new=new)
     except Exception as e:
         return jsonify(status='Updatemap error:' + str(e))
+
+
+@app.route('/relabeltopic', methods=['POST'])
+@login_required
+def relabel_topic():
+    # POSTparamter is json = {url: '', main_topic: '', subtopic: ''}
+
+    user = session['user']
+    json = request.get_json()
+
+    try:
+        map_id = json.get('map_id', None)
+        old_topic = json['old']
+        new_topic = json['new']
+
+        sigma.relabel_topic(user, map_id, old, new)
+        return jsonify(status='OK')
+    except Exception as e:
+        return jsonify(status='NOT OK', error="error: " + str(e))
 
 
 
