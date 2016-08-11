@@ -115,7 +115,7 @@ def show_map(user, mapid):
     if the_map is None:
         return "There is no map with this main_topic"
     #the_map = sigma.KnowledgeMap("Python", "flask")
-    return the_map.main_topic
+    return render_template('map.html', map=the_map)
  
 
 # --------- FORM POST request ROUTES -----------------
