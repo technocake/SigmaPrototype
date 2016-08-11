@@ -135,10 +135,6 @@
 		APP.$metainfo.hide();
 	};
 
-	function redBorderAnimate(){
-
-	}
-
 	// --- AJAX request functions ---
 
 	function postMeta(){	
@@ -161,14 +157,14 @@
 		----------------------------------------------------- jonas --- */
 
 		// First of all, check if both topic-fields have a value.
+		// Display necesarry alerts to the user.
 
 		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
 			console.log('Fill in both topic fields.');
 			APP.$maintop.attr('placeholder', 'Required field');
 			APP.$subtop.attr('placeholder', 'Required field');
-
 			return 0;
-		}
+		};
 
 		var json_meta = {
 			url : APP.old_url, 
