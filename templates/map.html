@@ -14,7 +14,8 @@
 			<ol>
 				{% for link in map.subtopics[subtopic] %}
 				<li>
-					{{ link }}
+					<a href="{{ link }}"> {{link}} </a>
+				</li>
 				{% endfor %}
 			</ol>
 		</li>
