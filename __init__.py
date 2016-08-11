@@ -184,7 +184,7 @@ def update_map():
         main_topic = json['main_topic']
         subtopic = json['subtopic']
 
-        sigma.update_map(user, main_topic, subtopic, url)
+        new = sigma.update_map(user, main_topic, subtopic, url)
         return jsonify(status='Updatemap OK', new=new)
     except Exception as e:
         return jsonify(status='Updatemap error:' + str(e))
