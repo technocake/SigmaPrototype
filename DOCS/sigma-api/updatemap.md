@@ -1,9 +1,7 @@
-
-
-## POST relabel
+## POST updatemap
 
 ## Description
-updates a subtopic in a map.
+updates or creates a map.
 
 ***
 
@@ -16,17 +14,18 @@ updates a subtopic in a map.
 Essential information:
 
 
-- **map_id** — The id of the map (main topic).
-- **old** — the old subtopic text.
-- **new** — the new subtopic text.
+- **main_topic** — The main topic of the map. 
+- **subtopic** — a new or old subtopic of the map. 
 
 ### Optional attributes:
+- **url** — optional url associated with this subtopic.
 
 ***
 
 ## Return format
 Status code 200, along with a JSON array containing 
 - **status** — Either OK or NOT OK
+- **new** — true if a new map was created. 
 
 ***
 
@@ -39,14 +38,14 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    POST /relabel
+    POST /updatemap
 
 **Payload**
 ``` json
 {
-  "map_id": "Javascript",
-  "old": "arrays",
-  "new": "array methods"
+  "main_topic": "Javascript",
+  "subtopic": "arrays",
+  "url": "http://example.com/arrays/push"
 }
 ```
 
@@ -55,5 +54,7 @@ Status code 200, along with a JSON array containing
 ``` json
 {
   "status": "OK",
+  "new": true
 }
 ```
+
