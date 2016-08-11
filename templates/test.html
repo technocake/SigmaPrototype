@@ -25,45 +25,35 @@
 	var c = document.getElementById('canvas');
 	var ctx = c.getContext('2d');
 
-	c.style.backgroundColor = "#dfeff5";
+	//c.style.backgroundColor = "#dfeff5";
 	c.setAttribute('width', cst.C_WIDTH);
 	c.setAttribute('height', cst.C_HEIGHT);
 
-
 	// Functional objects
-
-	var shape = function(spec){
-		// spec = {x: '', y: ''}
-
-		var that = {} // init self
-
-		// Public vars
-		that.x = spec.x
-		that.y = spec.y;
-
-		return that;
-	};
 
 	
 	var rect_node = function(spec){
 		// spec = {width: '', height: ''}
 
 		// Inherit from shape
-		var that = shape({x:cst.C_CENTER_X, y:cst.C_CENTER_Y}) 
+		var that = {}; 
 
 		// Private vars
-		var startx = 0; 
-		var starty = 0;
+		var startx;
+		var starty;
 
 		// Public vars
+		that.x = spec.x;
+		that.y = spec.y
 		that.width = spec.width;
 		that.height = spec.height;
-		that.radius = spec.radius;
+		that.radx = spec.radx;
+		that.rady = spec.rady;
 
 		// Private method
-		setDrawstart = function(){
-			startx = parseInt(that.x - (that.width /2)) 
-			starty = parseInt(that.y - (that.height /2))
+		var setDrawstart = function(){
+			startx = parseInt(that.x - (that.width / 2)); 
+			starty = parseInt(that.y - (that.height / 2));
 		};
 
 		// Public methods
@@ -77,24 +67,33 @@
 		};
 
 		// Private
-		draw_rect = function(){
+		that.draw_rect = function(){
 			setDrawstart();
 			// ctx.rect(x, y, width, height);
 			ctx.rect(startx, starty, that.width, that.height);
 		};
 
-		draw_perim = function(){
+		var draw_perim = function(){
 			// ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
 			// ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-			ctx.ellipse(that.x, that.y, that.radius, that.radius-150, 0, 0, 360)
+			ctx.ellipse(that.x, that.y, that.radx, that.rady, 0, 0, 360)
 		}
+
+		that.heading = function(text){
+
+			ctx.font = "10px Arial";
+			console.log('starts: '+ startx + starty)
+			ctx.fillText(text, startx + 20, that.y - 20);
+		};
 
 		// Public
 		that.draw = function(){
 
 			ctx.beginPath();
-			draw_rect();
+			that.draw_rect();
 			ctx.stroke();
+
+			that.heading("Hello world!");
 
 			ctx.beginPath();
 			draw_perim();
@@ -105,21 +104,62 @@
 	};
 
 
-	var perimeter_rect = function(spec){
+	var perimeter_rects = function(centx, centy, radx, rady, num){
 
-		return 0;
+		var perim_shapes = [];
+		var alpha = 0;
+		var step = (2 * Math.PI) / num;
+
+		var nowx;
+		var nowy;
+
+		for (var i=0; i<num; i++){
+
+			nowx = parseInt(centx + (radx * Math.cos(alpha)));
+			nowy = parseInt(centy - (rady * Math.sin(alpha)));
+			console.log(i+': alpha: '+ alpha + ' x= '+nowx +  ' y= '+nowy);
+
+			perim_shapes.push(rect_node({
+								x:nowx,
+								y:nowy,
+								width:40,
+								height:30, 
+								radx:40, 
+								rady:30, 
+								}));
+
+			alpha += step;
+
+		};
+		
+		console.log(perim_shapes);
+		for(shape in perim_shapes){
+			perim_shapes[shape].draw();
+		};
+
+		return perim_shapes;
 	};
 
 
 	// Init objects
 
-	var rect1 = rect_node({ width:150, height:100, radius: 400 });
+	var rect1 = rect_node({ x:cst.C_CENTER_X, 
+							y:cst.C_CENTER_Y,
+							width:150, 
+							height:100, 
+							radx: 300, 
+							rady: 150, 
+						 });
+
 	rect1.draw();
+	rect1.printData();
 
-	setInterval(function(){
-		console.log('She runs');
+	prects = perimeter_rects(rect1.x, rect1.y, rect1.radx, rect1.rady, 3);
 
-	}, 1000/cst.FPS);
+	//setInterval(function(){
+	//	console.log('She runs');
+
+	//}, 1000/cst.FPS);
 
 
 </script>
