@@ -53,7 +53,7 @@ Status code 200, along with a JSON array containing
   "subtopic": "arrays",
   "url": "http://example.com/arrays/push"
 }
-
+```
 
 
 **Return**
