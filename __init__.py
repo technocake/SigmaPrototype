@@ -180,34 +180,14 @@ def update_map():
     json = request.get_json()
 
     try:
-        url = json['url']
-        main = json['main_topic']
-        sub = json['subtopic']
-
-        sigma.update_map(user, mapid, le_map)
-        return jsonify(status='Updatemap OK')
-    except Exception as e:
-        return jsonify(status='Updatemap error:' + str(e))
-
-@app.route('/updatemap', methods=['POST'])
-@login_required
-def update_map():
-
-    user = session['user']
-
-    try:
-        # required params
+        url = json.get('url', None)
         main_topic = json['main_topic']
         subtopic = json['subtopic']
-        # optional params
-        url = json.get('url', None)
-        # saving
-        new = sigma.update_map(user, main_topic, subtopic, url)
-        return jsonify(status='OK', new=new)
+
+        sigma.update_map(user, main_topic, subtopic, url)
+        return jsonify(status='Updatemap OK', new=new)
     except Exception as e:
-        return jsonify(status='NOT OK', error=str(e))
-
-
+        return jsonify(status='Updatemap error:' + str(e))
 
 
 
