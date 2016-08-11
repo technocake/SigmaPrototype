@@ -44,7 +44,7 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    POST /updateMap
+    POST /updatemap
 
 **Payload**
 ``` json
