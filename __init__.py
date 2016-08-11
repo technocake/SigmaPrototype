@@ -174,7 +174,7 @@ def update_map():
 
     user = session['user']
     json = request.get_json()
-
+ 
     try:
         url = json.get('url', None)
         main_topic = json['main_topic']
@@ -189,8 +189,6 @@ def update_map():
 @app.route('/relabeltopic', methods=['POST'])
 @login_required
 def relabel_topic():
-    # POSTparamter is json = {url: '', main_topic: '', subtopic: ''}
-
     user = session['user']
     json = request.get_json()
 
@@ -203,6 +201,28 @@ def relabel_topic():
         return jsonify(status='OK')
     except Exception as e:
         return jsonify(status='NOT OK', error="error: " + str(e))
+
+
+@app.route('/deletelink', methods=['POST'])
+@login_required
+def delete_link():
+    """
+        Deletes a link from a a map, at a given subtopic node.
+    """
+
+    user = session['user']
+    json = request.get_json()
+
+    try:
+        map_id = json.get('map_id', None)
+        subtopic = json['subtopic']
+        url = json['url']
+
+        sigma.delete_link(user, map_id, subtopic, url)
+        return jsonify(status='OK')
+    except Exception as e:
+        return jsonify(status='NOT OK', error="error: " + str(e))
+
 
 
 

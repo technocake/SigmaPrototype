@@ -106,6 +106,10 @@ def get_links(user):
     return links
 
 
+
+
+
+
 def fetch_meta(url, filter=None):
     """ 
             Responsible for scraping all the metadata from a given url.
@@ -165,7 +169,6 @@ def save_map(user, mapid, the_map):
 
     for k,v in maps.items():
         mapdict = v.__dict__
-        print("mapdict",mapdict)
         maps[k] = mapdict
     maps[mapid] = the_map.__dict__
 
@@ -198,7 +201,6 @@ def get_maps(user):
             maps = {}
             for k,v in dict_maps.items():
                 the_map = KnowledgeMap()
-                print( v )
                 the_map.__dict__ = v
                 maps[k] = the_map
     except Exception as e:
@@ -220,12 +222,21 @@ def relabel_topic(user, map_id, old_topic_text, new_topic_text):
     save_map(user, map_id, the_map)
 
 
+def delete_link(user, mapid, subtopic, url): #in context of a map.
+    """ 
+        Deletes a link from a map at the given subtopic node.
+    """
+    the_map = get_map(user, mapid)
+    links = the_map.subtopics[subtopic]
+    links.pop(url)
+    the_map.subtopics[subtopic] = links
+    save_map(user, mapid, the_map)
 
 
 def fetch_title(url):
     """ 
-            Responsible for retrieveing the  title of a url. 
-            based on graph.py.
+        Responsible for retrieveing the  title of a url. 
+        based on graph.py.
     """
     # validate url.
     if "http" not in url or len(url) <= 11:
@@ -385,7 +396,7 @@ if __name__ == '__main__':
     our_first_map = KnowledgeMap('Python', "basic python mind map")
     map_id = our_first_map.main_topic
     save_map("technocake", map_id, our_first_map)
-    print(map_id, our_first_map.__dict__)
+   # print(map_id, our_first_map.__dict__)
     
     our_second_map = KnowledgeMap('Java', "basic Java mind map")
     map_id = our_second_map.main_topic
@@ -404,11 +415,12 @@ if __name__ == '__main__':
 
     relabel_topic("technocake", "Python", "functions", "methods")
     python = get_map("technocake", "Python")
-    print (python.subtopics["methods"])    
+    #print (python.subtopics["methods"])    
     # Get all maps
-    print( get_maps("technocake"))
-    
-
+  #  print( get_maps("technocake"))
+    relabel_topic("technocake", "Python", "methods", "functions")
+    delete_link("technocake", "Python", "functions", "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html")
+    #print ( get_map("technocake", "Python").subtopics["functions"])
 
     # link meta testing
     #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
