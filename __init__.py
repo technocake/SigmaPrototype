@@ -137,6 +137,8 @@ def post_user():
 @app.route('/postmeta', methods=['POST'])
 @login_required
 def post_meta():
+    # POSTparamter is json = {url: '', meta : {<object>metainfo}}
+    
     user = session['user']
     json = request.get_json()
 
@@ -163,48 +165,29 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         le_map = sigma.get_map(user, mapid) 
 
-        return jsonify(status='Getmap OK', le_map=le_map)
+        return jsonify(status='Getmap OK: mapid: ' + mapid, le_map=le_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str())
 
 
-@app.route('/postmap', methods=['POST'])
-@login_required
-def post_map():
-    # Not sure if this is used.
-    user = session['user']
-
-    try:
-        le_map = json['le_map']
-        mapid = json['main']
-
-        sigma.save_map(user, mapid, le_map)
-        return jsonify(status='Postmap OK')
-    except Exception as e:
-        return jsonify(status='Postmap error:' + str())
-
-
-
 @app.route('/updatemap', methods=['POST'])
 @login_required
 def update_map():
+    # POSTparamter is json = {url: '', main_topic: '', subtopic: ''}
 
     user = session['user']
+    json = request.get_json()
 
     try:
-        # required params
+        url = json.get('url', None)
         main_topic = json['main_topic']
         subtopic = json['subtopic']
-        # optional params
-        url = json.get('url', None)
-        # saving
+
         new = sigma.update_map(user, main_topic, subtopic, url)
-        return jsonify(status='OK', new=new)
+        return jsonify(status='Updatemap OK', new=new)
     except Exception as e:
-        return jsonify(status='NOT OK', error=str(e))
-
-
+        return jsonify(status='Updatemap error:' + str(e))
 
 
 
