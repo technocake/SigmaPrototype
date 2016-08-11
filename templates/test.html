@@ -1,0 +1,138 @@
+<!DOCTYPE html5>
+
+<html>
+<head>
+	<title>Sigma - Canvas viewer</title>
+	<style>
+		html, body {width: 100%, height: 100%;}
+	</style>
+
+</head>
+<body>
+	<canvas id="canvas"> Your browser does not support canvas</canvas>
+</body>
+
+<script type="text/javascript">
+
+	cst = {
+		C_WIDTH : window.innerWidth,
+		C_HEIGHT : window.innerHeight - 20,
+		C_CENTER_X : (window.innerWidth)/2,
+		C_CENTER_Y : (window.innerHeight - 20)/2,
+		FPS : 15
+	};
+
+	var c = document.getElementById('canvas');
+	var ctx = c.getContext('2d');
+
+	c.style.backgroundColor = "#dfeff5";
+	c.setAttribute('width', cst.C_WIDTH);
+	c.setAttribute('height', cst.C_HEIGHT);
+
+
+	// Functional objects
+
+	var shape = function(spec){
+		// spec = {x: '', y: ''}
+
+		var that = {} // init self
+
+		// Public vars
+		that.x = spec.x
+		that.y = spec.y;
+
+		return that;
+	};
+
+	
+	var rect_node = function(spec){
+		// spec = {width: '', height: ''}
+
+		// Inherit from shape
+		var that = shape({x:cst.C_CENTER_X, y:cst.C_CENTER_Y}) 
+
+		// Private vars
+		var startx = 0; 
+		var starty = 0;
+
+		// Public vars
+		that.width = spec.width;
+		that.height = spec.height;
+		that.radius = spec.radius;
+
+		// Private method
+		setDrawstart = function(){
+			startx = parseInt(that.x - (that.width /2)) 
+			starty = parseInt(that.y - (that.height /2))
+		};
+
+		// Public methods
+		that.printData = function (){
+			console.log(' x '+that.x +
+				 		' y '+that.y+
+				 		' width '+that.width+
+				 		' height '+that.height+
+				 		' startx '+startx+
+				 		' starty '+ starty);
+		};
+
+		// Private
+		draw_rect = function(){
+			setDrawstart();
+			// ctx.rect(x, y, width, height);
+			ctx.rect(startx, starty, that.width, that.height);
+		};
+
+		draw_perim = function(){
+			// ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
+			// ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+			ctx.ellipse(that.x, that.y, that.radius, that.radius-150, 0, 0, 360)
+		}
+
+		// Public
+		that.draw = function(){
+
+			ctx.beginPath();
+			draw_rect();
+			ctx.stroke();
+
+			ctx.beginPath();
+			draw_perim();
+			ctx.stroke();
+		}
+
+		return that;
+	};
+
+
+	var perimeter_rect = function(spec){
+
+		return 0;
+	};
+
+
+	// Init objects
+
+	var rect1 = rect_node({ width:150, height:100, radius: 400 });
+	rect1.draw();
+
+	setInterval(function(){
+		console.log('She runs');
+
+	}, 1000/cst.FPS);
+
+
+</script>
+
+<script id="comments" type="text/javascript">
+
+// Comment1: 
+	// NodeListObject = docuemnt.getElementByCass('classname')
+	// NodeListObject = docuemnt.getElementByTag('tagname')
+	// Node = docuemnt.getElementsById('idname') 
+
+	// The NodeList object represents a collection of nodes. The nodes can be accessed by index numbers. The index starts at 0
+</script>
+
+</html>
+
