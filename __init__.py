@@ -183,9 +183,9 @@ def get_map():
         return jsonify(status='Getmap error:' + str(e))
 
 
-@app.route('/getmaps', methods=['GET'])
+@app.route('/mapnames', methods=['GET'])
 @login_required
-def get_maps():
+def get_map_names():
 
     user = session['user']
     try:
@@ -195,10 +195,10 @@ def get_maps():
         for k in the_maps:
             map_names.append(k)
 
-        return jsonify(status='Getmaps OK', maps=map_names)
+        return jsonify(status='Names OK', names=map_names)
 
     except Exception as e:
-        return jsonify(status='Getmaps error:' + str(e))
+        return jsonify(status='Names error:' + str(e))
 
 
 @app.route('/updatemap', methods=['POST'])
