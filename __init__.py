@@ -116,6 +116,20 @@ def show_map(user, mapid):
     return render_template('map.html', map=the_map)
  
 
+@app.route('/<user>/map/<mapid>/thumbnail')
+@login_required
+def map_thumbnail(user, mapid):
+    # the url is built with user added to it to
+    # be ready for the future when we might dare to
+    # share our maps.
+    user = session['user']
+    the_map = sigma.get_map(user, mapid)
+    if the_map is None:
+        return "There is no map with this main_topic"
+    #the_map = sigma.KnowledgeMap("Python", "flask")
+    return render_template('mapthumbnail.html', mapid=mapid)
+
+
 # --------- FORM POST request ROUTES -----------------
 
 @app.route('/postuser', methods=['POST'])
@@ -167,6 +181,8 @@ def get_map():
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str(e))
+
+
 
 
 @app.route('/updatemap', methods=['POST'])

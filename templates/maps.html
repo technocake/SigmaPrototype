@@ -12,6 +12,7 @@
 									mapid=map.main_topic) }}">
 			<h3>{{ map.main_topic }}</h3>
 			<p> {{ map.description }} </p>
+			<iframe width="200" src="{{ url_for('map_thumbnail', user=session['user'], mapid=map.main_topic) }}"></iframe>
 		</a>
 		</li>
 	{% endfor %}
