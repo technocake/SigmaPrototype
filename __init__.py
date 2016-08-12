@@ -19,6 +19,8 @@ from functools import wraps
 from  datetime import datetime
 import time
 import sigma
+# for pickles sake...
+from sigma import KnowledgeMap, Topic
 import auth
 
 le_key = '1337' # os.urandom(24)

@@ -21,6 +21,8 @@ try:
 except:
     import pickle
 
+
+
 from werkzeug import secure_filename
 import requests
 import requests_cache
@@ -217,8 +219,9 @@ def relabel_topic(user, map_id, old_topic_text, new_topic_text):
         throws KeyError if map or subtopic doesnt exist.
     """
     the_map = get_map(user, map_id)
-    links = the_map.subtopics.pop(old_topic_text)
-    the_map.subtopics[new_topic_text] = links
+    topic = the_map.subtopics.pop(old_topic_text)
+    topic.text = new_topic_text
+    the_map.subtopics[new_topic_text] = topic
     save_map(user, map_id, the_map)
 
 
@@ -227,9 +230,9 @@ def delete_link(user, mapid, subtopic, url): #in context of a map.
         Deletes a link from a map at the given subtopic node.
     """
     the_map = get_map(user, mapid)
-    links = the_map.subtopics[subtopic]
+    links = the_map.subtopics[subtopic].urls
     links.pop(url)
-    the_map.subtopics[subtopic] = links
+    the_map.subtopics[subtopic].urls = links
     save_map(user, mapid, the_map)
 
 
@@ -370,12 +373,15 @@ class KnowledgeMap():
             optional url associated with subtopic.
         """
         if subtopic in self.subtopics.keys():
-            links = self.subtopics[subtopic]
+            links = self.subtopics[subtopic].urls
         else:
             links = {}
+            # Creating a new subtopic
+            self.subtopics[subtopic] = Topic(text=subtopic, urls=links)
         if url is not None:
             links[url] = url
-        self.subtopics[subtopic] = links
+        # Updating the subtopic
+        self.subtopics[subtopic].urls = links
 
 
 
@@ -391,10 +397,10 @@ class Topic():
         subtopics
             list of Topic's 
     """
-    def __init__(self, text, links=None, subtopics=None):
+    def __init__(self, text, urls=None, subtopics=None):
         self.text = text
-        self.links = [] if links is None else links
-        self.subtopics = [] if subtopics is None else subtopics
+        self.urls = {} if urls is None else urls
+        self.subtopics = {} if subtopics is None else subtopics
     
 
 
