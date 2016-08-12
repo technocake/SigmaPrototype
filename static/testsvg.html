@@ -62,10 +62,10 @@ $(document).ready(function(){
 	    	var mnx;           // x and y value of main node
 	    	var mny;           // 
 
-	    	var sub_coords = [];// 2d array of xy values = [['x1,y1'],['x2,y2'],...]
+	    	var sub_coords = [];// 2d array of xy values ß
 	    	var url_coords = [];
 	    	var sub_doms = [];
-	    	var url_doms = [[]];
+	    	var url_doms = [];
 
 	    	var urlrad;        // radius of url
 	    	var subkeys_array; // Array of key names =['subtopic1', 'subtopic2', ..]
@@ -80,21 +80,20 @@ $(document).ready(function(){
 	    	var j;			   //
 
 	    	// Get x and y of main nodes
-	    	mnx = main_node.getAttribute('cx');
-	    	mny = main_node.getAttribute('cy');
+	    	mnx = parseInt(main_node.getAttribute('cx'));
+	    	mny = parseInt(main_node.getAttribute('cy'));
 
 	    	// Isolate subtopics, calculate lenght
 	    	subkeys_array = Object.keys(map.subtopics);
 	    	subarr_length = subkeys_array.length;
 
-
-	    	function findNodeCoords(bx,by,rx,ry, length){
+	    	function findNodeCoords(bx,by,rx,ry,length){
 		    	// Create coordinates of all sub nodes
-
-		    	var step = (2 * Math.PI) / length;
+		    	// input bx, by -- basex, basey
+		    	var step = parseInt((2 * Math.PI) / length);
 		    	var alpha = 0;
-		    	var nx; // new x
-		    	var ny;
+		    	var nx = 0; // new x
+		    	var ny = 0;
 		    	var coords = [];
 
 		    	for (i=0; i < length; i++){
@@ -102,15 +101,17 @@ $(document).ready(function(){
 		    		nx = parseInt(bx + (rx * Math.cos(alpha)));
 		    		ny = parseInt(by - (ry * Math.cos(alpha)));
 
-		    		coords.push([nx, ny]);
+		    		var pair = [nx, ny];
+		    		coords.push(pair);
+
 		    		alpha += step;
 		    	};
 		    	return coords;
-		    }
-			sub_coords = findNodeCoords(mnx, mny, 400, 200, subarr_length);
+		    };
+			sub_coords = findNodeCoords(mnx, mny, 200, 100, subarr_length);
 
 	    	// Create Sub node DOM objects
-	    	console.log('coords: ' + sub_coords);
+
 	    	i = 0;
 	    	for (xy in sub_coords){
 	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[xy][0], cy: sub_coords[xy][1], r: 4, stroke: 'black'});
@@ -121,31 +122,39 @@ $(document).ready(function(){
 
 	    	// ---- Isolate url-nodes ---- 
 
-	    	for (i=0; i < subarr_length; i++){
+	    	for (var i=0; i < subarr_length; i++){
 
 	    		subkey = subkeys_array[i];
 
 	    		urlkeys_array = Object.keys(map.subtopics[subkey]);
 	    		urlarr_length = urlkeys_array.length;
 
-	    		url_coords = findNodeCoords(sub_doms[i].getAttribute('cx'), sub_doms[i].getAttribute('cy'), 100, 100, urlarr_length);
+	    		var ux = parseInt(sub_doms[i].getAttribute('cx'));
+	    		var uy = parseInt(sub_doms[i].getAttribute('cy'));
+
+	    		url_coords[i] = findNodeCoords(ux, uy, 100, 100, urlarr_length);
 
 	    		// Create Url node dom objects
-	    		for (j=0; j< urlarr_length; j++){
+	    		for (var j=0; j< urlarr_length; j++){
 
-	    			console.log(url_coords);
-	    			url_doms[i][j] = makeSVG('circle', {cx:url_coords[j][0], cy:url_coords[j][1], r:4, stroke: 'black'});
+	    			console.log('url_coords: ' + url_coords);
+	    			console.log(url_coords[0][0][0]);
+	    			console.log(url_coords[i][j][0]);
+
+	    			url_doms[i][j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[0][0][1], r:4, stroke: 'black'});
 	    			s.appendChild(url_doms[i][j]);
 	    		};
-	    	
 	    	};
-
-
-
+	    	
 
 	    	// End of function
 	    	console.log('SVG initialized');
-		};
+	    };
+
+
+
+
+
 
 		function updateSVG(){
 			
