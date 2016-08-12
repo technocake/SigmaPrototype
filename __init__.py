@@ -183,6 +183,22 @@ def get_map():
         return jsonify(status='Getmap error:' + str(e))
 
 
+@app.route('/getmaps', methods=['GET'])
+@login_required
+def get_maps():
+
+    user = session['user']
+    try:
+        the_maps = sigma.get_maps(user)
+
+        map_names = []
+        for k in the_maps:
+            map_names.append(k)
+
+        return jsonify(status='Getmaps OK', maps=map_names)
+
+    except Exception as e:
+        return jsonify(status='Getmaps error:' + str(e))
 
 
 @app.route('/updatemap', methods=['POST'])

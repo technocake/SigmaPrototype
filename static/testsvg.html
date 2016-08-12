@@ -9,6 +9,8 @@
 </head>
 <body>
 
+	<nav id="topnav"></nav>
+
 	<svg id="s" xmlns="http://www.w3.org/2000/svg" />
 
 </body>
@@ -172,6 +174,18 @@ $(document).ready(function(){
 		function updateSVG(){
 			
 		};
+
+		$.get('/getmaps', function(){
+
+	    	if (data.status === 'Getmaps OK'){
+
+		    	initNav(data.map);
+
+		    } else {
+		    	console.log(data.status);
+		    };
+		});
+
 
 	    $.post('/getmap', { main_topic : main_topic }, function(data){
 
