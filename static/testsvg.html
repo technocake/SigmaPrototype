@@ -103,6 +103,10 @@ $(document).ready(function(){
 	    	// Get x and y of main nodes
 	    	mnx = parseInt(main_node.getAttribute('cx'));
 	    	mny = parseInt(main_node.getAttribute('cy'));
+	    	
+	    	var textnode = makeSVG('text', {x:mnx, y:mny, fill:"red"})
+	    	textnode.innerHtml("Hello world");
+	    	s.appendChild(textnode);
 
 	    	// Isolate subtopics, calculate lenght
 	    	subkeys_array = Object.keys(map.subtopics);
