@@ -41,16 +41,19 @@ $(document).ready(function(){
 	    function findNodeCoords(bx,by,rx,ry,length){
 	    	// Create coordinates of all sub nodes
 	    	// input bx, by -- basex, basey
-	    	var step = parseInt((2 * Math.PI) / length);
+	    	var step = (2 * Math.PI) / length;
 	    	var alpha = 0;
 	    	var nx = 0; // new x
 	    	var ny = 0;
 	    	var coords = [];
 
+	    	console.log('Length : ' + length);
 	    	for (i=0; i < length; i++){
 
 	    		nx = parseInt(bx + (rx * Math.cos(alpha)));
-	    		ny = parseInt(by - (ry * Math.cos(alpha)));
+	    		ny = parseInt(by - (ry * Math.sin(alpha)));
+
+	    		console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
 
 	    		var pair = [nx, ny];
 	    		coords.push(pair);
@@ -75,7 +78,7 @@ $(document).ready(function(){
 	    	console.log(map);
 
 	    	// Make main node
-	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'red'});
+	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
 	    	s.appendChild(main_node);
 
 	    	// Variables
@@ -110,9 +113,11 @@ $(document).ready(function(){
 	    	for (var i=0; i < subarr_length; i++){
 	    		
 	    		// Create Sub node DOM objects
+	    		// Make red lines
 	    		var line = makeSVG('line', { x1:mnx, y1:mny, x2:sub_coords[i][0], y2:sub_coords[i][1], stroke:'red'});
 	    		s.appendChild(line);
-	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'black'});
+	    		// Make red nodes
+	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'red'});
 	    		s.appendChild(sub_doms[i]);
 
 
@@ -130,10 +135,15 @@ $(document).ready(function(){
 
 	    			// Create Url node DOM objects
 	    			url_doms.subkey = [];
+
+	    			// Make blue lines
 	    			var line = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
 	    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
 	    			s.appendChild(line);
-	    			url_doms.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], r:4, stroke: 'black'});
+
+	    		 	// Make blue nodes
+	    			url_doms.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], 
+	    													r:4, stroke: 'blue'});
 	    			s.appendChild(url_doms.subkey[j]);
 	    		};
 	    	};
