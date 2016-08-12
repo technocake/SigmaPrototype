@@ -104,8 +104,9 @@ $(document).ready(function(){
 	    	mnx = parseInt(main_node.getAttribute('cx'));
 	    	mny = parseInt(main_node.getAttribute('cy'));
 	    	
-	    	var textnode = makeSVG('text', {x:mnx, y:mny, fill:"red"})
-	    	textnode.innerHtml("Hello world");
+	    	// main_topic text node
+	    	var textnode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
+	    	textnode.appendChild(document.createTextNode(main_topic));
 	    	s.appendChild(textnode);
 
 	    	// Isolate subtopics, calculate lenght
@@ -115,18 +116,28 @@ $(document).ready(function(){
 			sub_coords = findNodeCoords(mnx, mny, 300, 200, subarr_length);
 
 	    	for (var i=0; i < subarr_length; i++){
-	    		
+
+	    		subkey = subkeys_array[i];
+	    		sx = sub_coords[i][0];
+	    		sy = sub_coords[i][1];
+
 	    		// Create Sub node DOM objects
 	    		// Make red lines
-	    		var line = makeSVG('line', { x1:mnx, y1:mny, x2:sub_coords[i][0], y2:sub_coords[i][1], stroke:'red'});
+	    		var line = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
 	    		s.appendChild(line);
+
 	    		// Make red nodes
-	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'red'});
+	    		sub_doms[i] = makeSVG('circle', {cx: sx, cy: sy, r: 4, stroke: 'red'});
 	    		s.appendChild(sub_doms[i]);
 
+	    		// subtopic text node
+	    		var textnode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black"})
+	    		textnode.appendChild(document.createTextNode(subkey));
+	    		s.appendChild(textnode);
+
+	    		//---------------------------------------
 
 	    		// Prepare url node coords
-	    		subkey = subkeys_array[i];
 	    		urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
 	    		urlarr_length = urlkeys_array.length;
 
@@ -186,6 +197,7 @@ $(document).ready(function(){
  	
 
 /*
+3. DOM createTextNode . .. then appendChild::: Jiipppi! :) 
 
 2. Its seems that javascript can access SVG elements the same way as any other element.
 
@@ -193,6 +205,7 @@ $(document).ready(function(){
 
 links: 
 http://www.w3schools.com/svg/svg_circle.asp
+http://www.w3schools.com/jsref/met_document_createtextnode.asp
 
 */
 
