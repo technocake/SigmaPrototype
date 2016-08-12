@@ -85,7 +85,7 @@ $(document).ready(function(){
 	    	var sub_coords = [];// 2d array of xy values ß
 	    	var url_coords = [];
 	    	var sub_doms = [];
-	    	var url_doms = [];
+	    	var url_doms = {};
 
 	    	var urlrad;        // radius of url
 	    	var subkeys_array; // Array of key names =['subtopic1', 'subtopic2', ..]
@@ -110,28 +110,31 @@ $(document).ready(function(){
 	    	for (var i=0; i < subarr_length; i++){
 	    		
 	    		// Create Sub node DOM objects
-	    		console.log('sub_coords ' + sub_coords);
+	    		var line = makeSVG('line', { x1:mnx, y1:mny, x2:sub_coords[i][0], y2:sub_coords[i][1], stroke:'red'});
+	    		s.appendChild(line);
 	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'black'});
 	    		s.appendChild(sub_doms[i]);
+
 
 	    		// Prepare url node coords
 	    		subkey = subkeys_array[i];
 	    		urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
 	    		urlarr_length = urlkeys_array.length;
 
+	    		// find url node coords
 	    		var ux = parseInt(sub_doms[i].getAttribute('cx'));
 	    		var uy = parseInt(sub_doms[i].getAttribute('cy'));
-	    		url_coords[i] = findNodeCoords(ux, uy, 100, 100, urlarr_length);
+	    		url_coords[i] = findNodeCoords(ux, uy, 50, 50, urlarr_length);
 
 	    		for (var j=0; j < urlarr_length; j++){
 
 	    			// Create Url node DOM objects
-	    			console.log('url_coords: ' + url_coords);
-	    			console.log(url_coords[0][0][0]);
-	    			console.log(url_coords[i][j][0]);
-
-	    			url_doms[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], r:4, stroke: 'black'});
-	    			s.appendChild(url_doms[j]);
+	    			url_doms.subkey = [];
+	    			var line = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
+	    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
+	    			s.appendChild(line);
+	    			url_doms.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], r:4, stroke: 'black'});
+	    			s.appendChild(url_doms.subkey[j]);
 	    		};
 	    	};
 	    	
@@ -139,10 +142,6 @@ $(document).ready(function(){
 	    	// End of function
 	    	console.log('SVG initialized');
 	    };
-
-
-
-
 
 
 		function updateSVG(){
