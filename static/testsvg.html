@@ -38,7 +38,27 @@ $(document).ready(function(){
 	        return el; 
 	    }
 
+	    function findNodeCoords(bx,by,rx,ry,length){
+	    	// Create coordinates of all sub nodes
+	    	// input bx, by -- basex, basey
+	    	var step = parseInt((2 * Math.PI) / length);
+	    	var alpha = 0;
+	    	var nx = 0; // new x
+	    	var ny = 0;
+	    	var coords = [];
 
+	    	for (i=0; i < length; i++){
+
+	    		nx = parseInt(bx + (rx * Math.cos(alpha)));
+	    		ny = parseInt(by - (ry * Math.cos(alpha)));
+
+	    		var pair = [nx, ny];
+	    		coords.push(pair);
+
+	    		alpha += step;
+	    	};
+	    	return coords;
+	    };
 
 	    // INIT function
 	    function initSVG(map){
@@ -87,42 +107,14 @@ $(document).ready(function(){
 	    	subkeys_array = Object.keys(map.subtopics);
 	    	subarr_length = subkeys_array.length;
 
-	    	function findNodeCoords(bx,by,rx,ry,length){
-		    	// Create coordinates of all sub nodes
-		    	// input bx, by -- basex, basey
-		    	var step = parseInt((2 * Math.PI) / length);
-		    	var alpha = 0;
-		    	var nx = 0; // new x
-		    	var ny = 0;
-		    	var coords = [];
-
-		    	for (i=0; i < length; i++){
-
-		    		nx = parseInt(bx + (rx * Math.cos(alpha)));
-		    		ny = parseInt(by - (ry * Math.cos(alpha)));
-
-		    		var pair = [nx, ny];
-		    		coords.push(pair);
-
-		    		alpha += step;
-		    	};
-		    	return coords;
-		    };
 			sub_coords = findNodeCoords(mnx, mny, 200, 100, subarr_length);
 
-	    	// Create Sub node DOM objects
-
-	    	i = 0;
-	    	for (xy in sub_coords){
-	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[xy][0], cy: sub_coords[xy][1], r: 4, stroke: 'black'});
-	    		s.appendChild(sub_doms[i]);
-	    		i++;
-	    	};
-	    	// --------------------------
-
-	    	// ---- Isolate url-nodes ---- 
-
 	    	for (var i=0; i < subarr_length; i++){
+	    		
+	    		// Create Sub node DOM objects
+	    		console.log(sub_coords);
+	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'black'});
+	    		s.appendChild(sub_doms[i]);
 
 	    		subkey = subkeys_array[i];
 
@@ -135,7 +127,7 @@ $(document).ready(function(){
 	    		url_coords[i] = findNodeCoords(ux, uy, 100, 100, urlarr_length);
 
 	    		// Create Url node dom objects
-	    		for (var j=0; j< urlarr_length; j++){
+	    		for (var j=0; j < urlarr_length; j++){
 
 	    			console.log('url_coords: ' + url_coords);
 	    			console.log(url_coords[0][0][0]);

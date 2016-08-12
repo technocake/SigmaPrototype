@@ -20,7 +20,7 @@ def convert_v1_to_v2(user, mapid, the_map):
 
 
 if __name__ == '__main__':
-	user = "technocake"
+	user = "jonas"
 	for mapid, the_map in sigma.get_maps(user).items():
 		print("Converting map: %s from v1 to v2..." % mapid)
 		convert_v1_to_v2(user, mapid, the_map)
