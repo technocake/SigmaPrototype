@@ -6,12 +6,27 @@
 <title>Sigma - Svg test</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+
+<style>
+    
+    #topnav {
+        display:flex; justify-content: center;
+    }
+
+    #topnav button {
+        flex: 0 1 100px;
+    }
+
+</style>
+
 </head>
 <body>
 
-	<nav id="topnav" style="display:flex; justify-content: space-between"></nav>
+	<nav id="topnav" style="display:flex; justify-content: center"></nav>
 
-	<svg id="s" xmlns="http://www.w3.org/2000/svg" />
+	<svg id="s" xmlns="http://www.w3.org/2000/svg">
+
+    </svg>
 
 </body>
 
@@ -166,7 +181,7 @@ $(document).ready(function(){
     	};
     	
 
-    // End of function
+    // End of function initSVG()
     console.log('SVG initialized');
     };
 
@@ -184,7 +199,7 @@ $(document).ready(function(){
 // ----------- AJAX request routes --------------
 
 	$.get('/mapnames', function(data){
-    	if (data.status === 'Getmaps OK'){
+    	if (data.status === 'Names OK'){
     		console.log(data.names);
 	    	initNav(data.names);
 
@@ -192,7 +207,7 @@ $(document).ready(function(){
 	    	console.log(data.status);};
 	});
 
-    $.post('/getmap', { main_topic : main_topic }, function(data){
+    $.post('/getmap', { 'main_topic' : main_topic }, function(data){
     	if (data.status === 'Getmap OK'){
 	    	initSVG(data.map);
 
