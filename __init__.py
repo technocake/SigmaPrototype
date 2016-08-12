@@ -158,7 +158,7 @@ def post_meta():
 def get_map():
 
     user = session['user']
-
+    
     try:
         mapid = request.form.get('main_topic', None)
         the_map = sigma.get_map(user, mapid) 

@@ -75,7 +75,7 @@ $(document).ready(function(){
 	    	console.log(map);
 
 	    	// Make main node
-	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
+	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'red'});
 	    	s.appendChild(main_node);
 
 	    	// Variables
@@ -105,7 +105,7 @@ $(document).ready(function(){
 	    	subkeys_array = Object.keys(map.subtopics);
 	    	subarr_length = subkeys_array.length;
 
-			sub_coords = findNodeCoords(mnx, mny, 200, 100, subarr_length);
+			sub_coords = findNodeCoords(mnx, mny, 300, 200, subarr_length);
 
 	    	for (var i=0; i < subarr_length; i++){
 	    		
