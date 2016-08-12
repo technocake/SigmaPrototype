@@ -11,23 +11,19 @@
     
     #topnav {
         display:flex; justify-content: center;
+        flex-wrap: wrap;
     }
-
     #topnav button {
-        flex: 0 1 100px;
-    }
+        font-size: 16px;
+        flex: 0 1 120px;
 
+    }
 </style>
 
 </head>
 <body>
-
 	<nav id="topnav" style="display:flex; justify-content: center"></nav>
-
-	<svg id="s" xmlns="http://www.w3.org/2000/svg">
-
-    </svg>
-
+	<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
 </body>
 
 <script type="text/javascript">
@@ -38,8 +34,10 @@ $(document).ready(function(){
 	// GLOBALS
 	var ww;
  	var wh;
- 	var main_topic = 'API';
+ 	var current_topic = 'API';
  	var s;
+    s = document.getElementById('s'); // SVG object
+    $s = $('s'); // jquery svg
 
  	// MISC functions
 	 function updateWwWh(){
@@ -87,7 +85,7 @@ $(document).ready(function(){
     	updateWwWh();
 
     	// LOAD/SET SVG global OBJECT
-    	s = document.getElementById('s');
+        $s.empty();
     	s.setAttribute('width', ww);
     	s.setAttribute('height', wh);
 
@@ -123,7 +121,7 @@ $(document).ready(function(){
     	
     	// main_topic text node
     	var textnode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
-    	textnode.appendChild(document.createTextNode(main_topic));
+    	textnode.appendChild(document.createTextNode(current_topic));
     	s.appendChild(textnode);
 
     	// Isolate subtopics, calculate lenght
@@ -192,7 +190,9 @@ $(document).ready(function(){
     	for (i in names){
     		console.log(names[i]);
 
-    		$topnav.append('<button name="'+names[i]+'" onclick="newMap()">'+names[i]+'</button>');
+    		$topnav.append('<button name="'+names[i]+'" onclick="newMap(this.name)">'+
+                            names[i]+
+                            '</button>');
     	};
     };
  
@@ -200,20 +200,24 @@ $(document).ready(function(){
 
 	$.get('/mapnames', function(data){
     	if (data.status === 'Names OK'){
-    		console.log(data.names);
 	    	initNav(data.names);
-
 	    } else {
 	    	console.log(data.status);};
 	});
 
-    $.post('/getmap', { 'main_topic' : main_topic }, function(data){
-    	if (data.status === 'Getmap OK'){
-	    	initSVG(data.map);
+    function newMap(new_topic){
 
-	    } else {
-	    	console.log(data.status);};
-	});
+        current_topic = new_topic;
+
+        $.post('/getmap', { 'main_topic' : new_topic }, function(data){
+        	if (data.status === 'Getmap OK'){
+    	    	initSVG(data.map);
+    	    } else {
+    	    	console.log(data.status);};
+    	});
+    };
+
+    newMap(current_topic);
 });
 
 
