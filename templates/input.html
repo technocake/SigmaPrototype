@@ -34,7 +34,7 @@
 
 
 	<div class="maindiv">
-		<input class="megainput searchinput" type="text" placeholder="search __" 
+		<input id="searchinput" class="megainput searchinput" type="text" placeholder="search __" 
 		       onfocus="onfocusHandler(this)" 
 		       onblur="onblurHandler(this)" 
 		       onkeyup="search(this.value)"/>
@@ -285,6 +285,9 @@
 				source: APP.tags
     		});
     		$( "#subtopicinput" ).autocomplete({
+				source: APP.tags
+    		});
+    		$( "#searchinput" ).autocomplete({
 				source: APP.tags
     		});
 		});
