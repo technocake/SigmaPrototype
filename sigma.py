@@ -87,7 +87,6 @@ def save_link(id, meta, user):
         pickle.dump(links, userfile) # simpler syntax
         # userfile.write(pickle.dumps(links, userfile))
 
-    return links
 
 
 def get_links(user):

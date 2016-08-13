@@ -1,11 +1,15 @@
-<!DOCTYPE html5>
+<!DOCTYPE html>
 <html>
 <!-- base.html --> 
 
 <head>
 	<meta charset="utf-8" />
-	<!--Local css -->
+
+	<!--Local files -->
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='sigmastyle.css') }}"/>
+	<script src="/static/jonasAPI.js" type="text/javascript" charset="utf-8"></script>
+	
+
 	<!-- Google FONTS API and jQuery API -->
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -13,9 +17,12 @@
 	<!-- Jquery UI !-->
 	<link href='/static/js/jquery-ui-1.12.0.custom/jquery-ui.css' rel='stylesheet' type='text/css'>
 	<script src="/static/js/jquery-ui-1.12.0.custom/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
+
+
 </head>
 <body>
 	<img width="300" src="/static/sigma-logo.svg" alt="Sigma" title="Sigma" />
+
 	{% block body %}
 
 		<h2>Good day, {{ session['user'] }}!</h2>
@@ -26,3 +33,4 @@
 	{% endblock %}
 </body>
 </html>
+

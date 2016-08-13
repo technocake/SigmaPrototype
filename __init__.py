@@ -19,7 +19,7 @@
     3.  /login                         - return render_template(login.html)
     4.  /meny                          - return render_template(meny.html)
     5.  /inputurl                      - return render_template(input.html)
-    6.  /maps                          - return render_template(maps.html, maps=
+    6.  /maps                          - return render_template(maps.html, maps=maps)
     7.  /<user>/map/<mapid>            - return render_template(map.html)
     8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
     9.  /postuser                      - return redirect(/inputurl)
@@ -45,6 +45,7 @@ from functools import wraps
 from  datetime import datetime
 import time
 import sigma
+
 # for pickles sake...
 from sigma import KnowledgeMap, Topic
 import auth
@@ -186,8 +187,10 @@ def post_meta():
     if url and meta:
         # Saves it in the users links file.
         try:
-            links = sigma.save_link(id=url, meta=meta, user=user)
-            return jsonify(links=links, status='Postmeta OK')
+            sigma.save_link(id=url, meta=meta, user=user)
+            searchdata = sigma.get_searchdata(user)
+            return jsonify(searchdata=searchdata, status='Postmeta OK')
+
         except Exception as e:
             return jsonify(status='Meta error:' + str(e))
     return 'Missing Url and Meta'
@@ -284,17 +287,12 @@ def relabel_topic():
 @login_required
 def fetch_searchdata():
     user = session['user']
-    json = request.get_json()
 
     try:
         searchdata = sigma.get_searchdata(user)
-        return jsonify(status='OK', searchdata=searchdata)
+        return jsonify(status='Search OK', searchdata=searchdata)
     except Exception as e:
-        return jsonify(status='NOT OK', error="error: " + str(e))
-
-
-
-
+        return jsonify(status='Search NOT OK', error="error: " + str(e))
 
 
 
