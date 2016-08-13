@@ -75,10 +75,10 @@ def save_link(id, meta, user):
 
     # First, read the list of links from the users link file. 
     try:
-        with codecs.open(linksfile, 'rb') as userfile: 
-            links = pickle.loads(userfile.read())
+        links = get_links(user)
     except:
         # If the file does not exist, create an empty list of links.
+        codecs.open(linksfile, 'w+').close()
         links = {}
 
     links[id] = meta

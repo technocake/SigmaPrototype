@@ -290,7 +290,8 @@ def fetch_searchdata():
 
     try:
         searchdata = sigma.get_searchdata(user)
-        return jsonify(status='Search OK', searchdata=searchdata)
+        links = sigma.get_links(user)
+        return jsonify(status='Search OK', searchdata=searchdata, linksdata=links)
     except Exception as e:
         return jsonify(status='Search NOT OK', error="error: " + str(e))
 
