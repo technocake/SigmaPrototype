@@ -43,6 +43,7 @@ None
 
 
 **Return**
+** nb, json has no support for comments. Comments are added here to give a better overview of the data
 ``` json
 {
   "status": "OK",
@@ -50,12 +51,12 @@ None
                    [  // this is the first Map
                       ["Python", "functions", "http://example.com/python-functions"], // subtopic funtions has two links,
                       ["Python", "functions", "http://example.com/python-use-def"], // second link in subtopic functions
-                      ["Python", "syntax", "http://example.com/python-syntax"], // only one link on subtopic syntax
+                      ["Python", "syntax", "http://example.com/python-syntax"] // only one link on subtopic syntax
                    ],
                   
                    [  // this is another map
                       ["Java", "functions", "http://example.com/java-functions"],
-                      ["Java", "inventor", "http://example.com/James-gosling"],
+                      ["Java", "inventor", "http://example.com/James-gosling"]
                    ]
                 ]
 }
