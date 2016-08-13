@@ -11,7 +11,7 @@
 /* ------------------------------------------------------- */
 
 
-function revealHiddenRow(row){
+function revealHiddenRow($row){
 	// OBJECTIVE:
 	//		Reveal a row just beneath a row with a click-handler.
 	//       The new row is supposed to show extra information.
@@ -20,16 +20,25 @@ function revealHiddenRow(row){
 
 	var url;
 	var num;
+	var $insobject;
 
-	num = row.id.split('_')[1];
+	if (!$('#'+$row.id+'edit').length){ 
+		num = $row.id.split('_')[1];
 
-	// Extract url from row
-	url = $('#urlkey_'+num).html();
+		// Extract url from row
+		url = $('#urlkey_'+num).html();
 
-	// Use url as a key to access metainfo from linksdata
+		$insobject = $('<tr id="'+$row.id+'edit">'+ 
+			             '<td ><input type="text" placeholder="Change maintopic"/></td>' +
+			             '<td ><input type="text" placeholder="Change subtopic"/></td>"'+
+			             '<td ><button>SUBMIT CHANGE</button></td>'+
+			             '<td ><button>DELETE ROW</button></td>'+
+			           '</tr>');
 
-
-	return 0;
+		$insobject.insertAfter($row);
+	} else {
+		$('#'+$row.id+'edit').remove();
+	};
 };
 
 
@@ -64,7 +73,7 @@ function fillTable_2d($tbody, arraydata, width=3){
 		// Construct each row with a unique row ID.
 		row = arraydata[i];
 		rowID = 'rowid_'+i;
-		$tbody.append('<tr id="' + rowID + '"></tr>');
+		$tbody.append('<tr id="' + rowID + '" class="mainrow"></tr>');
 		$row = $('#'+rowID);
 
 		$row.click(function(){
