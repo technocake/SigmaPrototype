@@ -2,7 +2,7 @@
 
 ## Description
 Builds a search-able datastructure of the users maps and links and returns it to the client.
-This is meant to provide data for client-side searching. User is implicit implied through the
+This is meant to provide data for client-side searching. User is implied through the
 session login.
 
 ***
