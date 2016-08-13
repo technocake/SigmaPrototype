@@ -14,15 +14,15 @@
 
 #  --------------- URL INDEX ----------------------
 
-    1.  /    
-    2.  /logout 
-    3.  /login
-    4.  /meny 
-    5.  /inputurl
-    6.  /maps
-    7.  /<user>/map/<mapid>
-    8.  /<user>/map/<mapid>/thumbnail
-    9.  /postuser
+    1.  /                              - return redirect(/login or /inputurl)
+    2.  /logout                        - return redirect(/)
+    3.  /login                         - return render_template(login.html)
+    4.  /meny                          - return render_template(meny.html)
+    5.  /inputurl                      - return render_template(input.html)
+    6.  /maps                          - return render_template(maps.html, maps=
+    7.  /<user>/map/<mapid>            - return render_template(map.html)
+    8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
+    9.  /postuser                      - return redirect(/inputurl)
     10. /postmeta
     11. /getmap
     12. /mapnames
