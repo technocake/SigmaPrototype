@@ -2,64 +2,32 @@
 
 # Knowledge Maps
 ### endpoints:
+ * POST updatemap
+ * POST relabel
 
+ """ 
+#  --------------- URL INDEX ----------------------
 
-## POST updatemap
+    1.  /    
+    2.  /logout 
+    3.  /login
+    4.  /meny 
+    5.  /inputurl
+    6.  /maps
+    7.  /<user>/map/<mapid>
+    8.  /<user>/map/<mapid>/thumbnail
+    9.  /postuser
+    10. /postmeta
+    11. /getmap
+    12. /mapnames
+    13. /updatemap
+    14. /relabeltopic
+    15. /tags
+    16. /deletelink
+    17. /fetchtitle
+    18. /fetchmeta
+    19. /fetchlinks
 
-## Description
-updates or creates a map.
-
-***
-
-## Requires authentication
-**login_required**
-
-***
-
-## Parameters
-Essential information:
-
-
-- **main_topic** — The main topic of the map. 
-- **subtopic** — a new or old subtopic of the map. 
-
-### Optional attributes:
-- **url** — optional url associated with this subtopic.
-
-***
-
-## Return format
-Status code 200, along with a JSON array containing 
-- **status** — Either OK or NOT OK
-- **new** — true if a new map was created. 
-
-***
-
-## Errors
-- **status** — NOT OK
-- **error** — Error message
-
-***
-
-## Example
-**Request**
-
-    POST /updatemap
-
-**Payload**
-``` json
-{
-  "main_topic": "Javascript",
-  "subtopic": "arrays",
-  "url": "http://example.com/arrays/push"
-}
-```
-
-
-**Return**
-``` json
-{
-  "status": "OK",
-  "new": true
-}
-```
+# -------------------------------------------------   
+"""
+ 

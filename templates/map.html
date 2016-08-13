@@ -8,16 +8,25 @@
 
 	<h1> {{ map.main_topic }}</h1>
 	<ol class="sub-topics-list"> 
-	{% for subtopic in map.subtopics %}
+	{% for label, subtopic  in map.subtopics.items() %}
 		<li class="sub-topic">
-			<h2>{{ subtopic }}</h2>  <!-- repr !-->
+			<h2>{{ label }}</h2>  <!-- repr !-->
 			<ol>
-				{% for link in subtopic.links}
+				{% for link in subtopic.urls %}
+				<li>
+					<a href="{{ link }}"> {{link}} </a>
+				</li>
+				{% endfor %}
+			</ol>
 		</li>
 
 	{% endfor %}
 	</ol>
 	</div>
+
+	<nav style="display: flex; margin: 30px;">
+		<a href="/maps"><button>Tilbake</button></a>
+	</nav>
 	
 
 {% endblock %}

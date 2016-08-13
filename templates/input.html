@@ -4,7 +4,7 @@
 {% block body %}
 
 	<div class="maindiv">
-		<input class="megainput urlinput" type="text" placeholder="url __" 
+		<input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
 				onfocus="onfocusHandler(this)" 
 				onblur="onblurHandler(this)" 
 				onkeyup="getMeta(this.value)" 
@@ -23,8 +23,8 @@
 			</div>
 
 			<div class="kolonne2">
-				<input class="topicinput maintopic" type="text" placeholder="Main topic"/>
-				<input class="topicinput subtopic" type="text" placeholder="Sub topic"/>
+				<input id="maintopicinput" class="topicinput maintopic" type="text" placeholder="Main topic"/>
+				<input id="subtopicinput" class="topicinput subtopic" type="text" placeholder="Sub topic"/>
 			</div>
 			<div>
 				<img class="plusicon" width="100px" height="100px" 
@@ -34,10 +34,15 @@
 
 
 	<div class="maindiv">
-		<input class="megainput searchinput" type="text" placeholder="search __" 
+		<input id="searchinput" class="megainput searchinput" type="text" placeholder="search __" 
 		       onfocus="onfocusHandler(this)" 
 		       onblur="onblurHandler(this)" 
 		       onkeyup="search(this.value)"/>
+
+		<nav style="display: flex; margin-bottom: 30px;">
+			<a href="/maps"><button>Maps</button></a>
+			<a href="/meny"><button>Meny</button></a>
+		</nav>
 
 		<table class="tableview">
 			<thead>
@@ -50,8 +55,7 @@
 			</tbody>
 		</table> 
 	</div>
-
-
+	
 
 <script type="text/javascript">
 
@@ -61,11 +65,6 @@
 	   APP. And all other variables are APP.somevariable. 
 	   GLOBAL variables are evil, thats why we do it. - Jonas */
 
-	REGEX = {
-
-		urlpattern1 : /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
-		urlpattern2 : /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
-	};
 
 	APP = {
 		$urlinput : $('.urlinput'),
@@ -78,8 +77,10 @@
 		old_title : '',
 		old_favicon : '',
 		meta : '',
-		links : {}
+		links : {},
 	};
+
+	var SEARCHDATA;
 
 	function onblurHandler(element){
 		var $ele = $(element);
@@ -102,38 +103,13 @@
 		};
 	};
 
-	// View1 - Constructs a list-view of all links.
-	function constructTable(){
-		var thtml;
-		var links = APP.links;
-
-		var i = 0;
-		for (var link in links){
-
-			if (links[link]['favicon']){
-				le_link = links[link]['favicon'];
-			} else {
-				le_link = 'static/chrome-512.png';
-			};
-
-			thtml = '<tr>'+
-						'<td><img width="40px" height="40px" src="'+ le_link +'"/></td>'+
-						'<td>'+links[link]['title']+'</td>'+
-						'<td><a id="link'+i+'" class="linkholder" href="#"><img width="25px" height="25px" src="static/external_link.png"/></a></td>'+
-					'</tr>';
-			APP.$tbody.append(thtml);
-			$('#link'+i).attr('href', links[link]['url']);
-			i ++;
-		};
-		return 0;
-	}
-
 	function resetInput(){
 		APP.old_title = '';
 		APP.old_url = '';
 		APP.$urlinput.val('');
 		APP.$metainfo.hide();
 	};
+
 
 	// --- AJAX request functions ---
 
@@ -142,8 +118,9 @@
 		postMeta() blir trigget av en onclick=""-event 
 		 på class="plusicon".
 		
-		Denne funksjonen reagerer på 4 måter:
-
+		Denne funksjonen reagerer på 5 måter:
+		
+		0 - Skjekke om begge input-feltene for maintopic og subtopic er utfylt.
 		1 - sende en /postmeta med metainformasjon om urlen inkl url.
 		2 - sende en /updatemap med maintopic og subtopic + url.
 		3 - clear input område for å signaliserer at url-en har blitt submitted.
@@ -156,12 +133,14 @@
 		----------------------------------------------------- jonas --- */
 
 		// First of all, check if both topic-fields have a value.
+		// Display necesarry alerts to the user.
 
 		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
-
-			console.log('Fill in both topic fields.')
+			console.log('Fill in both topic fields.');
+			APP.$maintop.attr('placeholder', 'Required field');
+			APP.$subtop.attr('placeholder', 'Required field');
 			return 0;
-		}
+		};
 
 		var json_meta = {
 			url : APP.old_url, 
@@ -181,11 +160,11 @@
 			type : 'POST',
 			success: function(data){ 
 				console.log(data.status);
-				APP.links = data.links;
+				SEARCHDATA = data.searchdata;
 
 				resetInput();
 				APP.$tbody.html('');
-				constructTable();
+				fillTable(APP.$tbody, SEARCHDATA);
 
 				// Post 2 
 				$.ajax('/updatemap', {
@@ -206,7 +185,9 @@
 		});
 	};
 
+
 	function getMeta(iurl){
+
 		var title;
 
 		// Reset page if url is empty
@@ -220,7 +201,8 @@
 		if (iurl != APP.old_url && REGEX.urlpattern2.test(iurl)){
 			console.log('Valid URL entered!');
 			APP.old_url = iurl;
-
+			APP.$metainfo.show();
+			APP.$urlinput.val("fetching title and metadata...");
 			$.post('/fetchmeta', { 'url': iurl}, 
 
 				function(data){
@@ -233,7 +215,7 @@
 						$('#favicon').attr('src', meta.favicon);
 						$('#domain').html(meta.domain);
 						$('#description').html(meta.description);
-						APP.$metainfo.show();
+						
 
 						// CACHE data for later
 						APP.old_title = meta.title;
@@ -250,6 +232,7 @@
 		};
 	};
 
+
 	// Not active
 	function search(istring) {
 
@@ -257,15 +240,64 @@
 		return 0;
 	};
 
+	
+	function fillTable_dict(linksdict){
+		// Depreciated funciton
+		// Viewfunction 1 - Fills a list-view of all url-links.
+		// INPUT a dictionary like -> links[link][data]
+
+		var thtml;
+		var links = linksdict;
+
+		var i = 0;
+		for (var link in links){
+
+			if (links[link]['favicon']){
+				le_link = links[link]['favicon'];
+			} else {
+				le_link = 'static/chrome-512.png';
+			};
+
+			thtml = '<tr>'+
+						'<td><img width="40px" height="40px" src="'+ le_link +'"/></td>'+
+						'<td>'+links[link]['title']+'</td>'+
+						'<td><a id="link'+i+'" class="linkholder" href="#"><img width="25px" height="25px" src="static/external_link.png"/></a></td>'+
+					'</tr>';
+			APP.$tbody.append(thtml);
+			$('#link'+i).attr('href', links[link]['url']);
+			i ++;
+		};
+		return 0;
+	};
+
+
 	// Init function
 	$(document).ready(function(){
 
 		APP.$metainfo.hide();
 
-		$.get('/fetchlinks', function(data){
-			console.log('Status:' + data.status)
-			APP.links = data.links;
-			constructTable();
+		$.post('/fetchsearchdata', { 'Hello' : 'World' }, function(data){
+
+			if (data.status === 'Search OK'){
+				SEARCHDATA = data.searchdata;
+				fillTable(APP.$tbody, SEARCHDATA);
+			} else {
+				console.log(data.status + data.errro);
+			}
+		});
+
+		// building taglist for autocompletion
+		$.get('/tags', function(data){
+			APP.tags = data.tags;
+			$( "#maintopicinput" ).autocomplete({
+				source: APP.tags
+    		});
+    		$( "#subtopicinput" ).autocomplete({
+				source: APP.tags
+    		});
+    		$( "#searchinput" ).autocomplete({
+				source: APP.tags
+    		});
 		});
 	});
 

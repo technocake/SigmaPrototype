@@ -21,6 +21,8 @@ try:
 except:
     import pickle
 
+
+
 from werkzeug import secure_filename
 import requests
 import requests_cache
@@ -85,7 +87,6 @@ def save_link(id, meta, user):
         pickle.dump(links, userfile) # simpler syntax
         # userfile.write(pickle.dumps(links, userfile))
 
-    return links
 
 
 def get_links(user):
@@ -104,6 +105,10 @@ def get_links(user):
     except IOError:
         links = {}
     return links
+
+
+
+
 
 
 def fetch_meta(url, filter=None):
@@ -137,44 +142,48 @@ def fetch_meta(url, filter=None):
     return link
 
 
+def update_map(user, main_topic, subtopic, url=None):
+    """
+        Updates and or creates a Knowledge map with id <main_topic>
+        returns true if a map was created, false if not.
+    """
+    # does the knowledge map exists?
+    new = False
+    the_map = get_map(user, main_topic)
+
+    if the_map is None:
+        the_map = KnowledgeMap(main_topic)
+        new = True
+
+    the_map.update(subtopic, url)
+    save_map(user, main_topic, the_map)
+    return new
+
+
+
 def save_map(user, mapid, the_map):
     """
         Saves a knowledgemap
     """
-
-    # strips hacker attempts away from input. 
     mapsfile = secure_filename('%s.maps'%(user))
-    
+    maps = get_maps(user)
 
-    # First, read the list of links from the users link file. 
-    try:
-        with codecs.open(mapsfile, 'rb') as userfile: 
-            maps = pickle.loads(userfile.read())
-    except:
-        # If the file does not exist, create an empty list of links.
-        maps = {}
-
+    for k,v in maps.items():
+        mapdict = v.__dict__
+        maps[k] = mapdict
     maps[mapid] = the_map.__dict__
 
     with codecs.open(mapsfile, 'wb') as userfile: 
-        pickle.dump(maps, userfile) # simpler syntax
-        # userfile.write(pickle.dumps(links, userfile))
+        pickle.dump(maps, userfile) 
 
 
 def get_map(user, mapid):
     """
         Retrieves a requested map
     """
-    mapsfile = secure_filename('%s.maps'%(user))
-    try:
-        with codecs.open(mapsfile, 'rb') as userfile: 
-            maps = pickle.loads(userfile.read())
-            mapdict = maps.get(mapid, None)
-            the_map = KnowledgeMap()
-            the_map.__dict__ = mapdict
-            # If the file does not exist, create an empty list of links.
-    except:
-        the_map = None
+
+    maps = get_maps(user)
+    the_map = maps.get(mapid, None)
     return the_map
 
 
@@ -195,16 +204,59 @@ def get_maps(user):
                 the_map = KnowledgeMap()
                 the_map.__dict__ = v
                 maps[k] = the_map
-    except:
+    except Exception as e:
         # If the file does not exist, create an empty list of links.
         maps = {}
     return maps
 
 
+def get_searchdata(user, filter=None):
+    """
+        Builds a search-able datastructure of the users maps and links 
+        and returns it to the client. This is meant to provide data for
+        client-side searching.
+    """
+    # note to Jonas, useful python debuging tool. 
+    #import pdb
+    maps = get_maps(user)
+    searchdata = []
+    for the_map in maps.values():
+        topic = the_map.main_topic
+        for subtopic in the_map.subtopics.values():
+            
+            #pdb.set_trace()
+            for url in subtopic.urls.values():
+                searchdata.append([topic, subtopic.text, url])
+    return searchdata
+
+
+def relabel_topic(user, map_id, old_topic_text, new_topic_text):
+    """
+        Renames a subtopic text in a  Knowledge map with id <map_id>
+        throws KeyError if map or subtopic doesnt exist.
+    """
+    the_map = get_map(user, map_id)
+    topic = the_map.subtopics.pop(old_topic_text)
+    topic.text = new_topic_text
+    the_map.subtopics[new_topic_text] = topic
+    save_map(user, map_id, the_map)
+
+
+def delete_link(user, mapid, subtopic, url): #in context of a map.
+    """ 
+        Deletes a link from a map at the given subtopic node.
+    """
+    the_map = get_map(user, mapid)
+    links = the_map.subtopics[subtopic].urls
+    links.pop(url)
+    the_map.subtopics[subtopic].urls = links
+    save_map(user, mapid, the_map)
+
+
 def fetch_title(url):
     """ 
-            Responsible for retrieveing the  title of a url. 
-            based on graph.py.
+        Responsible for retrieveing the  title of a url. 
+        based on graph.py.
     """
     # validate url.
     if "http" not in url or len(url) <= 11:
@@ -220,6 +272,25 @@ def fetch_title(url):
         title=""
     return title
 
+
+
+#########   -----   TAGS ------ ##############
+
+
+def get_tags(user):
+    maps = get_maps(user)
+    links = get_links(user)
+    tags = []
+
+    for the_map in maps.values():
+        tags.append(the_map.main_topic)
+        for topic in the_map.subtopics.keys():
+            tags.append(topic)
+
+    for linkmeta in links:
+        pass #tags.append(linkmeta.title) utf-8 not json serializable...
+    return tags
+    
 
 ########################################
 #   CLASSES
@@ -310,7 +381,25 @@ class KnowledgeMap():
     def __init__(self, main_topic=None, description=None):
         self.main_topic = main_topic
         self.description = description
-        self.subtopics = [] # expects a list of Topic instances
+        self.subtopics = {} # expects a list of Topic instances
+
+
+    def update(self, subtopic, url=None):
+        """ 
+            Adds or updates a subtopic node
+            optional url associated with subtopic.
+        """
+        if subtopic in self.subtopics.keys():
+            links = self.subtopics[subtopic].urls
+        else:
+            links = {}
+            # Creating a new subtopic
+            self.subtopics[subtopic] = Topic(text=subtopic, urls=links)
+        if url is not None:
+            links[url] = url
+        # Updating the subtopic
+        self.subtopics[subtopic].urls = links
+
 
 
 class Topic():
@@ -325,44 +414,13 @@ class Topic():
         subtopics
             list of Topic's 
     """
-    def __init__(self, text, links=None, subtopics=None):
+    def __init__(self, text, urls=None, subtopics=None):
         self.text = text
-        self.links = [] if links is None else links
-        self.subtopics = [] if subtopics is None else subtopics
+        self.urls = {} if urls is None else urls
+        self.subtopics = {} if subtopics is None else subtopics
     
 
 
 if __name__ == '__main__':
-    #testing saving a linksfile:
-    #save_link(url="http://hw.no.com", user="technocake")
-
-    #print( get_links('technocake') )
-
-    # Schumanns Sonate
-    #print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
-
-    # Save the map
-    our_first_map = KnowledgeMap('Python', "basic python mind map")
-    map_id = our_first_map.main_topic
-    save_map("technocake", map_id, our_first_map)
-    
-    our_second_map = KnowledgeMap('Java', "basic Java mind map")
-    map_id = our_second_map.main_topic
-    save_map("technocake", map_id, our_second_map)
-
-
-    # Get it back
-    the_first_map = get_map("technocake", map_id)
-    print (the_first_map)
-    
-
-    # Get all maps
-    print( get_maps("technocake"))
-    
-    # link meta testing
-    #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
-    #print( link.title )
-    #print( link.domain )
-    #print( link.favicon )
-    #print( link.topics )
-    #print( link.description.encode('utf-8') )
+    from test_sigma import *
+    test_get_searchdata()
