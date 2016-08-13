@@ -36,7 +36,7 @@ function fillTable($table, arraydata, width=3){
 		$table.append('<tr id="' + rowID + '"></tr>');
 		$row = $('#'+rowID);
 
-		for (var j=0; j<width; i++){
+		for (var j=0; j<width; j++){
 			cell =  row[j];
 
 			switch(j){
