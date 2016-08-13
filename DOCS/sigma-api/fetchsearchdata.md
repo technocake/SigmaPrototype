@@ -46,13 +46,18 @@ None
 ``` json
 {
   "status": "OK",
-  "searchdata":  [ // Map level - contains a lists of Maps data
-                  [  // this is the first Map
-                    [Python, functions, http://example.com/python-functions],
-                    [Python, syntax, http://example.com/python-syntax],
-                    
-                  ]
+  "searchdata": [ // Map level - contains a lists of Maps data
+                   [  // this is the first Map
+                      [Python, functions, http://example.com/python-functions], // subtopic funtions has two links,
+                      [Python, functions, http://example.com/python-use-def], // second link in subtopic functions
+                      [Python, syntax, http://example.com/python-syntax], // only one link on subtopic syntax
+                   ],
                   
+                   [  // this is another map
+                      [Java, functions, http://example.com/java-functions],
+                      [Java, inventor, http://example.com/James-gosling],
+                   ]
+                ]
 }
 ```
 
