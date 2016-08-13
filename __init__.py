@@ -421,9 +421,9 @@ def fetch_links():
     user = session['user']
     try:
         links = sigma.get_links(user)
-        return jsonify(links=links, status='OK')
+        return jsonify(links=links, status='Links OK')
     except Exception as e:
-        return jsonify(status='Not OK - ', error="error: " + str(e))
+        return jsonify(status='Links NOT OK', error="error: " + str(e))
 
 # ------------------------------------------------ #
 # ------------------- LAST ROUTE ----------------- #

@@ -11,6 +11,28 @@
 /* ------------------------------------------------------- */
 
 
+function revealHiddenRow(row){
+	// OBJECTIVE:
+	//		Reveal a row just beneath a row with a click-handler.
+	//       The new row is supposed to show extra information.
+	// INPUT:
+	//    jQuery - row : The row number which was clicked.
+
+	var url;
+	var num;
+
+	num = row.id.split('_')[1];
+
+	// Extract url from row
+	url = $('#urlkey_'+num).html();
+
+	// Use url as a key to access metainfo from linksdata
+
+
+	return 0;
+};
+
+
 function fillTable_2d($tbody, arraydata, width=3){
 
 	// THOUGHTS:
@@ -30,8 +52,13 @@ function fillTable_2d($tbody, arraydata, width=3){
 	var rowID;
 	var $row;
 	var cell;
-	console.log(arraydata.length);
 	
+	var maintopic;
+	var subtopic;
+	var url;
+
+	console.log("TABLE lenght: " + arraydata.length);
+
 	for(var i=0; i < arraydata.length; i++){
 
 		// Construct each row with a unique row ID.
@@ -39,6 +66,10 @@ function fillTable_2d($tbody, arraydata, width=3){
 		rowID = 'rowid_'+i;
 		$tbody.append('<tr id="' + rowID + '"></tr>');
 		$row = $('#'+rowID);
+
+		$row.click(function(){
+			revealHiddenRow(this);
+		});
 
 		for (var j=0; j < width; j++){
 			cell =  row[j];
@@ -52,8 +83,9 @@ function fillTable_2d($tbody, arraydata, width=3){
 					$row.append('<td>'+ cell +'</td>');
 					break;
 				case 2:
-					$row.append('<td>'+ cell +'</td>');
-					$row.append('<td><a id="#" class="linkholder" href="#"><img width="25px" height="25px" src="static/external_link.png"/></a></td>');
+					$row.append('<td id="urlkey_'+i+'">'+ cell +'</td>');
+					$row.append('<td><a href="'+cell+'"><i class="fa fa-external-link fa-4" aria-hidden="true"></i></a></td>');
+					// <i class="fa fa-times fa-4" aria-hidden="true"></i>
 					break;
 			};
 		};
@@ -61,9 +93,12 @@ function fillTable_2d($tbody, arraydata, width=3){
 };
 
 
-
 function generalSearch (array, sentence, limitTo=-10000, onerow=false) {
     
+    //  THOUGHTS:
+    //         This search method is fast enough for live search. 
+    //          I have to check if it is faster to move variable declarations
+    //           outside function, and other ways of making it faster.
     //  
     //	OBJECTIVE:  A function that searches any column in a 2d-array
     //                      for any word in a string-sentence.
@@ -75,7 +110,6 @@ function generalSearch (array, sentence, limitTo=-10000, onerow=false) {
 	//		 int    -  limitTo = 0,1...n - index of column limited to
 	//		 bool   -  onerow =  if True - returns the first row that matches
     
-
     var trimmedArray = [];
     var kwords = '';
 	var kwordsLength = 0;
@@ -119,11 +153,21 @@ function generalSearch (array, sentence, limitTo=-10000, onerow=false) {
 };
 
 
-function deepCopy(oldValue) {
-  // Deep copy/clone hack of a JAVASCRIPT object
-  var newValue
-  strValue = JSON.stringify(oldValue)
-  return newValue = JSON.parse(strValue)
+function deepCopy(base) {
+  // OBJECTIVE:
+  // 	Create a  deep copy of a Javascript object.
+  // INPUT:
+  // 	JSON-object - base - could be any object in Javascript
+  // RETURN:
+  //    JSON-object - copy - returns the new deep copy 
+
+  var copy;
+  var strValue;
+
+  strValue = JSON.stringify(base);
+  copy = JSON.parse(strValue);
+
+  return copy;
 };
 
 

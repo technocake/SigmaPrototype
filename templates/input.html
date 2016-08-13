@@ -49,6 +49,9 @@
 				<th></th>
 				<th></th>
 				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
 			</thead>
 			<tbody>
 					
@@ -76,9 +79,11 @@
 		old_url : '',
 		old_title : '',
 		old_favicon : '',
-		meta : '',
-		links : {},
+		meta : ''
 	}; 
+
+	SEARCHDATA = [];
+	LINKSDATA = {};
 
 	function onblurHandler(element){
 		var $ele = $(element);
@@ -246,7 +251,7 @@
 
 	
 	function fillTable_dict(linksdict){
-		// Depreciated funciton
+		// Depreciated funciton in favor of fillTable_2d
 		// Viewfunction 1 - Fills a list-view of all url-links.
 		// INPUT a dictionary like -> links[link][data]
 
@@ -274,24 +279,46 @@
 		return 0;
 	};
 
+	function initDocumentData(){
+		// OBJECTIVE:
+		// 		Intialized LINKSDATA and SEARCHDATA and fill up the table
 
-// ----------- MAIN INIT -------- 
-	$(document).ready(function(){
+		$.get('/fetchlinks', 
+			function(data){
+				if (data.status === 'Links OK'){
+					LINKSDATA = data.links;
+					console.log('LINKSDATA initalized');
 
-		APP.$metainfo.hide();
+				} else {
+					console.log(data.error);
+				};
+			}
+		);
 
 		$.post('/fetchsearchdata', 
-
 			function(data){
-				console.log(data.status);
+
 				if (data.status === 'Search OK'){
 					SEARCHDATA = data.searchdata;
+					console.log('SEARCHDATA initalized. Building table...');
+
+					APP.$tbody.html('');
 					fillTable_2d(APP.$tbody, SEARCHDATA);
+
 				} else {
 					console.log(data.status + data.error);
 				};
 			}	
 		);
+	};
+
+// ---------------------- MAIN INIT -----------------------
+
+	$(document).ready(function(){
+
+		APP.$metainfo.hide();
+
+		initDocumentData();
 
 		// building taglist for autocompletion
 		$.get('/tags', 
