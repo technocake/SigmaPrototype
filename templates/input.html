@@ -230,6 +230,7 @@
 			console.log('Valid URL entered!');
 			APP.old_url = iurl;
 			APP.$metainfo.show();
+			APP.$urlinput.val("fetching title and metadata...");
 			$.post('/fetchmeta', { 'url': iurl}, 
 
 				function(data){

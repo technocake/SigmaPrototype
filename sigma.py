@@ -211,6 +211,24 @@ def get_maps(user):
     return maps
 
 
+def get_searchdata(user, filter=None):
+    """
+        Builds a search-able datastructure of the users maps and links 
+        and returns it to the client. This is meant to provide data for
+        client-side searching.
+    """
+    # note to Jonas, useful python debuging tool. 
+    #import pdb
+    maps = get_maps(user)
+    searchdata = []
+    for the_map in maps.values():
+        topic = the_map.main_topic
+        for subtopic in the_map.subtopics.values():
+            
+            #pdb.set_trace()
+            for url in subtopic.urls.values():
+                searchdata.append([topic, subtopic.text, url])
+    return searchdata
 
 
 def relabel_topic(user, map_id, old_topic_text, new_topic_text):
@@ -405,48 +423,5 @@ class Topic():
 
 
 if __name__ == '__main__':
-    #testing saving a linksfile:
-    #save_link(url="http://hw.no.com", user="technocake")
-
-    #print( get_links('technocake') )
-
-    # Schumanns Sonate
-    #print( fetch_title("https://www.youtube.com/watch?v=ruV4V5mPwW8"))
-
-    # Save the map
-    our_first_map = KnowledgeMap('Python', "basic python mind map")
-    map_id = our_first_map.main_topic
-    save_map("technocake", map_id, our_first_map)
-   # print(map_id, our_first_map.__dict__)
-    
-    our_second_map = KnowledgeMap('Java', "basic Java mind map")
-    map_id = our_second_map.main_topic
-    save_map("technocake", map_id, our_second_map)
-
-
-    # Get it back
-    
-    
-    our_first_map.update('functions', "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html")
-
-    update_map("technocake", "Python", "functions", "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html") 
-
-    update_map("technocake", "Python", "functions", "http://www.cse.msu.edu/~cse231/Online/functions.html")
-
-
-    relabel_topic("technocake", "Python", "functions", "methods")
-    python = get_map("technocake", "Python")
-    #print (python.subtopics["methods"])    
-    # Get all maps
-  #  print( get_maps("technocake"))
-    relabel_topic("technocake", "Python", "methods", "functions")
-    delete_link("technocake", "Python", "functions", "http://anh.cs.luc.edu/python/hands-on/3.1/handsonHtml/functions.html")
-    #print ( get_map("technocake", "Python").subtopics["functions"])
-
-    # link meta testing
-    #link = fetch_meta("https://www.youtube.com/watch?v=ruV4V5mPwW8")
-    #print( link.title )
-    #print( link.domain )
-    #print( link.favicon )
-    #print( link.topics )
-    #print( link.description.encode('utf-8') )
+    from test_sigma import *
+    test_get_searchdata()

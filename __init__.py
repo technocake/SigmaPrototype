@@ -183,6 +183,22 @@ def get_map():
         return jsonify(status='Getmap error:' + str(e))
 
 
+
+@app.route('/getmaps', methods=['GET'])
+@login_required
+def get_maps():
+    # NOT IMPLEMETNED, JSON SERIALIZING tecghnique missing.
+    user = session['user']
+    
+    try:
+        maps = sigma.get_maps(user) 
+        return jsonify(status='Getmaps OK', map=maps)
+
+    except Exception as e:
+        return jsonify(status='Getmaps error:' + str(e))
+
+
+
 @app.route('/mapnames', methods=['GET'])
 @login_required
 def get_map_names():
@@ -199,6 +215,7 @@ def get_map_names():
 
     except Exception as e:
         return jsonify(status='Names error:' + str(e))
+
 
 
 @app.route('/updatemap', methods=['POST'])
@@ -235,6 +252,26 @@ def relabel_topic():
         return jsonify(status='OK')
     except Exception as e:
         return jsonify(status='NOT OK', error="error: " + str(e))
+
+
+@app.route('/fetchsearchdata', methods=['POST'])
+@login_required
+def fetch_searchdata():
+    user = session['user']
+    json = request.get_json()
+
+    try:
+        searchdata = sigma.get_searchdata(user)
+        return jsonify(status='OK', searchdata=searchdata)
+    except Exception as e:
+        return jsonify(status='NOT OK', error="error: " + str(e))
+
+
+
+
+
+
+
 
 
 
