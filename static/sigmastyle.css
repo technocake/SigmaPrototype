@@ -73,12 +73,10 @@ a:hover {
 
 .plusicon {margin-left: 30px;}
 
-.mainrow:hover {
-	cursor: hand;
-}
-.mainrow td:hover {
-	cursor: hand;
-}
+
+tr {cursor: pointer !important;}
+
+
 
 #domain {font-size: 20px; font-weight:bold;}
 
