@@ -75,10 +75,10 @@ def save_link(id, meta, user):
 
     # First, read the list of links from the users link file. 
     try:
-        with codecs.open(linksfile, 'rb') as userfile: 
-            links = pickle.loads(userfile.read())
+        links = get_links(user)
     except:
         # If the file does not exist, create an empty list of links.
+        codecs.open(linksfile, 'w+').close()
         links = {}
 
     links[id] = meta
@@ -177,17 +177,19 @@ def save_map(user, mapid, the_map):
         pickle.dump(maps, userfile) 
 
 
-def get_map(user, mapid):
+def get_map(user, mapid, jsonable=False):
     """
         Retrieves a requested map
     """
 
     maps = get_maps(user)
     the_map = maps.get(mapid, None)
+    if jsonable:
+        return sigmaserialize(the_map)
     return the_map
 
 
-def get_maps(user):
+def get_maps(user, jsonable=False):
     """ 
         Retrieves all maps from user
     """
@@ -207,6 +209,8 @@ def get_maps(user):
     except Exception as e:
         # If the file does not exist, create an empty list of links.
         maps = {}
+    if jsonable:
+        return sigmaserialize(the_map)
     return maps
 
 
@@ -419,6 +423,24 @@ class Topic():
         self.urls = {} if urls is None else urls
         self.subtopics = {} if subtopics is None else subtopics
     
+
+
+
+#   ----    HACKS   -------
+
+def sigmaserialize(obj):
+    if isinstance(obj, KnowledgeMap) or isinstance(obj, Topic):
+        obj = obj.__dict__
+
+    if isinstance(obj, dict):
+        for k,v in obj.items():
+            obj[k] = sigmaserialize(v)
+    #if isinstance(obj, list) or isinstance(obj, tuple):
+    #   for i, v in enumerate(obj):
+    #       obj[i] = sigmaserialize(v)
+
+
+    return obj
 
 
 if __name__ == '__main__':

@@ -213,7 +213,7 @@ def get_map():
     
     try:
         mapid = request.form.get('main_topic', None)
-        the_map = sigma.get_map(user, mapid) 
+        the_map = sigma.get_map(user, mapid, True) 
 
         return jsonify(status='Getmap OK', map=the_map.__dict__)
 
@@ -229,7 +229,7 @@ def get_maps():
     user = session['user']
     
     try:
-        maps = sigma.get_maps(user) 
+        maps = sigma.get_maps(user, True) 
         return jsonify(status='Getmaps OK', map=maps)
 
     except Exception as e:
@@ -299,7 +299,8 @@ def fetch_searchdata():
 
     try:
         searchdata = sigma.get_searchdata(user)
-        return jsonify(status='Search OK', searchdata=searchdata)
+        links = sigma.get_links(user)
+        return jsonify(status='Search OK', searchdata=searchdata, linksdata=links)
     except Exception as e:
         return jsonify(status='Search NOT OK', error="error: " + str(e))
 
