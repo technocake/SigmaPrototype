@@ -12,7 +12,7 @@
                                          ----- Jonas -----
 
 
-#  --------------- URL INDEX ----------------------
+#  ---------------------------- ROUTE INDEX ------------------------------------
 
     1.  /                              - return redirect(/login or /inputurl)
     2.  /logout                        - return redirect(/)
@@ -23,18 +23,22 @@
     7.  /<user>/map/<mapid>            - return render_template(map.html)
     8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
     9.  /postuser                      - return redirect(/inputurl)
-    10. /postmeta
-    11. /getmap
-    12. /mapnames
-    13. /updatemap
-    14. /relabeltopic
-    15. /tags
-    16. /deletelink
-    17. /fetchtitle
-    18. /fetchmeta
-    19. /fetchlinks
 
-# -------------------------------------------------   
+    10. /postmeta                      - return jsonify(searchdata=searchdata)
+    11. /getmap                        - return jsonify(map=the_map.__dict__)
+    12. /getmaps                       - return jsonify(map=maps)
+    13. /mapnames                      - return jsonify(names=map_names)
+    14. /updatemap                     - return jsonify(new=new)
+    15. /relabeltopic                  - return jsonify()
+    16. /fetchsearchdata               - return jsonify(searchdata=searchdata)    
+    17. /tags                          - return jsonify(tags=tags)
+    18. /deletelink                    - return jsonify()
+    19. /fetchtitle                    - return jsonify(title=title)
+    20. /fetchmeta                     - return jsonify(meta=meta.__dict__)
+    21. /fetchlinks                    - return jsonify(links=links)
+
+                                      * All jsonify also return (status=status)
+# ------------------------------------------------------------------------------   
 """
 
 from flask import Flask, render_template, request, url_for, \
@@ -117,7 +121,10 @@ def meny():
 @login_required
 def input_url():
 
-    return render_template('input.html')
+    user = session['user']
+    searchdata = sigma.get_searchdata(user)
+
+    return render_template('input.html', searchdata=searchdata)
 
 
 @app.route('/maps')
@@ -169,6 +176,8 @@ def post_user():
         session['last_request'] = time.time()
 
     return redirect(url_for('input_url'))
+
+# -----------------------------------------------------
 
 
 # ---------- AJAX POST/GET request ROUTES -------------
@@ -354,10 +363,10 @@ def fetch_title():
         title = sigma.fetch_title(url)
         session['last_request'] = time.time()
 
-        return jsonify(title=title)
+        return jsonify(title=title, status="Title OK!")
 
     except Exception as e:
-        return jsonify(title="Server ERROR: " + str(e))
+        return jsonify(status="Server ERROR: " + str(e))
 
 
 @app.route('/fetchmeta', methods=['POST'])
