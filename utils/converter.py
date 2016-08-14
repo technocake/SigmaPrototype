@@ -15,6 +15,7 @@ def convert(file):
 	#Have to figure out how to delete last comma in end_file
 
 	freemind_file = open(file, 'r')
+	print(freemind_file.name)
 	name = freemind_file.name
 	name = name[:-2]
 	name = name + "json"
@@ -54,6 +55,19 @@ def convert(file):
 				json_file.write("]},\n")
 
 	print(json_file.name + " created.")
+
+
+	# Når en fil åpnes i Python så er det
+	#  viktig å stenge den også.
+	#   Dette er ikke noe Python gjør automatisk.
+	#                     --- Jonas ---
+	# ---------------------------------
+
+	freemind_file.close()
+	json_file.close()
+	
+	# ---------------------------------
+
 
 convert(sys.argv[1])
 
