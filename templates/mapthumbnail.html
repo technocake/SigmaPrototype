@@ -6,11 +6,23 @@
 <title>Sigma - Svg test</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+<style>
+    
+    #topnav {
+        display:flex; justify-content: center;
+        flex-wrap: wrap;
+    }
+    #topnav button {
+        font-size: 16px;
+        flex: 0 1 120px;
+
+    }
+</style>
+
 </head>
 <body>
-
-	<svg id="s" xmlns="http://www.w3.org/2000/svg" />
-
+	<nav id="topnav" style="display:flex; justify-content: center"></nav>
+	<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
 </body>
 
 <script type="text/javascript">
@@ -18,160 +30,212 @@
 $(document).ready(function(){
 
 
-		// GLOBALS
-		var ww;
-	 	var wh;
-	 	var main_topic = '{{ mapid }}';
-	 	var s;
+	// GLOBALS
+	var ww;
+ 	var wh;
+ 	var current_topic = '{{ mapid | safe }}';
+ 	var s;
+    s = document.getElementById('s'); // SVG object
 
-	 	// MISC functions
-		 function updateWwWh(){
-		 	ww = window.innerWidth; 
-			wh = window.innerHeight;
-			console.log('Width: ' + ww + ' Height: ' + wh);
-		}
-		
-	    function makeSVG(tag, attrs) {
-	        var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-	        for (var k in attrs)
-	            el.setAttribute(k, attrs[k]);
-	        return el; 
-	    }
+ 	// MISC functions
+	 function updateWwWh(){
+	 	ww = window.innerWidth; 
+		wh = window.innerHeight;
+		// console.log('Width: ' + ww + ' Height: ' + wh);
+	}
+	
+    function makeSVG(tag, attrs) {
+        var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (var k in attrs)
+            el.setAttribute(k, attrs[k]);
+        return el; 
+    }
 
-	    function findNodeCoords(bx,by,rx,ry,length){
-	    	// Create coordinates of all sub nodes
-	    	// input bx, by -- basex, basey
-	    	var step = (2 * Math.PI) / length;
-	    	var alpha = Math.random() * (2 * Math.PI);
-	    	var nx = 0; // new x
-	    	var ny = 0;
-	    	var coords = [];
+    function findNodeCoords(bx,by,rx,ry,length){
+    	// Create coordinates of all sub nodes
+    	// input bx, by -- basex, basey
+    	var step = (2 * Math.PI) / length;
+    	var alpha = Math.random() * (2 * Math.PI);
+    	var nx = 0; // new x
+    	var ny = 0;
+    	var coords = [];
 
-	    	console.log('Length : ' + length);
-	    	for (i=0; i < length; i++){
+    	//console.log('Length : ' + length);
 
-	    		nx = parseInt(bx + (rx * Math.cos(alpha)));
-	    		ny = parseInt(by - (ry * Math.sin(alpha)));
+    	for (i=0; i < length; i++){
 
-	    		console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
+    		nx = parseInt(bx + (rx * Math.cos(alpha)));
+    		ny = parseInt(by - (ry * Math.sin(alpha)));
 
-	    		var pair = [nx, ny];
-	    		coords.push(pair);
+    		//console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
 
-	    		alpha += step;
-	    	};
-	    	return coords;
-	    };
+    		var pair = [nx, ny];
+    		coords.push(pair);
 
-	    // INIT function
-	    function initSVG(map){
+    		alpha += step;
+    	};
+    	return coords;
+    };
 
-	    	// Update world width and height
-	    	updateWwWh();
+    // --------------------- INIT function -------------------------
 
-	    	// LOAD/SET SVG global OBJECT
-	    	s = document.getElementById('s');
-	    	s.setAttribute('width', ww);
-	    	s.setAttribute('height', wh);
+    function initSVG(map){
 
-	    	// console log
-	    	console.log(map);
+        // Log incomming data
+        console.log(map);
 
-	    	// Make main node
-	    	var main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
-	    	s.appendChild(main_node);
+        // Update world width and height
+    	updateWwWh();
 
-	    	// Variables
-	    	var mnx;           // x and y value of main node
-	    	var mny;           // 
+        // Variables 23
+        var mnx;           // x and y value of the main node
+        var mny;           // 
 
-	    	var sub_coords = [];// 2d array of xy values ß
-	    	var url_coords = [];
-	    	var sub_doms = [];
-	    	var url_doms = {};
+        var sx;            // x and y value of a sub node
+        var sy;            //
+        var ux;            // x and y value of a url node
+        var uy;            // 
+        var sub_coords = []; // 1d array of xy pairs [[x1,y1], n..]
+        var url_coords = []; // 2d array of xy pairs [[[x1,y1]], n..]
 
-	    	var urlrad;        // radius of url
-	    	var subkeys_array; // Array of key names =['subtopic1', 'subtopic2', ..]
-	    	var urlkeys_array; //					= ['url1', 'url2', ....]
-	    	var subarr_length  // lenght of array
-	    	var urlarr_length  // 
-	    	var subkey;	       // Single key name = 'subtopic'
-	    	var urlkey;        // 				  = 'url'
-	    	var subnode;       // DOM SVG circle element
-	    	var urlnode;       // 
+        var mainnode;
+        var sub_nodes = [];  // 1d array of sub_node elements
+        var url_nodes = {};  // dict of 1d arrays  url_nodes[subtopic] = []
 
-	    	// Get x and y of main nodes
-	    	mnx = parseInt(main_node.getAttribute('cx'));
-	    	mny = parseInt(main_node.getAttribute('cy'));
+        var subkeys_array;  // Array of key names =['subtopic1', n..]
+        var urlkeys_array;  //                   = ['url1', n..]
+        var subarr_length;  // int lenght of array
+        var urlarr_length;  // int Represents number of nodes
+        var subkey;         // Single key name = 'subtopic'
+        var urlkey;         //                 = 'url'
 
-	    	// Isolate subtopics, calculate lenght
-	    	subkeys_array = Object.keys(map.subtopics);
-	    	subarr_length = subkeys_array.length;
+        var maintextNode;
+        var subtextNode;
+        var redline;
+        var blueline;
 
-			sub_coords = findNodeCoords(mnx, mny, 300, 200, subarr_length);
-
-	    	for (var i=0; i < subarr_length; i++){
-	    		
-	    		// Create Sub node DOM objects
-	    		// Make red lines
-	    		var line = makeSVG('line', { x1:mnx, y1:mny, x2:sub_coords[i][0], y2:sub_coords[i][1], stroke:'red'});
-	    		s.appendChild(line);
-	    		// Make red nodes
-	    		sub_doms[i] = makeSVG('circle', {cx: sub_coords[i][0], cy: sub_coords[i][1], r: 4, stroke: 'red'});
-	    		s.appendChild(sub_doms[i]);
+        var subrad = [ww * (2/10), wh * (2/10)]; // radius x and y from main_node
+        var urlrad = [ww * 2/50, ww * 2/50];         // radiues x and y from sub_node
+        
 
 
-	    		// Prepare url node coords
-	    		subkey = subkeys_array[i];
-	    		urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
-	    		urlarr_length = urlkeys_array.length;
+    	// Clear SVG screen of existing elements
+        while (s.lastChild) {
+            s.removeChild(s.lastChild);
+        };
 
-	    		// find url node coords
-	    		var ux = parseInt(sub_doms[i].getAttribute('cx'));
-	    		var uy = parseInt(sub_doms[i].getAttribute('cy'));
-	    		url_coords[i] = findNodeCoords(ux, uy, 50, 50, urlarr_length);
+        // SET SVG width and height
+    	s.setAttribute('width', ww);
+    	s.setAttribute('height', wh);
 
-	    		for (var j=0; j < urlarr_length; j++){
+    	// Make main node
+    	main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
+    	s.appendChild(main_node);
 
-	    			// Create Url node DOM objects
-	    			url_doms.subkey = [];
+    	// Get x and y of main nodes
+    	mnx = parseInt(main_node.getAttribute('cx'));
+    	mny = parseInt(main_node.getAttribute('cy'));
+    	
+    	// Display text at the main_node
+    	//maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
+    	//maintextNode.appendChild(document.createTextNode(current_topic));
+    	//s.appendChild(maintextNode);
 
-	    			// Make blue lines
-	    			var line = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
-	    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
-	    			s.appendChild(line);
+    	// Isolate subtopics, calculate amount of subtopics
+    	subkeys_array = Object.keys(map.subtopics);
+    	subarr_length = subkeys_array.length;
 
-	    		 	// Make blue nodes
-	    			url_doms.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], 
-	    													r:4, stroke: 'blue'});
-	    			s.appendChild(url_doms.subkey[j]);
-	    		};
-	    	};
-	    	
+        // Calculate coordinates for all sub nodes
+		sub_coords = findNodeCoords(mnx, mny, subrad[0], subrad[1], subarr_length);
 
-	    	// End of function
-	    	console.log('SVG initialized');
-	    };
+        // Iterate over sub nodes
+    	for (var i=0; i < subarr_length; i++){
+
+    		subkey = subkeys_array[i];
+    		sx = sub_coords[i][0];
+    		sy = sub_coords[i][1];
+
+    		// Create Sub node DOM objects
+    		// Make red lines
+    		redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
+    		s.appendChild(redline);
+
+    		// Make red nodes
+    		sub_nodes[i] = makeSVG('circle', {cx: sx, cy: sy, r: 4, stroke: 'red'});
+    		s.appendChild(sub_nodes[i]);
+
+    		// subtopic text node
+    		//subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black"})
+    		//subtextNode.appendChild(document.createTextNode(subkey));
+    		//s.appendChild(subtextNode);
+
+    		//---------------------------------------
+
+    		// Prepare url node coords
+    		urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
+    		urlarr_length = urlkeys_array.length;
+
+    		url_coords[i] = findNodeCoords(sx, sy, urlrad[0], urlrad[1], urlarr_length);
+
+    		for (var j=0; j < urlarr_length; j++){
+
+    			// Create Url node DOM objects
+    			url_nodes.subkey = [];
+
+    			// Make blue lines
+    			blueline = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
+    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
+    			s.appendChild(blueline);
+
+    		 	// Make url nodes
+    			url_nodes.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], 
+    													r:4, stroke: 'blue'});
+    			s.appendChild(url_nodes.subkey[j]);
+    		};
+    	};
+    	
+
+    // ----------------------- End of function initSVG()  ---------------------
+    };
+
+    // Fill the navigation with maps
+    function initNav (names){
+
+    	var $topnav = $('#topnav');
+    	for (i in names){
+    		$topnav.append('<button id="button_'+names[i]+'" class="menubutton">'+
+                            names[i]+
+                            '</button>');
+        };
+
+        $('.menubutton').click(function(){
+            
+            $this = $(this);  
+            var newtopic = this.id.split('_')[1];
+            newMap(newtopic);
+
+        });
+    	
+    };
+ 
+// ----------- AJAX request routes --------------
 
 
-		function updateSVG(){
-			
-		};
+    function newMap(new_topic){
+        console.log(new_topic);
+        current_topic = new_topic;
 
-	    $.post('/getmap', { main_topic : main_topic }, function(data){
+        $.post('/getmap', { 'main_topic' : new_topic }, function(data){
+        	if (data.status === 'Getmap OK'){
+    	    	initSVG(data.map);
+    	    } else {
+    	    	console.log(data.status);};
+    	});
+    };
 
-	    	if (data.status === 'Getmap OK'){
+    newMap(current_topic);
 
-		    	initSVG(data.map);
-
-		    } else {
-		    	console.log(data.status);
-		    };
-
-		});
-	});
-
-
+});
 
 </script>
 
@@ -182,6 +246,7 @@ $(document).ready(function(){
  	
 
 /*
+3. DOM createTextNode . .. then appendChild::: Jiipppi! :) 
 
 2. Its seems that javascript can access SVG elements the same way as any other element.
 
@@ -189,6 +254,7 @@ $(document).ready(function(){
 
 links: 
 http://www.w3schools.com/svg/svg_circle.asp
+http://www.w3schools.com/jsref/met_document_createtextnode.asp
 
 */
 

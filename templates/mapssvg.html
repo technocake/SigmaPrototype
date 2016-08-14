@@ -84,6 +84,9 @@ $(document).ready(function(){
         // Log incomming data
         console.log(map);
 
+        // Update world width and height
+        updateWwWh();
+
         // Variables 23
         var mnx;           // x and y value of the main node
         var mny;           // 
@@ -111,12 +114,9 @@ $(document).ready(function(){
         var redline;
         var blueline;
 
-        var subrad = [300, 200]; // radius x and y from main_node
-        var urlrad = [50, 50];         // radiues x and y from sub_node
+        var subrad = [ww * (3.5/10), wh * (3.5/10)]; // radius x and y from main_node
+        var urlrad = [ww * (3/50), ww * (3/50)];         // radiues x and y from sub_node
         
-    	// Update world width and height
-    	updateWwWh();
-
     	// Clear SVG screen of existing elements
         while (s.lastChild) {
             s.removeChild(s.lastChild);
