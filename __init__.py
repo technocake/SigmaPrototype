@@ -40,10 +40,11 @@
 
                                       * All jsonify also return (status=status)
 # ------------------------------------------------------------------------------   
+
 """
 
 from flask import Flask, render_template, request, url_for, \
-                   redirect, session, jsonify
+                   redirect, session, jsonify, send_from_directory
 import os
 import gc # flask and garbage collection is not a good combo, clear session should invite a gc.collect()
 from functools import wraps
@@ -84,6 +85,11 @@ def login_required(f):
                                         ----- Jonas ----- """
 
 # ---------------- MISC ROUTES ---------------------
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
+
 
 @app.route('/')
 def index():
