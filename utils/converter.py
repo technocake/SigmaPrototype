@@ -23,7 +23,7 @@ def convert(file):
 
 	for line in freemind_file:
 		if line.startswith('<node CREATED='):
-			if line.endswith('/>'):
+			if "/>" in line:
 				if done == False:
 					json_file.write(', ')
 					text1 = re.search('TEXT="(.+?)"', line).group()
