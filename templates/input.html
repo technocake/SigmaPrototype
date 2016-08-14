@@ -49,6 +49,9 @@
 				<th></th>
 				<th></th>
 				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
 			</thead>
 			<tbody>
 					
@@ -76,11 +79,11 @@
 		old_url : '',
 		old_title : '',
 		old_favicon : '',
-		meta : '',
-		links : {},
-	};
+		meta : ''
+	}; 
 
-	var SEARCHDATA;
+	SEARCHDATA = [];
+	LINKSDATA = {};
 
 	function onblurHandler(element){
 		var $ele = $(element);
@@ -164,7 +167,7 @@
 
 				resetInput();
 				APP.$tbody.html('');
-				fillTable(APP.$tbody, SEARCHDATA);
+				fillTable_2d(APP.$tbody, SEARCHDATA);
 
 				// Post 2 
 				$.ajax('/updatemap', {
@@ -199,10 +202,12 @@
 		console.log(iurl);
 
 		if (iurl != APP.old_url && REGEX.urlpattern2.test(iurl)){
+
 			console.log('Valid URL entered!');
 			APP.old_url = iurl;
 			APP.$metainfo.show();
 			APP.$urlinput.val("fetching title and metadata...");
+
 			$.post('/fetchmeta', { 'url': iurl}, 
 
 				function(data){
@@ -236,13 +241,17 @@
 	// Not active
 	function search(istring) {
 
-		console.log(istring);
+		var resultdata = [];
+		resultdata = generalSearch(SEARCHDATA, istring);
+		APP.$tbody.html('');
+		fillTable_2d(APP.$tbody, resultdata);
+
 		return 0;
 	};
 
 	
 	function fillTable_dict(linksdict){
-		// Depreciated funciton
+		// Depreciated funciton in favor of fillTable_2d
 		// Viewfunction 1 - Fills a list-view of all url-links.
 		// INPUT a dictionary like -> links[link][data]
 
@@ -270,35 +279,63 @@
 		return 0;
 	};
 
+	function initDocumentData(){
+		// OBJECTIVE:
+		// 		Intialized LINKSDATA and SEARCHDATA and fill up the table
 
-	// Init function
+		$.get('/fetchlinks', 
+			function(data){
+				if (data.status === 'Links OK'){
+					LINKSDATA = data.links;
+					console.log('LINKSDATA initalized');
+
+				} else {
+					console.log(data.error);
+				};
+			}
+		);
+
+		$.post('/fetchsearchdata', 
+			function(data){
+
+				if (data.status === 'Search OK'){
+					SEARCHDATA = data.searchdata;
+					console.log('SEARCHDATA initalized. Building table...');
+
+					APP.$tbody.html('');
+					fillTable_2d(APP.$tbody, SEARCHDATA);
+
+				} else {
+					console.log(data.status + data.error);
+				};
+			}	
+		);
+	};
+
+// ---------------------- MAIN INIT -----------------------
+
 	$(document).ready(function(){
 
 		APP.$metainfo.hide();
 
-		$.post('/fetchsearchdata', { 'Hello' : 'World' }, function(data){
-
-			if (data.status === 'Search OK'){
-				SEARCHDATA = data.searchdata;
-				fillTable(APP.$tbody, SEARCHDATA);
-			} else {
-				console.log(data.status + data.errro);
-			}
-		});
+		initDocumentData();
 
 		// building taglist for autocompletion
-		$.get('/tags', function(data){
-			APP.tags = data.tags;
-			$( "#maintopicinput" ).autocomplete({
-				source: APP.tags
-    		});
-    		$( "#subtopicinput" ).autocomplete({
-				source: APP.tags
-    		});
-    		$( "#searchinput" ).autocomplete({
-				source: APP.tags
-    		});
-		});
+		$.get('/tags', 
+			function(data){
+				APP.tags = data.tags;
+				$( "#maintopicinput" ).autocomplete({
+					source: APP.tags
+				});
+				$( "#subtopicinput" ).autocomplete({
+					source: APP.tags
+				});
+				$( "#searchinput" ).autocomplete({
+					source: APP.tags
+				});
+			}
+		);
+
 	});
 
 </script>

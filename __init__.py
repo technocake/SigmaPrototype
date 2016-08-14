@@ -12,7 +12,7 @@
                                          ----- Jonas -----
 
 
-#  --------------- URL INDEX ----------------------
+#  ---------------------------- ROUTE INDEX ------------------------------------
 
     1.  /                              - return redirect(/login or /inputurl)
     2.  /logout                        - return redirect(/)
@@ -22,20 +22,25 @@
     6.  /maps                          - return render_template(maps.html, maps=maps)
     7.  /<user>/map/<mapid>            - return render_template(map.html)
     8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
-    9.  /postuser                      - return redirect(/inputurl)
-    10. /postmeta
-    11. /getmap
-    12. /mapnames
-    13. /updatemap
-    14. /relabeltopic
-    15. /tags
-    16. /deletelink
-    17. /fetchtitle
-    18. /fetchmeta
-    19. /fetchlinks
-    20. /favicon.ico            - just to serve a favicon of sigma.
+    9.  /mapssvg                       - return render_template(mapssvg.html)
+    10. /postuser                      - return redirect(/inputurl)
 
-# -------------------------------------------------   
+    11. /postmeta                      - return jsonify(searchdata=searchdata)
+    12. /getmap                        - return jsonify(map=the_map.__dict__)
+    13. /getmaps                       - return jsonify(map=maps)
+    14. /mapnames                      - return jsonify(names=map_names)
+    15. /updatemap                     - return jsonify(new=new)
+    16. /relabeltopic                  - return jsonify()
+    17. /fetchsearchdata               - return jsonify(searchdata=searchdata)    
+    18. /tags                          - return jsonify(tags=tags)
+    19. /deletelink                    - return jsonify()
+    20. /fetchtitle                    - return jsonify(title=title)
+    21. /fetchmeta                     - return jsonify(meta=meta.__dict__)
+    22. /fetchlinks                    - return jsonify(links=links)
+
+                                      * All jsonify also return (status=status)
+# ------------------------------------------------------------------------------   
+
 """
 
 from flask import Flask, render_template, request, url_for, \
@@ -123,7 +128,10 @@ def meny():
 @login_required
 def input_url():
 
-    return render_template('input.html')
+    user = session['user']
+    searchdata = sigma.get_searchdata(user)
+
+    return render_template('input.html', searchdata=searchdata)
 
 
 @app.route('/maps')
@@ -163,6 +171,13 @@ def map_thumbnail(user, mapid):
     return render_template('mapthumbnail.html', mapid=mapid)
 
 
+@app.route('/mapssvg')
+@login_required
+def maps_svg():
+
+    return render_template('mapssvg.html')
+
+
 # --------- FORM POST request ROUTES -----------------
 
 @app.route('/postuser', methods=['POST'])
@@ -175,6 +190,8 @@ def post_user():
         session['last_request'] = time.time()
 
     return redirect(url_for('input_url'))
+
+# -----------------------------------------------------
 
 
 # ---------- AJAX POST/GET request ROUTES -------------
@@ -212,7 +229,7 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         the_map = sigma.get_map(user, mapid, True) 
 
-        return jsonify(status='Getmap OK', map=the_map.__dict__)
+        return jsonify(status='Getmap OK', map=the_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str(e))
@@ -361,10 +378,10 @@ def fetch_title():
         title = sigma.fetch_title(url)
         session['last_request'] = time.time()
 
-        return jsonify(title=title)
+        return jsonify(title=title, status="Title OK!")
 
     except Exception as e:
-        return jsonify(title="Server ERROR: " + str(e))
+        return jsonify(status="Server ERROR: " + str(e))
 
 
 @app.route('/fetchmeta', methods=['POST'])
@@ -418,9 +435,9 @@ def fetch_links():
     user = session['user']
     try:
         links = sigma.get_links(user)
-        return jsonify(links=links, status='OK')
+        return jsonify(links=links, status='Links OK')
     except Exception as e:
-        return jsonify(status='Not OK - ', error="error: " + str(e))
+        return jsonify(status='Links NOT OK', error="error: " + str(e))
 
 # ------------------------------------------------ #
 # ------------------- LAST ROUTE ----------------- #
