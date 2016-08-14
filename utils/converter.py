@@ -20,39 +20,38 @@ def convert(file):
 	name = name + "json"
 	json_file = open(name, 'w')
 	done = True
+	just = False
 
 	for line in freemind_file:
 		if line.startswith('<node CREATED='):
+			text1 = re.search('TEXT="(.+?)"', line).group()
+			text2 = re.search('"(.+?)"', text1).group()
+
 			if "/>" in line:
 				if done == False:
-					json_file.write(', ')
-					text1 = re.search('TEXT="(.+?)"', line).group()
-					text2 = re.search('"(.+?)"', text1).group()
-					line_towrite = '"resource":' + str(text2)
-					json_file.write(line_towrite)
-				else:
-					text1 = re.search('TEXT="(.+?)"', line).group()
-					text2 = re.search('"(.+?)"', text1).group()
-					line_towrite = '{"resource":' + str(text2)
-					json_file.write(line_towrite)
+					json_file.write(',\n')
+				
+				line_towrite = '{"resource":' + str(text2) + "}"
+				json_file.write(line_towrite)
 				
 				done = False
 			
 			else:
-				if done == False:
-					json_file.write('}\n')
-
-				text1 = re.search('TEXT="(.+?)"', line).group()
-				text2 = re.search('"(.+?)"', text1).group()
 				line_towrite = '{' + str(text2) + ':[\n'
 				json_file.write(line_towrite)
 				done = True
+				just = False
 
 		elif line.startswith('</node>'):
 			#How to delete last comma in end_file
-			json_file.write("]},\n")
-
-	json_file.write("]},\n")
+			if done == False:
+				if just == False:
+					json_file.write("\n]},\n")
+					just = True
+				else: 
+					json_file.write("]},\n")
+			else:
+				json_file.write("]},\n")
 
 	print(json_file.name + " created.")
 
