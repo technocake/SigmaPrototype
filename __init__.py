@@ -5,41 +5,46 @@
     Navn: __init__.py
     Prosjekt: SigmaPrototype
     Opprettet av: Jonas
-    Beskrivelse: __init__.py fungerer som kontroller for hele Flask-applikasjonen.
+    Beskrivelse: __init__.py fungerer som kontroller / API for hele Flask-applikasjonen.
                  En kontroller får input/request i form av en URL, f.eks www.google.com,
                   fra en klient. Kontrolleren bestemmer hva som skal returneres til klienten
                    for en gitt request.
                                          ----- Jonas -----
 
 
-#  ---------------------------- ROUTE INDEX ------------------------------------
+# --------------------------- CONTROLLER / API --------------------------------- #
 
-    1.  /                              - return redirect(/login or /inputurl)
-    2.  /logout                        - return redirect(/)
-    3.  /login                         - return render_template(login.html)
-    4.  /meny                          - return render_template(meny.html)
-    5.  /inputurl                      - return render_template(input.html)
-    6.  /maps                          - return render_template(maps.html, maps=maps)
-    7.  /<user>/map/<mapid>            - return render_template(map.html)
-    8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
-    9.  /mapssvg                       - return render_template(mapssvg.html)
-    10. /postuser                      - return redirect(/inputurl)
+# ------------------------------------------------------------------------------ #
+| index | Route                          | Return value                          |
+# ------------------------------------------------------------------------------ # 
 
-    11. /postmeta                      - return jsonify(searchdata=searchdata)
-    12. /getmap                        - return jsonify(map=the_map.__dict__)
-    13. /getmaps                       - return jsonify(map=maps)
-    14. /mapnames                      - return jsonify(names=map_names)
-    15. /updatemap                     - return jsonify(new=new)
-    16. /relabeltopic                  - return jsonify()
-    17. /fetchsearchdata               - return jsonify(searchdata=searchdata)    
-    18. /tags                          - return jsonify(tags=tags)
-    19. /deletelink                    - return jsonify()
-    20. /fetchtitle                    - return jsonify(title=title)
-    21. /fetchmeta                     - return jsonify(meta=meta.__dict__)
-    22. /fetchlinks                    - return jsonify(links=links)
+    1.  /favicon.ico                   -> send_from_directory(static, favicon.ico)
+    2.  /                              -> redirect(/login or /inputurl)
+    3.  /logout                        -> redirect(/)
+    4.  /login                         -> render_template(login.html)
+    5.  /meny                          -> render_template(meny.html)
+    6.  /inputurl                      -> render_template(input.html)
+    7.  /maps                          -> render_template(maps.html, maps=maps)
+    8.  /<user>/map/<mapid>            -> render_template(map.html)
+    9.  /<user>/map/<mapid>/thumbnail  -> render_template(mapthumbnail.html)
+    10. /mapssvg                       -> render_template(mapssvg.html)
+    11. /postuser                      -> redirect(/inputurl)
 
-                                      * All jsonify also return (status=status)
-# ------------------------------------------------------------------------------   
+    12. /postmeta                      -> jsonify(searchdata=searchdata)
+    13. /getmap                        -> jsonify(map=the_map)
+    14. /getmaps                       -> jsonify(map=maps)
+    15. /mapnames                      -> jsonify(names=map_names)
+    16. /updatemap                     -> jsonify(new=new)
+    17. /relabeltopic                  -> jsonify()
+    18. /fetchsearchdata               -> jsonify(searchdata=searchdata)    
+    19. /tags                          -> jsonify(tags=tags)
+    20. /deletelink                    -> jsonify()
+    21. /fetchtitle                    -> jsonify(title=title)
+    22. /fetchmeta                     -> jsonify(meta=meta.__dict__)
+    23. /fetchlinks                    -> jsonify(links=links)
+
+                                        * All jsonify return (status=status)
+# ------------------------------------------------------------------------------ # 
 
 """
 
@@ -56,9 +61,9 @@ import sigma
 from sigma import KnowledgeMap, Topic
 import auth
 
-le_key = '1337' # os.urandom(24)
-app = Flask(__name__)   # obligatorisk 
-app.secret_key = le_key
+le_key = '1337'           # os.urandom(24) - Create a secret key to be used by session = {} to encrypt sensitive data
+app = Flask(__name__)     #                - Initialize the Flask-app object
+app.secret_key = le_key   #                - Add secret key to Flask app.
 
 
 # ----------- LOGIN WRAP -----------
@@ -73,18 +78,26 @@ def login_required(f):
     return wrap
 
 
-##################################################
-# ------------- HTTP request ROUTES -------------#
-# ---------------------------------------------- #
-""" 
-    Every route is defined like this 
-    @app.route('/url')
+###############################################################################
+# ---------------------------- HTTP request ROUTES ---------------------------#
+# --------------------------------------------------------------------------- #
+# 
+#    Every route is defined like this 
+#    @app.route('/foo')
+#    def foo():
+#        return bar
+#
+#    To access a function, you send a HttpRequest with this url
+#
+#      http://www.barfoo.com + /foo 
+#           http://localhost + /foo
+#      
+#      + additional POST or GET parameters if required by the function
+#                                        
+# --------------------------------------------------------------------------- #
 
-    To access the function, you send a HttpRequest with this url
-      http://www.domainname.com + /url 
-                                        ----- Jonas ----- """
 
-# ---------------- MISC ROUTES ---------------------
+# ------------------------------- MISC ROUTES ------------------------------- #
 
 @app.route('/favicon.ico')
 def favicon():
@@ -191,8 +204,6 @@ def post_user():
 
     return redirect(url_for('input_url'))
 
-# -----------------------------------------------------
-
 
 # ---------- AJAX POST/GET request ROUTES -------------
 
@@ -212,10 +223,10 @@ def post_meta():
         try:
             sigma.save_link(id=url, meta=meta, user=user)
             searchdata = sigma.get_searchdata(user)
-            return jsonify(searchdata=searchdata, status='Postmeta OK')
+            return jsonify(status='Postmeta OK', searchdata=searchdata)
 
         except Exception as e:
-            return jsonify(status='Meta error:' + str(e))
+            return jsonify(status='Postmeta ERROR:' + str(e))
     return 'Missing Url and Meta'
 
 
@@ -232,8 +243,7 @@ def get_map():
         return jsonify(status='Getmap OK', map=the_map)
 
     except Exception as e:
-        return jsonify(status='Getmap error:' + str(e))
-
+        return jsonify(status='Getmap ERROR:' + str(e))
 
 
 @app.route('/getmaps', methods=['GET'])
@@ -247,8 +257,7 @@ def get_maps():
         return jsonify(status='Getmaps OK', map=maps)
 
     except Exception as e:
-        return jsonify(status='Getmaps error:' + str(e))
-
+        return jsonify(status='Getmaps ERROR:' + str(e))
 
 
 @app.route('/mapnames', methods=['GET'])
@@ -266,8 +275,7 @@ def get_map_names():
         return jsonify(status='Names OK', names=map_names)
 
     except Exception as e:
-        return jsonify(status='Names error:' + str(e))
-
+        return jsonify(status='Names ERROR:' + str(e))
 
 
 @app.route('/updatemap', methods=['POST'])
@@ -286,7 +294,7 @@ def update_map():
         new = sigma.update_map(user, main_topic, subtopic, url)
         return jsonify(status='Updatemap OK', new=new)
     except Exception as e:
-        return jsonify(status='Updatemap error:' + str(e))
+        return jsonify(status='Updatemap ERROR: ' + str(e))
 
 
 @app.route('/relabeltopic', methods=['POST'])
@@ -301,9 +309,9 @@ def relabel_topic():
         new_topic = json['new']
 
         sigma.relabel_topic(user, map_id, old, new)
-        return jsonify(status='OK')
+        return jsonify(status='Relabel OK')
     except Exception as e:
-        return jsonify(status='NOT OK', error="error: " + str(e))
+        return jsonify(status='Relabel ERROR: ' + str(e))
 
 
 @app.route('/fetchsearchdata', methods=['POST'])
@@ -316,14 +324,8 @@ def fetch_searchdata():
         links = sigma.get_links(user)
         return jsonify(status='Search OK', searchdata=searchdata, linksdata=links)
     except Exception as e:
-        return jsonify(status='Search NOT OK', error="error: " + str(e))
+        return jsonify(status='Search ERROR:' + str(e))
 
-
-
-
-
-
-######  -----   TAGS    -----   #######
 
 @app.route('/tags', methods=['GET'])
 @login_required
@@ -331,11 +333,9 @@ def get_tags():
     user = session['user']
     try:
         tags = sigma.get_tags(user)
-        return jsonify(status='OK', tags=tags)
+        return jsonify(status='Tags OK', tags=tags)
     except Exception as e:
-        return jsonify(status='NOT OK', error="error: " + str(e))
-
-
+        return jsonify(status='Tags ERROR: ' + str(e))
 
 
 @app.route('/deletelink', methods=['POST'])
@@ -354,11 +354,9 @@ def delete_link():
         url = json['url']
 
         sigma.delete_link(user, map_id, subtopic, url)
-        return jsonify(status='OK')
+        return jsonify(status='Delete OK')
     except Exception as e:
-        return jsonify(status='NOT OK', error="error: " + str(e))
-
-
+        return jsonify(status='Delete ERROR: ' + str(e))
 
 
 @app.route('/fetchtitle', methods=['POST'])
@@ -378,10 +376,10 @@ def fetch_title():
         title = sigma.fetch_title(url)
         session['last_request'] = time.time()
 
-        return jsonify(title=title, status="Title OK!")
+        return jsonify(status="Title OK", title=title)
 
     except Exception as e:
-        return jsonify(status="Server ERROR: " + str(e))
+        return jsonify(status="Title ERROR: " + str(e))
 
 
 @app.route('/fetchmeta', methods=['POST'])
@@ -423,10 +421,10 @@ def fetch_meta():
         meta = sigma.fetch_meta(url)
         # This will build a json response based on all the 
         # attributes in the LinkMeta object.
-        return jsonify(meta=meta.__dict__, status="OK!")
+        return jsonify(status="Fetchmeta OK", meta=meta.__dict__)
 
     except Exception as e:
-        return jsonify(status="Server ERROR: " + str(e))
+        return jsonify(status="Fetchmeta ERROR: " + str(e))
 
 
 @app.route('/fetchlinks', methods=['GET'])
@@ -435,13 +433,13 @@ def fetch_links():
     user = session['user']
     try:
         links = sigma.get_links(user)
-        return jsonify(links=links, status='Links OK')
+        return jsonify(status='Links OK', links=links)
     except Exception as e:
-        return jsonify(status='Links NOT OK', error="error: " + str(e))
+        return jsonify(status='Links ERROR: ' + str(e))
 
-# ------------------------------------------------ #
-# ------------------- LAST ROUTE ----------------- #
-####################################################
+# --------------------------------------------------------------------------- #
+# ------------------------------- LAST ROUTE -------------------------------- #
+###############################################################################
 
 
 if __name__ == '__main__':
