@@ -2,6 +2,7 @@
 # coding:utf-8
 
 # utility.py -- working with maps offline
+import os
 import sigma
 from sigma import KnowledgeMap, Topic
 
@@ -17,6 +18,37 @@ def convert_v1_to_v2(user, mapid, the_map):
 		new_dict[subtopic] = {'urls': links, 'subtopics': {}}
 	the_map.subtopics = new_dict
 	sigma.save_map(user, mapid, the_map)
+
+
+def make_minimum_configuration():
+	"""
+		Generates the minimum required configuration to run
+		the web-interface out of the box
+	"""
+	SECRET_KEY = ''.join('%02x' % ord(x) for x in os.urandom(16))
+	with open("config.py", "w") as configfile:
+		configfile.write("SECRET_KEY='%s'\n"%SECRET_KEY)
+
+
+def load_config(app):
+	"""
+		Loads or creates and loads configuration from config.py. 
+	"""
+	try:
+		app.config.from_object('config')
+	except:
+		make_minimum_configuration()
+		app.config.from_object('config')
+
+
+	if "WEBROOT" in app.config:
+		import os
+		# Changes the running directory of
+		# the application to the same folder
+		# as the python files.  This way
+		# import statements will work. 
+		os.chdir(app.config["WEBROOT"])
+	return app
 
 
 

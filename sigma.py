@@ -2,6 +2,20 @@
 # -*- coding:utf-8 -*-
 # sigma.py
 #
+
+"""
+    Navn: sigma.py
+    Prosjekt: SigmaPrototype
+    Opprettet av: Robin
+    Beskrivelse: sigma.py fungerer som model for hele Sigma systemet. 
+                Modellen har ansvar for å holde på data, som kart og linker, 
+                og eksponere et api for å kunne utføre operasjoner på dataene.
+                opperere / hente / lagre / endre. 
+                og. 
+                 Den brukes av REST API-et som har ansvar over opptatt av å oversette
+                 data fra modellen til json og snakke med klienter.
+                                         ----- Robin -----"""
+
 ############################################################
 #   This module functions as the Sigma engine. 
 #   It fasciliates functionality to make meaning 

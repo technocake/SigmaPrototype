@@ -55,10 +55,10 @@ import sigma
 # for pickles sake...
 from sigma import KnowledgeMap, Topic
 import auth
+from utility import load_config
 
-le_key = '1337' # os.urandom(24)
 app = Flask(__name__)   # obligatorisk 
-app.secret_key = le_key
+load_config(app)
 
 
 # ----------- LOGIN WRAP -----------
