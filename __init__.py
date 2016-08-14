@@ -22,20 +22,21 @@
     6.  /maps                          - return render_template(maps.html, maps=maps)
     7.  /<user>/map/<mapid>            - return render_template(map.html)
     8.  /<user>/map/<mapid>/thumbnail  - return render_template(mapthumbnail.html)
-    9.  /postuser                      - return redirect(/inputurl)
+    9.  /mapssvg                       - return render_template(mapssvg.html)
+    10. /postuser                      - return redirect(/inputurl)
 
-    10. /postmeta                      - return jsonify(searchdata=searchdata)
-    11. /getmap                        - return jsonify(map=the_map.__dict__)
-    12. /getmaps                       - return jsonify(map=maps)
-    13. /mapnames                      - return jsonify(names=map_names)
-    14. /updatemap                     - return jsonify(new=new)
-    15. /relabeltopic                  - return jsonify()
-    16. /fetchsearchdata               - return jsonify(searchdata=searchdata)    
-    17. /tags                          - return jsonify(tags=tags)
-    18. /deletelink                    - return jsonify()
-    19. /fetchtitle                    - return jsonify(title=title)
-    20. /fetchmeta                     - return jsonify(meta=meta.__dict__)
-    21. /fetchlinks                    - return jsonify(links=links)
+    11. /postmeta                      - return jsonify(searchdata=searchdata)
+    12. /getmap                        - return jsonify(map=the_map.__dict__)
+    13. /getmaps                       - return jsonify(map=maps)
+    14. /mapnames                      - return jsonify(names=map_names)
+    15. /updatemap                     - return jsonify(new=new)
+    16. /relabeltopic                  - return jsonify()
+    17. /fetchsearchdata               - return jsonify(searchdata=searchdata)    
+    18. /tags                          - return jsonify(tags=tags)
+    19. /deletelink                    - return jsonify()
+    20. /fetchtitle                    - return jsonify(title=title)
+    21. /fetchmeta                     - return jsonify(meta=meta.__dict__)
+    22. /fetchlinks                    - return jsonify(links=links)
 
                                       * All jsonify also return (status=status)
 # ------------------------------------------------------------------------------   
@@ -164,6 +165,13 @@ def map_thumbnail(user, mapid):
     return render_template('mapthumbnail.html', mapid=mapid)
 
 
+@app.route('/mapssvg')
+@login_required
+def maps_svg():
+
+    return render_template('mapssvg.html')
+
+
 # --------- FORM POST request ROUTES -----------------
 
 @app.route('/postuser', methods=['POST'])
@@ -215,7 +223,7 @@ def get_map():
         mapid = request.form.get('main_topic', None)
         the_map = sigma.get_map(user, mapid, True) 
 
-        return jsonify(status='Getmap OK', map=the_map.__dict__)
+        return jsonify(status='Getmap OK', map=the_map)
 
     except Exception as e:
         return jsonify(status='Getmap error:' + str(e))
