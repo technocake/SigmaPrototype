@@ -10,7 +10,7 @@
 				onkeyup="getMeta(this.value)" 
 				onclick="this.select()"/>
 
-		<div class="metainfo">	
+		<div class="metainfo" hidden>	
 
 			<div class="kolonne1">
 				<div style="display:flex;">
@@ -44,20 +44,22 @@
 			<a href="/meny"><button>Meny</button></a>
 		</nav>
 
-		<table class="tableview">
-			<thead>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</thead>
-			<tbody>
-					
-			</tbody>
-		</table> 
+
+
+			<table id="urlliste1" class="tableview">
+			    <colgroup>
+			        <col style="min-width:100px;" />
+			        <col style="min-width:100px;"/>
+			        <col style="min-width:100px;" />
+			        <col style="min-width:100px;" />
+			    </colgroup>
+				<tbody>
+						
+				</tbody>
+			</table>
+		
 	</div>
+
 	
 
 <script type="text/javascript">
@@ -205,7 +207,10 @@
 
 			console.log('Valid URL entered!');
 			APP.old_url = iurl;
+
+			APP.$metainfo.removeAttr('hidden');
 			APP.$metainfo.show();
+
 			APP.$urlinput.val("fetching title and metadata...");
 
 			$.post('/fetchmeta', { 'url': iurl}, 
@@ -249,34 +254,122 @@
 		return 0;
 	};
 
+	// ----------- FUNCTIONS ON TABLE ------------------
+
+
+	function changeTopic(topics){
+
+		var main = '';
+		var sub = '';
+ 
+		main, sub = topics.split('_');
+
+		
+	};
+
 	
-	function fillTable_dict(linksdict){
-		// Depreciated funciton in favor of fillTable_2d
-		// Viewfunction 1 - Fills a list-view of all url-links.
-		// INPUT a dictionary like -> links[link][data]
+	function revealHiddenRow($row){
+		// OBJECTIVE:
+		//		Reveal a row just beneath a row with a click-handler.
+		//       The new row is supposed to show extra information.
+		// INPUT:
+		//    jQuery - row : The row number which was clicked.
 
-		var thtml;
-		var links = linksdict;
+		var $hidden = $('#'+$row.id+'hidden'); 
 
-		var i = 0;
-		for (var link in links){
+		if ($hidden.hasClass('out')){
 
-			if (links[link]['favicon']){
-				le_link = links[link]['favicon'];
-			} else {
-				le_link = 'static/favicon.svg';
+			$hidden.removeClass('out');
+			$hidden.addClass('in');
+
+		} else{
+
+			$hidden.removeClass('in');
+			$hidden.addClass('out');
+		};
+	};
+
+
+	function fillTable_2d($tbody, arraydata){
+
+		// THOUGHTS:
+		// 		It is really difficult to write something general about 
+		// 		how to fill a table with data. Therefore in most cases it
+		// 		is expected of the user to customize this function.
+		//
+		// OBJECTIVE: To fill a 2d table with 2dArray-data.
+		//             The table may have n columns and n rows. 
+		//
+		// INPUT:
+		// 		jQuery - tbody     - a jQuery object of a html <tbody></tbody>
+		// 		array  - arraydata - eks. [[topic1, topic2, url1],[topic1, topic3, url2]]
+
+		
+		var row;
+		var rowID;
+
+		var $row;
+		var $hiddenrow
+		var cell;
+		
+		var maintopic;
+		var subtopic;
+		var url;
+		var title;
+
+		console.log("TABLE lenght: " + arraydata.length);
+
+		for(var i=0; i < arraydata.length; i++){
+
+			// Construct each row with a unique row ID.
+			row = arraydata[i];
+			rowID = 'rowid_'+i;
+			$tbody.append('<tr id="' + rowID + '" class="mainrow"></tr>');
+			$row = $('#'+rowID);
+
+			// Event handler
+			$row.click(function(){
+				revealHiddenRow(this);
+			});
+
+			// Metainfo
+			maintopic = row[0];
+			subtopic = row[1]
+			url = row[2];
+
+			title = LINKSDATA[url].title.slice(0, 70);
+			if(LINKSDATA[url].title.length > 70){
+				title += '...';
 			};
 
-			thtml = '<tr>'+
-						'<td><img width="40px" height="40px" src="'+ le_link +'"/></td>'+
-						'<td>'+links[link]['title']+'</td>'+
-						'<td><a id="link'+i+'" class="linkholder" href="#"><img width="25px" height="25px" src="static/external_link.png"/></a></td>'+
-					'</tr>';
-			APP.$tbody.append(thtml);
-			$('#link'+i).attr('href', links[link]['url']);
-			i ++;
+			// row[0]
+			$row.append('<td><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></td>');
+			$row.append('<td>'+ maintopic +' - </td>');
+
+			// row[1]
+			//$row.append('<td>'+ subtopic +' - </td>');
+
+			// row[2]
+			$row.append('<td id="urlkey_'+i+'">'+ title +'</td>');
+			$row.append('<td><a href="'+url+'"><i class="fa fa-external-link fa-4" aria-hidden="true"></i></a></td>');
+
+			// Insert hidden row
+			$hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
+				             '<td colspan=2></td>' +
+				             '<td style="display: flex; flex-direction: column; align-items: center;">'+
+				          
+				             '<input id="'+rowID+'m" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
+					         '<input id="'+rowID+'s" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
+					         '<button id="endrebutton" name="'+maintopic+'_'+subtopic+'" onclick="changeTopic(this.name)">Endre</button>'+
+					    
+				             '</td>'+
+				 
+
+				           '</tr>');
+
+			$tbody.append($hiddenrow);
+
 		};
-		return 0;
 	};
 
 	function initDocumentData(){
