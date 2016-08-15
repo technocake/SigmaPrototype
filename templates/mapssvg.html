@@ -22,7 +22,11 @@
 </head>
 <body>
 	<nav id="topnav" style="display:flex; justify-content: center"></nav>
-	<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+
+	<svg id="s" xmlns="http://www.w3.org/2000/svg">
+
+
+    </svg>
 </body>
 
 <script type="text/javascript">
@@ -77,6 +81,7 @@ $(document).ready(function(){
     	return coords;
     };
 
+
     // --------------------- INIT function -------------------------
 
     function initSVG(map){
@@ -127,8 +132,13 @@ $(document).ready(function(){
     	s.setAttribute('height', wh);
 
     	// Make main node
-    	main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
-    	s.appendChild(main_node);
+    	main_node = makeSVG('circle', {id: 'main_node', 
+                                       cx: ww/2, 
+                                       cy: wh/2, 
+                                        r: 8, 
+                                   stroke: 'black',
+                             onmouseover : "blowUp(evt)",
+                              onmouseout : "smashDown(evt)"  });
 
     	// Get x and y of main nodes
     	mnx = parseInt(main_node.getAttribute('cx'));
@@ -149,21 +159,28 @@ $(document).ready(function(){
         // Iterate over sub nodes
     	for (var i=0; i < subarr_length; i++){
 
+            // Subkey init
     		subkey = subkeys_array[i];
     		sx = sub_coords[i][0];
     		sy = sub_coords[i][1];
 
     		// Create Sub node DOM objects
-    		// Make red lines
+    		// Make red lines and append main_node on top
     		redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
     		s.appendChild(redline);
+            s.appendChild(main_node);
 
     		// Make red nodes
-    		sub_nodes[i] = makeSVG('circle', {cx: sx, cy: sy, r: 4, stroke: 'red'});
+    		sub_nodes[i] = makeSVG('circle', {cx: sx, 
+                                              cy: sy, 
+                                               r: 8, 
+                                          stroke: 'red',
+                                    onmouseover : "blowUp(evt)",
+                                     onmouseout : "smashDown(evt)"  });
     		s.appendChild(sub_nodes[i]);
 
     		// subtopic text node
-    		subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black"})
+    		subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black" })
     		subtextNode.appendChild(document.createTextNode(subkey));
     		s.appendChild(subtextNode);
 
@@ -177,18 +194,32 @@ $(document).ready(function(){
 
     		for (var j=0; j < urlarr_length; j++){
 
-    			// Create Url node DOM objects
+    			// Url init
     			url_nodes.subkey = [];
+                urlkey = urlkeys_array[j];
+                ux = url_coords[i][j][0];
+                uy = url_coords[i][j][1];
 
     			// Make blue lines
-    			blueline = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
-    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
+    			blueline = makeSVG('line', { x1 : sx, 
+                                             y1 : sy, 
+    										 x2 : ux, 
+                                             y2 : uy,     
+                                         stroke : 'blue'});
     			s.appendChild(blueline);
 
     		 	// Make url nodes
-    			url_nodes.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], 
-    													r:4, stroke: 'blue'});
+    			url_nodes.subkey[j] = makeSVG('circle', {
+                                                    id : urlkey,
+                                                    cx : ux, 
+                                                    cy : uy, 
+    												 r : 6, stroke: 'blue',
+                                           onmouseover : "blowUp(evt)",
+                                            onmouseout : "smashDown(evt)"   });
     			s.appendChild(url_nodes.subkey[j]);
+
+                // Make url text node
+
     		};
     	};
     	
@@ -243,6 +274,24 @@ $(document).ready(function(){
 
 </script>
 
+<script type="text/javascript">
+
+/* Handle SVG events */
+
+
+    function blowUp(evt){
+        var r = evt.target.getAttribute("r");
+        evt.target.setAttribute("r", r*2);
+    }
+
+    function smashDown(evt){
+
+        var r = evt.target.getAttribute("r");
+        evt.target.setAttribute("r", r / 2);
+    }
+
+</script>
+
 
 </html>
 
@@ -261,6 +310,5 @@ http://www.w3schools.com/svg/svg_circle.asp
 http://www.w3schools.com/jsref/met_document_createtextnode.asp
 
 */
-
 
  </script>
