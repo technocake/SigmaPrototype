@@ -116,6 +116,7 @@ $(document).ready(function(){
 
         var maintextNode;
         var subtextNode;
+        var urltextNode;
         var redline;
         var blueline;
 
@@ -135,15 +136,16 @@ $(document).ready(function(){
     	main_node = makeSVG('circle', {id: 'main_node', 
                                        cx: ww/2, 
                                        cy: wh/2, 
-                                        r: 8, 
+                                        r: 10, 
                                    stroke: 'black',
                              onmouseover : "blowUp(evt)",
                               onmouseout : "smashDown(evt)"  });
+        s.appendChild(main_node);
 
     	// Get x and y of main nodes
     	mnx = parseInt(main_node.getAttribute('cx'));
     	mny = parseInt(main_node.getAttribute('cy'));
-    	
+
     	// Display text at the main_node
     	maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
     	maintextNode.appendChild(document.createTextNode(current_topic));
@@ -168,16 +170,18 @@ $(document).ready(function(){
     		// Make red lines and append main_node on top
     		redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
     		s.appendChild(redline);
-            s.appendChild(main_node);
+ 
 
     		// Make red nodes
     		sub_nodes[i] = makeSVG('circle', {cx: sx, 
                                               cy: sy, 
                                                r: 8, 
                                           stroke: 'red',
+                                            fill: 'red',
                                     onmouseover : "blowUp(evt)",
                                      onmouseout : "smashDown(evt)"  });
-    		s.appendChild(sub_nodes[i]);
+            s.appendChild(sub_nodes[i]);
+    		
 
     		// subtopic text node
     		subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black" })
@@ -208,17 +212,29 @@ $(document).ready(function(){
                                          stroke : 'blue'});
     			s.appendChild(blueline);
 
+
     		 	// Make url nodes
     			url_nodes.subkey[j] = makeSVG('circle', {
                                                     id : urlkey,
                                                     cx : ux, 
                                                     cy : uy, 
-    												 r : 6, stroke: 'blue',
-                                           onmouseover : "blowUp(evt)",
-                                            onmouseout : "smashDown(evt)"   });
+    												 r : 6, 
+                                                 stroke: 'blue',
+                                                   fill: 'blue',
+                                           onmouseover : "blowUpUrl(evt)",
+                                            onmouseout : "smashDownUrl(evt)"   });
     			s.appendChild(url_nodes.subkey[j]);
 
                 // Make url text node
+                urltextNode = makeSVG('text', {
+                                               id: urlkey + 'sub',
+                                                x: ux, 
+                                                y: uy,
+                                              style: "font-size: 25px;",
+                                             fill: "black" })
+                urltextNode.appendChild(document.createTextNode(urlkey));
+                urltextNode.setAttribute('visibility', 'hidden');
+                s.appendChild(urltextNode);
 
     		};
     	};
@@ -278,10 +294,32 @@ $(document).ready(function(){
 
 /* Handle SVG events */
 
+    function blowUpUrl(evt){
+        var r = evt.target.getAttribute("r");
+        evt.target.setAttribute("r", r*2);
+
+        var url = evt.target.getAttribute("id");
+        console.log(url);
+        var textnode = evt.target.parentNode.getElementById(url+'sub');
+        textnode.setAttribute("visibility", "visible");
+
+    }
+
+    function smashDownUrl(evt){
+        var r = evt.target.getAttribute("r");
+        evt.target.setAttribute("r", r/2);
+
+        var url = evt.target.getAttribute("id");
+        var textnode = evt.target.parentNode.getElementById(url+'sub');
+        textnode.setAttribute("visibility", "hidden");
+
+    }
+
 
     function blowUp(evt){
         var r = evt.target.getAttribute("r");
         evt.target.setAttribute("r", r*2);
+
     }
 
     function smashDown(evt){
