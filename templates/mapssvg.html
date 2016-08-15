@@ -228,12 +228,13 @@ $(document).ready(function(){
                 // Make url text node
                 urltextNode = makeSVG('text', {
                                                id: urlkey + 'sub',
-                                                x: ux, 
+                                                x: ux+10, 
                                                 y: uy,
-                                              style: "font-size: 25px;",
+                                              style: "font-size: 10px;",
+                                              //visibility: "hidden",
                                              fill: "black" })
                 urltextNode.appendChild(document.createTextNode(urlkey));
-                urltextNode.setAttribute('visibility', 'hidden');
+
                 s.appendChild(urltextNode);
 
     		};
@@ -301,7 +302,7 @@ $(document).ready(function(){
         var url = evt.target.getAttribute("id");
         console.log(url);
         var textnode = evt.target.parentNode.getElementById(url+'sub');
-        textnode.setAttribute("visibility", "visible");
+        textnode.setAttribute("style", "font-size:35px;");
 
     }
 
@@ -311,7 +312,7 @@ $(document).ready(function(){
 
         var url = evt.target.getAttribute("id");
         var textnode = evt.target.parentNode.getElementById(url+'sub');
-        textnode.setAttribute("visibility", "hidden");
+        textnode.setAttribute("style", "font-size:10px;");
 
     }
 
