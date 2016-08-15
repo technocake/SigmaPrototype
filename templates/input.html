@@ -174,11 +174,11 @@
 					data : JSON.stringify(json_topics),
 					contentType : 'application/json',
 					type : 'POST',
-					success : function(data){
-						console.log(data.status);
+					success : function(ndata){
+						console.log(ndata.status);
 						},
-					error : function(data){
-						console.log('Status:'+data.status); 
+					error : function(ndata){
+						console.log('Status:'+ndata.status); 
 					}
 				});
 			},
@@ -283,32 +283,33 @@
 		// OBJECTIVE:
 		// 		Intialized LINKSDATA and SEARCHDATA and fill up the table
 
+
 		$.get('/fetchlinks', 
 			function(data){
 				if (data.status === 'Links OK'){
 					LINKSDATA = data.links;
 					console.log('LINKSDATA initalized');
 
+					$.post('/fetchsearchdata', 
+						function(ndata){
+
+							if (ndata.status === 'Search OK'){
+								SEARCHDATA = ndata.searchdata;
+								console.log('SEARCHDATA initalized. Building table...');
+
+								APP.$tbody.html('');
+								fillTable_2d(APP.$tbody, SEARCHDATA);
+
+							} else {
+								console.log(ndata.status);
+							};
+						}	
+					);
+
 				} else {
 					console.log(data.status);
 				};
 			}
-		);
-
-		$.post('/fetchsearchdata', 
-			function(data){
-
-				if (data.status === 'Search OK'){
-					SEARCHDATA = data.searchdata;
-					console.log('SEARCHDATA initalized. Building table...');
-
-					APP.$tbody.html('');
-					fillTable_2d(APP.$tbody, SEARCHDATA);
-
-				} else {
-					console.log(data.status);
-				};
-			}	
 		);
 	};
 

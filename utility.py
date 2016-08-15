@@ -25,7 +25,12 @@ def make_minimum_configuration():
 		Generates the minimum required configuration to run
 		the web-interface out of the box
 	"""
-	SECRET_KEY = ''.join('%02x' % ord(x) for x in os.urandom(16))
+
+	try:
+		SECRET_KEY = ''.join('%02x' % ord(x) for x in os.urandom(16)) # python2
+	except:
+		SECRET_KEY = ''.join('%02x' % x for x in os.urandom(16)) # python3
+
 	with open("config.py", "w") as configfile:
 		configfile.write("SECRET_KEY='%s'\n"%SECRET_KEY)
 
@@ -55,7 +60,8 @@ def load_config(app):
 
 
 if __name__ == '__main__':
-	user = "jonas"
-	for mapid, the_map in sigma.get_maps(user).items():
-		print("Converting map: %s from v1 to v2..." % mapid)
-		convert_v1_to_v2(user, mapid, the_map)
+	make_minimum_configuration()
+	#user = "jonas"
+	#for mapid, the_map in sigma.get_maps(user).items():
+	#	print("Converting map: %s from v1 to v2..." % mapid)
+	#	convert_v1_to_v2(user, mapid, the_map)
