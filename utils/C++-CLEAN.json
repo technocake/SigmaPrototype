@@ -1,0 +1,56 @@
+/*
+	Filnavn: C++-CLEAN.json
+	Author: Jonas
+
+	Her er en slags fasit på hvordan JSON-filer bør struktureres.
+	 Hadde vert kult om du hadde fått til at output-filen fra 
+	  converter.py hadde sett noe i nærheten av denne her.
+	   Når jeg sier i nærheten, så mener jeg at syntaxen må
+	    være nøyaktig lik dette for at det skal være gyldig JSON,
+	     men whitespacen har egentlig ikke så mye å si, men det gjør
+	      det jo mye lettere å lese dersom whitespacingen er konsekvent.
+
+	      										--- Jonas ---
+*/
+
+{
+
+"C++": {
+
+	"Variables": {
+
+		"Integer": {
+			"resource":"Resource 1", 
+			"resource":"Resource 2"
+		},
+		
+		"String":{
+			"resource":"Resource 1",
+			"resource":"Resource 2"
+		},
+
+		"float":{
+			"resource":"Resource 1", 
+			"resource":"Resource 2"
+		}
+	},
+
+	"Loops":{
+
+		"While":{
+			"resource":"Resource 1", 
+			"resource":"Resource 2"
+		},
+
+		"For":{
+			"resource":"Resource 2", 
+			"resource":" Resource 1"
+		}
+	}
+}
+
+}
+
+
+
+

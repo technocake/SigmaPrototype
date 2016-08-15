@@ -1,0 +1,21 @@
+{"C++":[
+{"Variables":[
+{"Integer":[
+{"resource":"Resource 1", "resource":"Resource 2"]},
+}
+{"String":[
+{"resource":"Resource 1", "resource":"Resource 2"]},
+}
+{"float":[
+{"resource":"Resource 1", "resource":"Resource 2"]},
+]},
+}
+{"Loops":[
+{"While":[
+{"resource":"Resource 1", "resource":"Resource 2"]},
+}
+{"For":[
+{"resource":"Resource 2", "resource":" Resource 1"]},
+]},
+]},
+]},

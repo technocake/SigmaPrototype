@@ -79,21 +79,23 @@ function fillTable_2d($tbody, arraydata, width=3){
 		$row.click(function(){
 			revealHiddenRow(this);
 		});
+		url = row[2];
+		title = LINKSDATA[url].title.slice(0, 40) + '...';
 
 		for (var j=0; j < width; j++){
 			cell =  row[j];
 
 			switch(j){
 				case 0:
-					$row.append('<td><td><img width="40px" height="40px" src="#"/></td></td>');
+					$row.append('<td><td><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></td></td>');
 					$row.append('<td>'+ cell +'</td>');
 					break;
 				case 1:
 					$row.append('<td>'+ cell +'</td>');
 					break;
 				case 2:
-					$row.append('<td id="urlkey_'+i+'">'+ cell +'</td>');
-					$row.append('<td><a href="'+cell+'"><i class="fa fa-external-link fa-4" aria-hidden="true"></i></a></td>');
+					$row.append('<td id="urlkey_'+i+'">'+ title +'</td>');
+					$row.append('<td><a href="'+url+'"><i class="fa fa-external-link fa-4" aria-hidden="true"></i></a></td>');
 					// <i class="fa fa-times fa-4" aria-hidden="true"></i>
 					break;
 			};
