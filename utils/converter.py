@@ -9,12 +9,17 @@
 
 import sys
 import re
+import os # Needed to check if the file exist and get the file extension
 
 def convert(file):
 
 	#Have to figure out how to delete last comma in end_file
 
 	freemind_file = open(file, 'r')
+	
+	# Split the filename into name incl. path, and the file extension
+	# Just assumes the file format is correct if the file extension is ".mm"
+	#if os.path.ntsplitext(freemind_file)[1] == ".mm":  This does not work on my machine (Win.7 x64), variable type error? Commented out for now
 	print(freemind_file.name)
 	name = freemind_file.name
 	name = name[:-2]
@@ -49,8 +54,9 @@ def convert(file):
 				if just == False:
 					json_file.write("\n]},\n")
 					just = True
-				else: 
-					json_file.write("]},\n")
+				else:
+					#if done==False:
+					json_file.write("]},\n") # This is the call that creates the last comma & newline
 			else:
 				json_file.write("]},\n")
 
@@ -67,7 +73,19 @@ def convert(file):
 	json_file.close()
 	
 	# ---------------------------------
+#else:
+#	print("Sorry, unknown file type")
 
 
-convert(sys.argv[1])
-
+# Check if the argument array has the required length (argv[0] is the application name, argv[1] is the added file's name)
+if len(sys.argv) > 1:
+	argument = sys.argv[1]
+	
+	# Check if the argument points to an existing file.
+	# We risk a "No such file or directory" error otherwise
+	if os.path.exists(argument):
+		convert(sys.argv[1])
+	else:
+		print("Status 2: File does not exist") # Sounds ok?
+else:
+	print("Status 1: No file is defined") # Sounds ok?

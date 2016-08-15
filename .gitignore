@@ -16,3 +16,8 @@ __pycache__
 # And, as an additional note, use the filename format: "<service>.api-key.txt"
 # for future api-keys to future services.
 *.api-key.txt
+/.vs/SigmaPrototype/v14
+/env
+/SigmaPrototype.pyproj
+/SigmaPrototype.sln
+/utils/converter.py.lnk
