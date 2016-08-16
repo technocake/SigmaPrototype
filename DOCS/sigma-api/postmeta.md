@@ -26,7 +26,7 @@ Essential information:
 ## Return format
 Status code 200, along with a JSON array containing 
 - **status** — Either OK or NOT OK
-- **searchdata** — a list of lists with searchable data, see [/getsearchdata](getsearchdata.md).
+- **searchdata** — a list of lists with searchable data, see [/fetchsearchdata](fetchsearchdata.md).
 ***
 
 ## Errors
