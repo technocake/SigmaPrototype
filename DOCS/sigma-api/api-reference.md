@@ -13,7 +13,7 @@ Data is represented in JSON, both in requests by clients and responses from the 
 
 ### Things that are for searching and autosuggestions
 - /[tags](tags.md)  -- returns a flat list of the users tags( topics / subtopics from maps)
-- /[getsearchdata](getsearchdata.md)  -- returns a nested list of searchable data + links. Grouped per link.
+- /[fetchsearchdata](fetchsearchdata.md)  -- returns a nested list of searchable data + links. Grouped per link.
 
 
 ### Things that are about links
