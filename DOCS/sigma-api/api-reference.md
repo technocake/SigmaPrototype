@@ -17,16 +17,16 @@
     7.  /<user>/map/<mapid>
     8.  /<user>/map/<mapid>/thumbnail
     9.  /postuser
-    10. /postmeta
-    11. /getmap
-    12. /mapnames
-    13. /updatemap
-    14. /relabeltopic
-    15. /tags
-    16. /deletelink
-    17. /fetchtitle
-    18. /fetchmeta
-    19. /fetchlinks
+    10. /[postmeta](postmeta.md)
+    11. /[getmap](getmap.md)
+    12. /[mapnames](mapnames.md)
+    13. /[updatemap](updatemap.md)
+    14. /[relabeltopic](relabeltopic.md)
+    15. /[tags](tags.md)
+    16. /[deletelink](deletelink.md)
+    17. /[fetchtitle](fetchtitle.md)
+    18. /[fetchmeta](fetchmeta.md)
+    19. /[fetchlinks](fetchlinks.md)
 
 # -------------------------------------------------   
 """
