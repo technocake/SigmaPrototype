@@ -313,9 +313,17 @@ def get_tags(user):
 ########################################
 #   CLASSES
 ########################################
+class SigmaObject():
+    """ 
+        General class that all other sigma objects inherits from. 
+        This is to signal that the derived class is a SigmaObject.
+        This is usefull when these objects are going to be serialized
+        (converted into) JSON-strings or Pickle-strings. 
+    """
+    pass
 
 
-class LinkMeta():
+class LinkMeta(SigmaObject):
     """ A class to hold meta info about a link """
     def  __init__(self, url):
         self.url = url
@@ -394,12 +402,12 @@ class LinkMeta():
 
 
 
-class KnowledgeMap():
+class KnowledgeMap(SigmaObject):
     """ The class to hold a knowledge map """
     def __init__(self, main_topic=None, description=None):
         self.main_topic = main_topic
         self.description = description
-        self.subtopics = {} # expects a list of Topic instances
+        self.subtopics = {} # expects a dict of Topic instances
 
 
     def update(self, subtopic, url=None):
@@ -420,7 +428,7 @@ class KnowledgeMap():
 
 
 
-class Topic():
+class Topic(SigmaObject):
     """ 
         Representing a topic or subtopic. 
         contains - 
@@ -443,7 +451,7 @@ class Topic():
 #   ----    HACKS   -------
 
 def sigmaserialize(obj):
-    if isinstance(obj, KnowledgeMap) or isinstance(obj, Topic):
+    if isinstance(obj, SigmaObject):
         obj = obj.__dict__
 
     if isinstance(obj, dict):

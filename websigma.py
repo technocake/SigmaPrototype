@@ -238,9 +238,10 @@ def post_meta():
 def get_map():
 
     user = session['user']
+    json = request.get_json()
     
     try:
-        mapid = request.form.get('main_topic', None)
+        mapid = json.get('main_topic', None)
         the_map = sigma.get_map(user, mapid, True) 
 
         return jsonify(status='Getmap OK', map=the_map)
@@ -252,7 +253,9 @@ def get_map():
 @app.route('/getmaps', methods=['GET'])
 @login_required
 def get_maps():
-    # NOT IMPLEMETNED, JSON SERIALIZING tecghnique missing.
+    """
+        Returns a dict of all the knowledge maps associated with a user. 
+    """
     user = session['user']
     
     try:

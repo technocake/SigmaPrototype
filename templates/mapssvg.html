@@ -276,13 +276,19 @@ $(document).ready(function(){
     function newMap(new_topic){
         console.log(new_topic);
         current_topic = new_topic;
-
-        $.post('/getmap', { 'main_topic' : new_topic }, function(data){
-        	if (data.status === 'Getmap OK'){
-    	    	initSVG(data.map);
-    	    } else {
-    	    	console.log(data.status);};
-    	});
+ 
+        $.ajax('/getmap', {
+                    data : JSON.stringify({ 'main_topic' : new_topic }),
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success : function(data){
+                        console.log(data.status);
+                        initSVG(data.map);
+                    },
+                    error : function(data){
+                        console.log('Status:'+data.status); 
+                    }
+                });
     };
 
     newMap(current_topic);
