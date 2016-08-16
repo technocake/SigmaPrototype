@@ -6,7 +6,8 @@ These urls are used by clients to speak with the sigma engine. These are not mea
 Data is represented in JSON, both in requests by clients and responses from the server. 
 
 ### Things that are about knowledgemaps
-- /[getmap](getmap.md) -- returns a knowledgemap by its mapid
+- /[getmap](getmap.md) -- returns a knowledgemap by its mapid.
+- /[getmaps](getmaps.md) -- returns a dictionary of all knowledgemap associated with a user.
 - /[mapnames](mapnames.md) -- Gives a list of the users maps, map names only.
 - /[updatemap](updatemap.md) -- Used to add a subtopic and or urls in a map.
 - /[relabeltopic](relabeltopic.md) -- Changes a subtopics text in a map.
