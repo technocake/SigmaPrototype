@@ -1,9 +1,9 @@
 
 
-## POST /getmap
+## GET /getmaps
 
 ## Description
-Returns a knowledgemap identified by it's mapid.
+Returns a dictionary of all the knowledgemap associated with a user.
 
 ***
 
@@ -15,7 +15,6 @@ Returns a knowledgemap identified by it's mapid.
 ## Parameters
 Essential information:
 
-- **mapid** — the url to the link that will have it's data updated.
 
 ### Optional attributes:
 
@@ -24,7 +23,7 @@ Essential information:
 ## Return format
 Status code 200, along with a JSON array containing 
 - **status** — Either OK or NOT OK
-- **map** — a dict containing a knowledge map.
+- **map** — a dict containing all knowledge maps associated with a user.
 ***
 
 ## Errors
@@ -36,13 +35,10 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    POST /getmap
+    GET /getmaps
 
 **Payload**
 ``` json
-{
- "mapid": "Python"
-}
 ```
 
 
