@@ -241,7 +241,7 @@ def get_map():
     json = request.get_json()
     
     try:
-        mapid = json.get('main_topic', None)
+        mapid = json.get('mapid', None)
         the_map = sigma.get_map(user, mapid, True) 
 
         return jsonify(status='Getmap OK', map=the_map)

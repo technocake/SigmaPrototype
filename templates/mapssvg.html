@@ -278,7 +278,7 @@ $(document).ready(function(){
         current_topic = new_topic;
  
         $.ajax('/getmap', {
-                    data : JSON.stringify({ 'main_topic' : new_topic }),
+                    data : JSON.stringify({ 'mapid' : new_topic }),
                     contentType : 'application/json',
                     type : 'POST',
                     success : function(data){
