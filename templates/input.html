@@ -267,7 +267,7 @@
 				'new' : $('#'+rowid+'_s_').val()
 		};
 
-		$.ajax('/relabeltopic', {
+		$.ajax('/moveurl', {
 			data : JSON.stringify(json_topics),
 			contentType : 'application/json',
 			type : 'POST',
