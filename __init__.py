@@ -30,10 +30,10 @@
     10. /mapssvg                       -> render_template(mapssvg.html)
     11. /postuser                      -> redirect(/inputurl)
 
-    12. /postmeta                      -> jsonify(searchdata=searchdata)
+    12. /postmeta                      -> jsonify()
     13. /getmap                        -> jsonify(map=the_map)
     14. /getmaps                       -> jsonify(map=maps)
-    15. /mapnames                      -> jsonify(names=map_names)
+    15. /mapnames                s      -> jsonify(names=map_names)
     16. /updatemap                     -> jsonify(new=new)
     17. /relabeltopic                  -> jsonify()
     18. /fetchsearchdata               -> jsonify(searchdata=searchdata)    
@@ -225,8 +225,7 @@ def post_meta():
         # Saves it in the users links file.
         try:
             sigma.save_link(id=url, meta=meta, user=user)
-            searchdata = sigma.get_searchdata(user)
-            return jsonify(status='Postmeta OK', searchdata=searchdata)
+            return jsonify(status='Postmeta OK')
 
         except Exception as e:
             return jsonify(status='Postmeta ERROR:' + str(e))

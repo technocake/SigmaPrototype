@@ -165,11 +165,9 @@
 			type : 'POST',
 			success: function(data){ 
 				console.log(data.status);
-				SEARCHDATA = data.searchdata;
-
+		
 				resetInput();
-				APP.$tbody.html('');
-				fillTable_2d(APP.$tbody, SEARCHDATA);
+				initDocumentData();
 
 				// Post 2 
 				$.ajax('/updatemap', {
@@ -257,17 +255,64 @@
 	// ----------- FUNCTIONS ON TABLE ------------------
 
 
-	function changeTopic(topics){
+	function changeTopic(meta, rowid){
 
-		var main = '';
-		var sub = '';
- 
-		main, sub = topics.split('_');
+		var rowid = rowid.split('c')[0];
 
-		
+		var json_topics = {
+
+				'url' : meta.split(',_')[0],
+				'old' : meta.split(',_')[1],
+				'map_id' : $('#'+rowid+'m').val(),
+				'new' : $('#'+rowid+'s').val()
+		};
+
+		$.ajax('/relabeltopic', {
+			data : JSON.stringify(json_topics),
+			contentType : 'application/json',
+			type : 'POST',
+			success : function(data){
+				console.log(data.status);
+				if(data.status = "Relabel OK"){
+
+					initDocumentData();
+				} else {};
+
+			},
+			error : function(data){
+				console.log('Status:'+data.status); 
+			}
+		});
 	};
 
-	
+	function deleteUrl(d_url, rowid){
+
+		var rowid = rowid.split('d')[0];
+
+		var json_topics = {
+
+			'url' : d_url,
+			'main_topic' : $('#'+rowid+'m').val(),
+			'subtopic' : $('#'+rowid+'s').val()
+		};
+
+		$.ajax('/deletelink', {
+			data : JSON.stringify(json_topics),
+			contentType : 'application/json',
+			type : 'POST',
+			success : function(data){
+				console.log(data.status);
+
+				if (data.status === 'Delete OK'){
+					initDocumentData();
+				} else {};
+			},
+			error : function(data){
+				console.log('Status:'+data.status); 
+			}
+		});
+	};	
+
 	function revealHiddenRow($row){
 		// OBJECTIVE:
 		//		Reveal a row just beneath a row with a click-handler.
@@ -357,18 +402,16 @@
 			$hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
 				             '<td colspan=2></td>' +
 				             '<td style="display: flex; flex-direction: column; align-items: center;">'+
-				          
 				             '<input id="'+rowID+'m" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
 					         '<input id="'+rowID+'s" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
-					         '<button id="endrebutton" name="'+maintopic+'_'+subtopic+'" onclick="changeTopic(this.name)">Endre</button>'+
-					    
+					         '<button id="'+rowID+'c" class="endrebutton" name="'+url+',_'+subtopic+'"' +
+					         	'onclick="changeTopic(this.name, this.id)">Endre</button>' +
+					         '<button id="'+rowID+'d" class="endrebutton" name="'+url+'"'+
+					         	'onclick="deleteUrl(this.name, this.id)">Slett</button>'+
 				             '</td>'+
-				 
-
 				           '</tr>');
 
 			$tbody.append($hiddenrow);
-
 		};
 	};
 
