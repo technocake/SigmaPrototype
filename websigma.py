@@ -314,7 +314,7 @@ def relabel_topic():
         old_topic = json['old']
         new_topic = json['new']
 
-        sigma.relabel_topic(user, map_id, old, new)
+        sigma.relabel_topic(user, map_id, old_topic, new_topic)
         return jsonify(status='Relabel OK')
     except Exception as e:
         return jsonify(status='Relabel ERROR: ' + str(e))
