@@ -224,7 +224,7 @@ def get_maps(user, jsonable=False):
         # If the file does not exist, create an empty list of links.
         maps = {}
     if jsonable:
-        return sigmaserialize(the_map)
+        return sigmaserialize(maps)
     return maps
 
 
