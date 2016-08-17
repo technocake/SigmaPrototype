@@ -1,12 +1,9 @@
 
 
-## POST relabeltopic
+## POST moveurl
 
 ## Description
-updates a subtopic in a map. 
-If a subtopic has urls, those will be moved to the new subtopic. 
-If the new subtopic already exists, the urls from the old subtopic will be 
-appended to the target subptopic. 
+ Moves a url from one subtopic to another. 
 
 
 ***
@@ -21,6 +18,7 @@ Essential information:
 
 
 - **map_id** — The id of the map (main topic).
+- **url** — the url to be moved.
 - **old** — the old subtopic text.
 - **new** — the new subtopic text.
 
@@ -43,12 +41,13 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    POST /relabeltopic
+    POST /moveurl
 
 **Payload**
 ``` json
 {
   "map_id": "Javascript",
+  "url": "http://example.com/tralala",
   "old": "arrays",
   "new": "array methods"
 }
@@ -58,6 +57,6 @@ Status code 200, along with a JSON array containing
 **Return**
 ``` json
 {
-  "status": "OK",
+  "status": "Moveurl OK",
 }
 ```
