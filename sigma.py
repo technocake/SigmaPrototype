@@ -36,7 +36,7 @@ except:
     import pickle
 
 
-
+import json
 from werkzeug import secure_filename
 import requests
 import requests_cache
@@ -320,7 +320,16 @@ class SigmaObject():
         This is usefull when these objects are going to be serialized
         (converted into) JSON-strings or Pickle-strings. 
     """
-    pass
+    
+    def to_json(self):
+        """
+            Serializes classes inherting from SigmaObject into JSON.
+
+            example:  python_map = KnowledgeMap("Python")
+            jsonmap = python_map.to_json()
+            print(jsonmap) -->
+        """
+        return json.dumps(sigmaserialize(self), indent=4)
 
 
 class LinkMeta(SigmaObject):
@@ -435,10 +444,16 @@ class Topic(SigmaObject):
         
         text
             the textual value of the topic
-        links
-            list of LinkMeta objects associated to this node
+            example: "Variables", "running-shoes"
+        urls
+            dictionary of urls associated to this node
+            example: {"http://example.com": "http://example.com"}
         subtopics
-            list of Topic's 
+            dictionary of subTopic's 
+            example: {
+                Topic(text="Integer", urls={"http://example.com/integers"}), 
+                Topic(text="Floats", urls={"http://example.com/float"}), 
+            }
     """
     def __init__(self, text, urls=None, subtopics=None):
         self.text = text
