@@ -1,3 +1,4 @@
+[Back to index](api-reference.md)
 ## GET fetchlinks
 
 ## Description
