@@ -36,12 +36,13 @@
     15. /mapnames                      -> jsonify(names=map_names)
     16. /updatemap                     -> jsonify(new=new)
     17. /relabeltopic                  -> jsonify()
-    18. /fetchsearchdata               -> jsonify(searchdata=searchdata)    
-    19. /tags                          -> jsonify(tags=tags)
-    20. /deletelink                    -> jsonify()
-    21. /fetchtitle                    -> jsonify(title=title)
+    18. /moveurl                       -> jsonify()
+    19. /fetchsearchdata               -> jsonify(searchdata=searchdata)    
+    20. /tags                          -> jsonify(tags=tags)
+    21. /deletelink                    -> jsonify()
     22. /fetchmeta                     -> jsonify(meta=meta.__dict__)
     23. /fetchlinks                    -> jsonify(links=links)
+    24. /fetchtitle                    -> jsonify(title=title)
 
                                         * All jsonify return (status=status)
 # ------------------------------------------------------------------------------ # 
@@ -259,7 +260,7 @@ def get_maps():
     user = session['user']
     
     try:
-        maps = sigma.get_maps(user, True) 
+        maps = sigma.get_maps(user, jsonable=True)
         return jsonify(status='Getmaps OK', map=maps)
 
     except Exception as e:
