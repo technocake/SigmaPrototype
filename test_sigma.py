@@ -7,6 +7,24 @@ from sigma import *
 """ ###############################################
 user = "technocake"
 
+def test_move_url():
+    """ 
+        KnowledgeMap.move_url(url, from, to)
+        Should move a url from one subtopic to another.
+    """
+    move_url = "http://example.com/move-me"
+    # Building map, adding two subtopics.
+    the_map  = KnowledgeMap("Python")
+    the_map.update("variables", "http://example.com/variables")
+    the_map.update("variables", move_url)
+    the_map.update("PEPs", "http://example.com/peps-are-a-good-source-to-diving-into-python")
+
+    # Performing the move.
+    the_map.move_url(move_url, "variables", "PEPs")
+
+    # Checking results
+    assert move_url not in the_map.subtopics["variables"].urls, 'URL still in source-node.'
+    assert move_url in the_map.subtopics["PEPs"].urls, 'URL not in target-node.'
 
 
 def test_get_searchdata():
@@ -51,6 +69,7 @@ def test_scenario_one():
 
 
 if __name__ == '__main__':
-	test_get_searchdata()
-	test_scenario_one()
-	test_get_searchdata()
+    test_move_url()
+    test_get_searchdata()
+    test_scenario_one()
+    test_get_searchdata()

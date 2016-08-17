@@ -424,7 +424,7 @@ class KnowledgeMap(SigmaObject):
             Adds or updates a subtopic node
             optional url associated with subtopic.
         """
-        if isinstance(Topic, subtopic):
+        if isinstance(subtopic, Topic):
             # This makes it possible to send in
             # Topic instances in addition to plain 
             # strings.
@@ -441,6 +441,19 @@ class KnowledgeMap(SigmaObject):
         # Updating the subtopic
         self.subtopics[subtopic].urls = links
 
+
+    def change_main_topic(self, main_topic):
+        """
+            Changes the main topic of this map.
+        """
+        self.main_topic = main_topic
+
+
+    def move_url(self, url, from_node, to_node):
+        """
+            Moves a url belonging to a node to another node, leaving other stuff intact.
+        """
+        pass
 
 
 class Topic(SigmaObject):
