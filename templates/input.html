@@ -257,14 +257,14 @@
 
 	function changeTopic(meta, rowid){
 
-		var rowid = rowid.split('c')[0];
+		var rowid = rowid.split('_c_')[0];
 
 		var json_topics = {
 
 				'url' : meta.split(',_')[0],
 				'old' : meta.split(',_')[1],
-				'map_id' : $('#'+rowid+'m').val(),
-				'new' : $('#'+rowid+'s').val()
+				'map_id' : $('#'+rowid+'_m_').val(),
+				'new' : $('#'+rowid+'_s_').val()
 		};
 
 		$.ajax('/relabeltopic', {
@@ -287,13 +287,13 @@
 
 	function deleteUrl(d_url, rowid){
 
-		var rowid = rowid.split('d')[0];
+		var rowid = rowid.split('_d_')[0];
 
 		var json_topics = {
 
 			'url' : d_url,
-			'main_topic' : $('#'+rowid+'m').val(),
-			'subtopic' : $('#'+rowid+'s').val()
+			'map_id' : $('#'+rowid+'_m_').val(),
+			'subtopic' : $('#'+rowid+'_s_').val()
 		};
 
 		$.ajax('/deletelink', {
@@ -402,11 +402,11 @@
 			$hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
 				             '<td colspan=2></td>' +
 				             '<td style="display: flex; flex-direction: column; align-items: center;">'+
-				             '<input id="'+rowID+'m" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
-					         '<input id="'+rowID+'s" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
-					         '<button id="'+rowID+'c" class="endrebutton" name="'+url+',_'+subtopic+'"' +
+				             '<input id="'+rowID+'_m_" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
+					         '<input id="'+rowID+'_s_" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
+					         '<button id="'+rowID+'_c_" class="endrebutton" name="'+url+',_'+subtopic+'"' +
 					         	'onclick="changeTopic(this.name, this.id)">Endre</button>' +
-					         '<button id="'+rowID+'d" class="endrebutton" name="'+url+'"'+
+					         '<button id="'+rowID+'_d_" class="endrebutton" name="'+url+'"'+
 					         	'onclick="deleteUrl(this.name, this.id)">Slett</button>'+
 				             '</td>'+
 				           '</tr>');
