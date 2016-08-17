@@ -17,7 +17,31 @@
         flex: 0 1 120px;
 
     }
+
+    /* SVG is stylable by CSS just as any other html. 
+        Added class="node" to all circles drawn. */
+    .node{
+        fill: black;
+    }
+
+    /* Some events requires js functions to do stuff. f.ex 
+       add new nodes. However visual feedback should and could be implemented
+       with CSS3 alone. 
+        removed onmouseover/onmouseout events to blow up / smash down. 
+
+    see this guy: http://tutorials.jenkov.com/svg/svg-and-css.html;
+
+       */
+    .node:hover{
+        /* Buggy. is also scaling the GRID 
+            Solution is here: https://css-tricks.com/transforms-on-svg-elements/;
+        */
+        /* didn't work. 
+        transform: translate(2,2) scale(2.0) translate(-2, -2);
+        */
+    }
 </style>
+
 
 </head>
 <body>
@@ -37,7 +61,7 @@ $(document).ready(function(){
 	// GLOBALS
 	var ww;
  	var wh;
- 	var current_topic = 'NTNU';
+ 	var current_topic = '';
  	var s;
     s = document.getElementById('s'); // SVG object
 
@@ -136,7 +160,8 @@ $(document).ready(function(){
     	main_node = makeSVG('circle', {id: 'main_node', 
                                        cx: ww/2, 
                                        cy: wh/2, 
-                                        r: 10, 
+                                        r: 10,
+                                    class: 'node',
                                    stroke: 'black',
                              onmouseover : "blowUp(evt)",
                               onmouseout : "smashDown(evt)"  });
@@ -178,6 +203,7 @@ $(document).ready(function(){
                                                r: 8, 
                                           stroke: 'red',
                                             fill: 'red',
+                                           class: 'node',
                                     onmouseover : "blowUp(evt)",
                                      onmouseout : "smashDown(evt)"  });
             s.appendChild(sub_nodes[i]);
@@ -225,17 +251,31 @@ $(document).ready(function(){
                                             onmouseout : "smashDownUrl(evt)"   });
     			s.appendChild(url_nodes.subkey[j]);
 
-                // Make url text node
+
+
+                // make link node
+                aNode = makeSVG('a', {  
+                                        x: ux+10, 
+                                        y: uy,
+                                   target: '_blank' }); // http://www.w3schools.com/tags/att_a_target.asp
+            
+                
+                // See https://www.w3.org/Graphics/SVG/WG/wiki/Href#xlink:href
+                aNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', urlkey)
+
+                // Make url text node to put in the a-element.
                 urltextNode = makeSVG('text', {
                                                id: urlkey + 'sub',
                                                 x: ux+10, 
                                                 y: uy,
-                                              style: "font-size: 10px;",
-                                              //visibility: "hidden",
+                                            style: "font-size: 10px;",
+                                     //visibility: "hidden",
                                              fill: "black" })
-                urltextNode.appendChild(document.createTextNode(urlkey));
 
-                s.appendChild(urltextNode);
+
+                urltextNode.appendChild(document.createTextNode(urlkey));
+                aNode.appendChild(urltextNode)
+                s.appendChild(aNode);
 
     		};
     	};
@@ -276,13 +316,19 @@ $(document).ready(function(){
     function newMap(new_topic){
         console.log(new_topic);
         current_topic = new_topic;
-
-        $.post('/getmap', { 'main_topic' : new_topic }, function(data){
-        	if (data.status === 'Getmap OK'){
-    	    	initSVG(data.map);
-    	    } else {
-    	    	console.log(data.status);};
-    	});
+ 
+        $.ajax('/getmap', {
+                    data : JSON.stringify({ 'mapid' : new_topic }),
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success : function(data){
+                        console.log(data.status);
+                        initSVG(data.map);
+                    },
+                    error : function(data){
+                        console.log('Status:'+data.status); 
+                    }
+                });
     };
 
     newMap(current_topic);
