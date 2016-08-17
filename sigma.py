@@ -424,6 +424,12 @@ class KnowledgeMap(SigmaObject):
             Adds or updates a subtopic node
             optional url associated with subtopic.
         """
+        if isinstance(Topic, subtopic):
+            # This makes it possible to send in
+            # Topic instances in addition to plain 
+            # strings.
+            self.subtopics[subtopic.text] = subtopic
+            return
         if subtopic in self.subtopics.keys():
             links = self.subtopics[subtopic].urls
         else:
