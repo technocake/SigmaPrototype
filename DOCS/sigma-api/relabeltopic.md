@@ -3,7 +3,11 @@
 ## POST relabeltopic
 
 ## Description
-updates a subtopic in a map.
+updates a subtopic in a map. 
+If a subtopic has urls, those will be moved to the new subtopic. 
+If the new subtopic already exists, the urls from the old subtopic will be 
+appended to the target subptopic. 
+
 
 ***
 
