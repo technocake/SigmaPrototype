@@ -82,6 +82,7 @@ def gui():
 	#window
 	top = tkinter.Tk()
 	use_filename = "";
+	
 	#callbacks
 	def choosefile_callback():
    		#tkinter.messagebox.showinfo( "Convert", "Convert") #1st convert = title
