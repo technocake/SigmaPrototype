@@ -11,6 +11,8 @@ Data is represented in JSON, both in requests by clients and responses from the 
 - /[mapnames](mapnames.md) -- Gives a list of the users maps, map names only.
 - /[updatemap](updatemap.md) -- Used to add a subtopic and or urls in a map.
 - /[relabeltopic](relabeltopic.md) -- Changes a subtopics text in a map.
+- /[moveurl](moveurl.md) -- Moves a url from one subtopic to another subtopic.
+
 
 ### Things that are for searching and autosuggestions
 - /[tags](tags.md)  -- returns a flat list of the users tags( topics / subtopics from maps)
