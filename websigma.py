@@ -262,7 +262,6 @@ def get_maps():
     try:
         maps = sigma.get_maps(user, jsonable=True)
         return jsonify(status='Getmaps OK', maps=maps)
-
     except Exception as e:
         return jsonify(status='Getmaps ERROR:' + str(e))
 
