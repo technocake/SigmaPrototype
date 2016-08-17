@@ -27,6 +27,18 @@ def test_move_url():
     assert move_url in the_map.subtopics["PEPs"].urls, 'URL not in target-node.'
 
 
+def test_relabel_topic():
+    """
+        KnowledgeMap.relabel_topic(old_topic_text, new_topic_text)
+        Relabels a subtopics text. 
+    """
+    the_map = KnowledgeMap("Python")
+    the_map.update("variables")
+    the_map.relabel_topic("variables", "data-structures")
+    assert "data-structures" in the_map.subtopics, "relabel topic failed, new subtopic not made."
+    assert "variables" not in the_map.subtopics, "relabel topic failed, old subtopic still there."
+
+
 def test_get_searchdata():
 	""" 
 
@@ -70,6 +82,7 @@ def test_scenario_one():
 
 if __name__ == '__main__':
     test_move_url()
+    test_relabel_topic()
     test_get_searchdata()
     test_scenario_one()
     test_get_searchdata()

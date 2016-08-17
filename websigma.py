@@ -320,6 +320,26 @@ def relabel_topic():
         return jsonify(status='Relabel ERROR: ' + str(e))
 
 
+@app.route('/moveurl', methods=['POST'])
+@login_required
+def move_url():
+    user = session['user']
+    json = request.get_json()
+
+    try:
+        map_id = json.get('map_id', None)
+        url = json['url']
+        old_topic = json['old']
+        new_topic = json['new']
+
+        sigma.move_url(user, map_id, url, old_topic, new_topic)
+        return jsonify(status='Moveurl OK')
+    except Exception as e:
+        return jsonify(status='Moveurl ERROR: ' + str(e), hint="Are you sure this url is in the old subtopic( %s )? " % old_topic)
+
+
+
+
 @app.route('/fetchsearchdata', methods=['POST'])
 @login_required
 def fetch_searchdata():

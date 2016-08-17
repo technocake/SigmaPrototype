@@ -254,9 +254,16 @@ def relabel_topic(user, map_id, old_topic_text, new_topic_text):
         throws KeyError if map or subtopic doesnt exist.
     """
     the_map = get_map(user, map_id)
-    topic = the_map.subtopics.pop(old_topic_text)
-    topic.text = new_topic_text
-    the_map.subtopics[new_topic_text] = topic
+    the_map.relabel_topic(old_topic_text, new_topic_text)
+    save_map(user, map_id, the_map)
+
+
+def move_url(user, map_id, url, old_topic_text, new_topic_text):
+    """
+        Moves a url from one subtopic to another. 
+    """
+    the_map = get_map(user, map_id)
+    the_map.move_url(url, old_topic_text, new_topic_text)
     save_map(user, map_id, the_map)
 
 
@@ -442,6 +449,22 @@ class KnowledgeMap(SigmaObject):
         self.subtopics[subtopic].urls = links
 
 
+    def relabel_topic(self, old_topic_text, new_topic_text):
+        """
+            Relabels a topic. 
+
+        """
+        topic = self.subtopics.pop(old_topic_text)
+        topic.text = new_topic_text
+        if new_topic_text in self.subtopics:
+            # new subtopic already exists,
+            # Appending the links.
+            for k, v in topic.urls.items():
+                self.subtopics[new_topic_text].urls[k] = v
+        else:
+            self.subtopics[new_topic_text] = topic
+
+
     def change_main_topic(self, main_topic):
         """
             Changes the main topic of this map.
@@ -451,9 +474,26 @@ class KnowledgeMap(SigmaObject):
 
     def move_url(self, url, from_node, to_node):
         """
-            Moves a url belonging to a node to another node, leaving other stuff intact.
+            Moves a url belonging to a node to another node, 
+            leaving other stuff intact. 
+
+            PARAMS:
+                      url = string url to be moved
+                from_node = subtopic string of the source node
+                  to_node = subtopic string of the target node
         """
-        pass
+        link = self.subtopics[from_node].urls.pop(url)
+        self.update(to_node, link)
+
+
+    def create_subtopic(self, subtopic):
+        """
+            Creates a new subtopic. 
+
+            PARAMS:
+                subtopic: string
+        """
+        self.subtopics[subtopic] = Topic(subtopic)
 
 
 class Topic(SigmaObject):
