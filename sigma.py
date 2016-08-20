@@ -500,7 +500,10 @@ class KnowledgeMap(SigmaObject):
         result = 'Main topic : ' + self.main_topic.text + "\n"
 
         for topic in self.subtopics:
-            result += 'Sub topic :' + topic + "\n"
+            result += 'Sub topic :' + self.subtopics[topic].text + "\n"
+            for link in self.subtopics[topic].urls:
+                result += 'Resource : ' + link + "\n"
+
 
         return result
 
