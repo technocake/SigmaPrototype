@@ -495,6 +495,15 @@ class KnowledgeMap(SigmaObject):
         """
         self.subtopics[subtopic] = Topic(subtopic)
 
+    #For testing purposes with the converter
+    def to_string(self):
+        result = 'Main topic : ' + self.main_topic.text + "\n"
+
+        for topic in self.subtopics:
+            result += 'Sub topic :' + topic + "\n"
+
+        return result
+
 
 class Topic(SigmaObject):
     """ 
