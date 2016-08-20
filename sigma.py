@@ -530,6 +530,9 @@ class Topic(SigmaObject):
         self.text = text
         self.urls = {} if urls is None else urls
         self.subtopics = {} if subtopics is None else subtopics
+
+    def add_url(self, url):
+        self.urls[url] = url
     
 
 
