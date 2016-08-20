@@ -339,7 +339,6 @@ def move_url():
 
 
 
-
 @app.route('/fetchsearchdata', methods=['POST'])
 @login_required
 def fetch_searchdata():
