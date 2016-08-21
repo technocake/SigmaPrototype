@@ -495,6 +495,37 @@ class KnowledgeMap(SigmaObject):
         """
         self.subtopics[subtopic] = Topic(subtopic)
 
+    #For testing purposes with the converter
+    def to_string(self):
+        result = 'Main topic : ' + self.main_topic.text + "\n"
+
+        for topic in self.subtopics:
+            result += 'Sub topic :' + self.subtopics[topic].text + "\n"
+            for link in self.subtopics[topic].urls:
+                result += 'Resource : ' + link + "\n"
+    
+
+        return result
+
+    def to_json(self): 
+        nextline = "\n"
+        tab = "    "
+        count = 0
+        result = "{" + nextline + nextline
+
+        #Main topic
+        result += '"' + self.main_topic.text + '": {' + nextline
+
+        result += nextline 
+
+        for topic in self.subtopics:
+            result += tab
+            count++
+            result += '"' + self.subtopics[topic].text + '": {'
+
+
+
+
 
 class Topic(SigmaObject):
     """ 
@@ -518,6 +549,9 @@ class Topic(SigmaObject):
         self.text = text
         self.urls = {} if urls is None else urls
         self.subtopics = {} if subtopics is None else subtopics
+
+    def add_url(self, url):
+        self.urls[url] = url
     
 
 
