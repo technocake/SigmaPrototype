@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
 
 <title>Sigma - Svg test</title>
@@ -17,33 +18,61 @@
         flex: 0 1 120px;
 
     }
+
+    /* SVG is stylable by CSS just as any other html. 
+        Added class="node" to all circles drawn. */
+    .node{
+        fill: black;
+    }
+
+    /* Some events requires js functions to do stuff. f.ex 
+       add new nodes. However visual feedback should and could be implemented
+       with CSS3 alone. 
+        removed onmouseover/onmouseout events to blow up / smash down. 
+
+    see this guy: http://tutorials.jenkov.com/svg/svg-and-css.html;
+
+       */
+    .node:hover{
+        /* Buggy. is also scaling the GRID 
+            Solution is here: https://css-tricks.com/transforms-on-svg-elements/;
+        */
+        /* didn't work. 
+        transform: translate(2,2) scale(2.0) translate(-2, -2);
+        */
+    }
 </style>
+
 
 </head>
 <body>
-	<nav id="topnav" style="display:flex; justify-content: center"></nav>
-	<svg id="s" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <svg id="s" xmlns="http://www.w3.org/2000/svg">
+
+
+    </svg>
 </body>
 
 <script type="text/javascript">
-	    
+        
 $(document).ready(function(){
 
 
-	// GLOBALS
-	var ww;
- 	var wh;
- 	var current_topic = '{{ mapid | safe }}';
- 	var s;
+    // GLOBALS
+    var ww;
+    var wh;
+    var current_topic = '{{ mapid | safe }}';
+    var current_map_object;
+    var s;
     s = document.getElementById('s'); // SVG object
 
- 	// MISC functions
-	 function updateWwWh(){
-	 	ww = window.innerWidth; 
-		wh = window.innerHeight;
-		// console.log('Width: ' + ww + ' Height: ' + wh);
-	}
-	
+    // MISC functions
+     function updateWwWh(){
+        ww = window.innerWidth; 
+        wh = window.innerHeight;
+        // console.log('Width: ' + ww + ' Height: ' + wh);
+    }
+    
     function makeSVG(tag, attrs) {
         var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
         for (var k in attrs)
@@ -52,30 +81,31 @@ $(document).ready(function(){
     }
 
     function findNodeCoords(bx,by,rx,ry,length){
-    	// Create coordinates of all sub nodes
-    	// input bx, by -- basex, basey
-    	var step = (2 * Math.PI) / length;
-    	var alpha = Math.random() * (2 * Math.PI);
-    	var nx = 0; // new x
-    	var ny = 0;
-    	var coords = [];
+        // Create coordinates of all sub nodes
+        // input bx, by -- basex, basey
+        var step = (2 * Math.PI) / length;
+        var alpha = Math.random() * (2 * Math.PI);
+        var nx = 0; // new x
+        var ny = 0;
+        var coords = [];
 
-    	//console.log('Length : ' + length);
+        //console.log('Length : ' + length);
 
-    	for (i=0; i < length; i++){
+        for (i=0; i < length; i++){
 
-    		nx = parseInt(bx + (rx * Math.cos(alpha)));
-    		ny = parseInt(by - (ry * Math.sin(alpha)));
+            nx = parseInt(bx + (rx * Math.cos(alpha)));
+            ny = parseInt(by - (ry * Math.sin(alpha)));
 
-    		//console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
+            //console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
 
-    		var pair = [nx, ny];
-    		coords.push(pair);
+            var pair = [nx, ny];
+            coords.push(pair);
 
-    		alpha += step;
-    	};
-    	return coords;
+            alpha += step;
+        };
+        return coords;
     };
+
 
     // --------------------- INIT function -------------------------
 
@@ -85,7 +115,7 @@ $(document).ready(function(){
         console.log(map);
 
         // Update world width and height
-    	updateWwWh();
+        updateWwWh();
 
         // Variables 23
         var mnx;           // x and y value of the main node
@@ -111,111 +141,115 @@ $(document).ready(function(){
 
         var maintextNode;
         var subtextNode;
+        var urltextNode;
         var redline;
         var blueline;
 
-        var subrad = [ww * (2/10), wh * (2/10)]; // radius x and y from main_node
-        var urlrad = [ww * 2/50, ww * 2/50];         // radiues x and y from sub_node
+        var subrad = [ww * (3.5/10), wh * (3.5/10)]; // radius x and y from main_node
+        var urlrad = [ww * (3/50), ww * (3/50)];         // radiues x and y from sub_node
         
-
-
-    	// Clear SVG screen of existing elements
+        // Clear SVG screen of existing elements
         while (s.lastChild) {
             s.removeChild(s.lastChild);
         };
 
         // SET SVG width and height
-    	s.setAttribute('width', ww);
-    	s.setAttribute('height', wh);
+        s.setAttribute('width', ww);
+        s.setAttribute('height', wh);
 
-    	// Make main node
-    	main_node = makeSVG('circle', {id: 'main_node', cx: ww/2, cy: wh/2, r: 4, stroke: 'black'});
-    	s.appendChild(main_node);
+        // Make main node
+        main_node = makeSVG('circle', {id: 'main_node', 
+                                       cx: ww/2, 
+                                       cy: wh/2, 
+                                        r: 10,
+                                    class: 'node',
+                                   stroke: 'black',
+                             onmouseover : "blowUp(evt)",
+                              onmouseout : "smashDown(evt)"  });
+        s.appendChild(main_node);
 
-    	// Get x and y of main nodes
-    	mnx = parseInt(main_node.getAttribute('cx'));
-    	mny = parseInt(main_node.getAttribute('cy'));
-    	
-    	// Display text at the main_node
-    	//maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
-    	//maintextNode.appendChild(document.createTextNode(current_topic));
-    	//s.appendChild(maintextNode);
+        // Get x and y of main nodes
+        mnx = parseInt(main_node.getAttribute('cx'));
+        mny = parseInt(main_node.getAttribute('cy'));
 
-    	// Isolate subtopics, calculate amount of subtopics
-    	subkeys_array = Object.keys(map.subtopics);
-    	subarr_length = subkeys_array.length;
+
+
+        // Isolate subtopics, calculate amount of subtopics
+        subkeys_array = Object.keys(map.subtopics);
+        subarr_length = subkeys_array.length;
 
         // Calculate coordinates for all sub nodes
-		sub_coords = findNodeCoords(mnx, mny, subrad[0], subrad[1], subarr_length);
+        sub_coords = findNodeCoords(mnx, mny, subrad[0], subrad[1], subarr_length);
 
         // Iterate over sub nodes
-    	for (var i=0; i < subarr_length; i++){
+        for (var i=0; i < subarr_length; i++){
 
-    		subkey = subkeys_array[i];
-    		sx = sub_coords[i][0];
-    		sy = sub_coords[i][1];
+            // Subkey init
+            subkey = subkeys_array[i];
+            sx = sub_coords[i][0];
+            sy = sub_coords[i][1];
 
-    		// Create Sub node DOM objects
-    		// Make red lines
-    		redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
-    		s.appendChild(redline);
+            // Create Sub node DOM objects
+            // Make red lines and append main_node on top
+            redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
+            s.appendChild(redline);
+ 
 
-    		// Make red nodes
-    		sub_nodes[i] = makeSVG('circle', {cx: sx, cy: sy, r: 4, stroke: 'red'});
-    		s.appendChild(sub_nodes[i]);
+            // Make red nodes
+            sub_nodes[i] = makeSVG('circle', {cx: sx, 
+                                              cy: sy, 
+                                               r: 8, 
+                                          stroke: 'red',
+                                            fill: 'red',
+                                           class: 'node',
+                                    onmouseover : "blowUp(evt)",
+                                     onmouseout : "smashDown(evt)"  });
+            s.appendChild(sub_nodes[i]);
+            
 
-    		// subtopic text node
-    		//subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black"})
-    		//subtextNode.appendChild(document.createTextNode(subkey));
-    		//s.appendChild(subtextNode);
 
-    		//---------------------------------------
+            //---------------------------------------
 
-    		// Prepare url node coords
-    		urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
-    		urlarr_length = urlkeys_array.length;
+            // Prepare url node coords
+            urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
+            urlarr_length = urlkeys_array.length;
 
-    		url_coords[i] = findNodeCoords(sx, sy, urlrad[0], urlrad[1], urlarr_length);
+            url_coords[i] = findNodeCoords(sx, sy, urlrad[0], urlrad[1], urlarr_length);
 
-    		for (var j=0; j < urlarr_length; j++){
+            for (var j=0; j < urlarr_length; j++){
 
-    			// Create Url node DOM objects
-    			url_nodes.subkey = [];
+                // Url init
+                url_nodes.subkey = [];
+                urlkey = urlkeys_array[j];
+                ux = url_coords[i][j][0];
+                uy = url_coords[i][j][1];
 
-    			// Make blue lines
-    			blueline = makeSVG('line', { x1:sub_coords[i][0], y1:sub_coords[i][1], 
-    										x2:url_coords[i][j][0], y2:url_coords[i][j][1], stroke:'blue'});
-    			s.appendChild(blueline);
+                // Make blue lines
+                blueline = makeSVG('line', { x1 : sx, 
+                                             y1 : sy, 
+                                             x2 : ux, 
+                                             y2 : uy,     
+                                         stroke : 'blue'});
+                s.appendChild(blueline);
 
-    		 	// Make url nodes
-    			url_nodes.subkey[j] = makeSVG('circle', {cx:url_coords[i][j][0], cy:url_coords[i][j][1], 
-    													r:4, stroke: 'blue'});
-    			s.appendChild(url_nodes.subkey[j]);
-    		};
-    	};
-    	
+
+                // Make url nodes
+                url_nodes.subkey[j] = makeSVG('circle', {
+                                                    id : urlkey,
+                                                    cx : ux, 
+                                                    cy : uy, 
+                                                     r : 6, 
+                                                 stroke: 'blue',
+                                                   fill: 'blue',
+                                           onmouseover : "blowUpUrl(evt)",
+                                            onmouseout : "smashDownUrl(evt)"   });
+                s.appendChild(url_nodes.subkey[j]);
+
+            };
+        };
+        
 
     // ----------------------- End of function initSVG()  ---------------------
-    };
-
-    // Fill the navigation with maps
-    function initNav (names){
-
-    	var $topnav = $('#topnav');
-    	for (i in names){
-    		$topnav.append('<button id="button_'+names[i]+'" class="menubutton">'+
-                            names[i]+
-                            '</button>');
-        };
-
-        $('.menubutton').click(function(){
-            
-            $this = $(this);  
-            var newtopic = this.id.split('_')[1];
-            newMap(newtopic);
-
-        });
-    	
     };
  
 // ----------- AJAX request routes --------------
@@ -224,26 +258,34 @@ $(document).ready(function(){
     function newMap(new_topic){
         console.log(new_topic);
         current_topic = new_topic;
+ 
+        $.ajax('/getmap', {
+                    data : JSON.stringify({ 'mapid' : new_topic }),
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success : function(data){
+                        console.log(data.status);
 
-        $.post('/getmap', { 'main_topic' : new_topic }, function(data){
-        	if (data.status === 'Getmap OK'){
-    	    	initSVG(data.map);
-    	    } else {
-    	    	console.log(data.status);};
-    	});
+                        current_map_object = data.map;
+                        initSVG(data.map);
+                    },
+                    error : function(data){
+                        console.log(data.status); 
+                    }
+                });
     };
 
     newMap(current_topic);
+
 
 });
 
 </script>
 
-
 </html>
 
 <script id="comments" type="text/javascript">
- 	
+    
 
 /*
 3. DOM createTextNode . .. then appendChild::: Jiipppi! :) 
@@ -257,6 +299,5 @@ http://www.w3schools.com/svg/svg_circle.asp
 http://www.w3schools.com/jsref/met_document_createtextnode.asp
 
 */
-
 
  </script>
