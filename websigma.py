@@ -30,6 +30,8 @@
     10. /mapssvg                       -> render_template(mapssvg.html)
     11. /postuser                      -> redirect(/inputurl)
 
+    xx. /testfreemind                  -> render_template(testfreemind.html)
+
     12. /postmeta                      -> jsonify()
     13. /getmap                        -> jsonify(map=the_map)
     14. /getmaps                       -> jsonify(map=maps)
@@ -194,6 +196,13 @@ def maps_svg():
 
     tags = sigma.get_tags(session['user'])
     return render_template('mapssvg.html', first_map = tags[0])
+
+
+@app.route('/testfreemind')
+@login_required
+def test_freemind():
+
+    return render_template('testfreemind.html')
 
 
 # --------- FORM POST request ROUTES -----------------
