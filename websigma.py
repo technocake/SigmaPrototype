@@ -45,6 +45,7 @@
     22. /fetchmeta                     -> jsonify(meta=meta.__dict__)
     23. /fetchlinks                    -> jsonify(links=links)
     24. /fetchtitle                    -> jsonify(title=title)
+    25. /sharingpermissions            -> jsonify(mapid=mapid, [permissions=...]) GET and POST
 
                                         * All jsonify return (status=status)
 # ------------------------------------------------------------------------------ # 
@@ -61,7 +62,7 @@ import time
 import sigma
 
 # for pickles sake...
-from sigma import KnowledgeMap, Topic
+from sigma import KnowledgeMap, Topic, SharingPermissions
 import auth
 from utility import load_config
 
@@ -470,6 +471,34 @@ def fetch_links():
         return jsonify(status='Links OK', links=links)
     except Exception as e:
         return jsonify(status='Links ERROR: ' + str(e))
+
+
+@app.route('/sharingpermissions', methods=['GET', 'POST'])
+@login_required
+def sharing_permissions():
+
+    user = session['user']
+
+    try:
+
+        if request.method == "GET":
+            # Only looking
+            mapid = request.args.get("map_id", None)
+            permissions = sigma.get_map_permissions(user, mapid, jsonable=True)
+        elif request.method == "POST":
+            # Changing
+            json = request.get_json()
+            mapid = json["map_id"]
+            permissions = json["permissions"]
+            sigma.update_permissions(user, mapid, permissions)
+        return jsonify(status='Permissions OK', mapid=mapid, permissions=permissions)
+    except Exception as e:
+        return jsonify(status='Permissions ERROR: ' + str(e))
+
+
+
+
+
 
 # --------------------------------------------------------------------------- #
 # ------------------------------- LAST ROUTE -------------------------------- #
