@@ -59,6 +59,7 @@ Status code 200, along with a JSON array containing
 ``` json
 {
   "status": "OK",
+  "map_id": "Javascript",
   "permissions": {
     "global": "public"
   }
