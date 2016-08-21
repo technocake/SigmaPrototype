@@ -468,6 +468,9 @@ class KnowledgeMap(SigmaObject):
     def change_main_topic(self, main_topic):
         """
             Changes the main topic of this map.
+            PARAMS:
+                - main_topic:
+                    string containing the main topic.
         """
         self.main_topic = main_topic
 
@@ -495,6 +498,7 @@ class KnowledgeMap(SigmaObject):
         """
         self.subtopics[subtopic] = Topic(subtopic)
 
+
     #For testing purposes with the converter
     def to_string(self):
         result = 'Main topic : ' + self.main_topic.text + "\n"
@@ -507,22 +511,10 @@ class KnowledgeMap(SigmaObject):
 
         return result
 
-    def to_json(self): 
-        nextline = "\n"
-        tab = "    "
-        count = 0
-        result = "{" + nextline + nextline
-
-        #Main topic
-        result += '"' + self.main_topic.text + '": {' + nextline
-
-        result += nextline 
-
-        for topic in self.subtopics:
-            result += tab
-            count++
-            result += '"' + self.subtopics[topic].text + '": {'
-
+   # All classes inheriting from SigmaObject will 
+   # get a to_json() method for free. Removed the custom
+   # to_json method. However, I got to notice it had 
+   # a powerfull "direct to the point" approach, like it.
 
 
 
@@ -550,6 +542,7 @@ class Topic(SigmaObject):
         self.urls = {} if urls is None else urls
         self.subtopics = {} if subtopics is None else subtopics
 
+
     def add_url(self, url):
         self.urls[url] = url
     
@@ -559,6 +552,35 @@ class Topic(SigmaObject):
 #   ----    HACKS   -------
 
 def sigmaserialize(obj):
+    """
+        This function makes it possible to use
+        json.dumps() to take an object with nested classes 
+        and turn it into a json string.
+
+        For example, a KnowledgeMap object contains 
+        Topic objects in the subtopics field. json.dumps
+        won't by default know how to take a custom class 
+        and turn it into json. This function converts the
+        object and all objects within it to pure python
+        dictionaries. json.dumps knows how to translate
+        python dicts into json strings by default. 
+
+        Therefore it should be used as an intermediary 
+        step into converting an SigmaObject into json:
+
+        0.  import json
+        1.  m = KnowledgeMap()
+        2.  map_as_dict = sigmaserialize(m)
+        3.  map_as_json_string = json.dumps(map_as_dict)
+
+
+        However, all SigmaObject inheriting classes have a 
+        to_json() method, that does this. So this simplifies
+        the syntax for the above KnowledgeMap example to:
+
+        map_as_json_string = m.to_json()
+
+    """
     if isinstance(obj, SigmaObject):
         obj = obj.__dict__
 
