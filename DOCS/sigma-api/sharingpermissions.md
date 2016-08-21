@@ -1,6 +1,6 @@
 [Back to index](api-reference.md)
 
-## GET /sharingpermissions  or 
+## GET /sharingpermissions?map_id=<mapid>  or 
 ## POST /sharingpermissions
 
 ## Description
@@ -45,20 +45,13 @@ Status code 200, along with a JSON array containing
 ## Example
 **Request**
 
-    GET /sharingpermissions
-
-**Payload**
-``` json
-{
-  "map_id": "Javascript"
-}
-```
-
+    GET /sharingpermissions?map_id=Javascript
 
 **Return**
 ``` json
 {
   "status": "OK",
+  "map_id": "Javascript",
   "permissions": {
     "global": "public"
   }
