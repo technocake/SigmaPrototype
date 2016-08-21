@@ -124,7 +124,6 @@ def get_links(user):
 
 
 
-
 def fetch_meta(url, filter=None):
     """ 
             Responsible for scraping all the metadata from a given url.
@@ -520,7 +519,7 @@ class KnowledgeMap(SigmaObject):
 
         for topic in self.subtopics:
             result += tab
-            count++
+            count += 1
             result += '"' + self.subtopics[topic].text + '": {'
 
 

@@ -138,7 +138,7 @@ def login():
 @login_required
 def meny():
 
-    return render_template('base.html')
+    return render_template('input.html')
 
 
 @app.route('/inputurl')

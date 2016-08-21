@@ -9,9 +9,18 @@ html, body {
 
 body {
 	display: flex; 
+	margin: 0px 10px 0px 10px ;}
+
+nav {}
+
+main {
+	margin: auto;
+	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 0 10 0 0 ;}
+	justify-content: center;
+
+}
 
 table {table-layout: fixed;}
 

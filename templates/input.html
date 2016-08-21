@@ -1,7 +1,7 @@
 ﻿<!--  input.html -->
 
 {% extends "base.html" %}
-{% block body %}
+{% block main %}
 
 	<div class="maindiv">
 		<input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
@@ -38,16 +38,6 @@
 		       onfocus="onfocusHandler(this)" 
 		       onblur="onblurHandler(this)" 
 		       onkeyup="search(this.value)"/>
-
-		<nav style="display: flex; margin-bottom: 30px;">
-
-			<a href="/maps"><button class="btn btn-primary">Maps</button></a>
-			<a href="/meny"><button class="btn btn-primary">Menu</button></a>
-
-
-		</nav>
-
-
 
 			<table id="urlliste1" class="tableview">
 			    <colgroup>
