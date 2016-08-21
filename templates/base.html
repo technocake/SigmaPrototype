@@ -26,19 +26,16 @@
 
 </head>
 <body>
-	<a href="{{ url_for('input_url') }}">
-		<img width="300" src="/static/sigma-logo.svg" alt="Sigma" title="Sigma" />
-	</a>
 
-	{% block body %}
+	{% include 'nav.html' %}
 
-		<h2>Good day, {{ session['user'] }}!</h2>
-		<a href="{{ url_for('input_url') }}"><h2>Input</h2></a>
-		<a href="{{ url_for('maps') }}"><h2>Maps</h2></a>
-		<a href="{{ url_for('maps_svg') }}"><h2>Maps - Full screen</h2></a>
-		<a href="/logout"><h2>Logout</h2></a>
+		<main>
+		{% block main %}
 
-	{% endblock %}
+
+
+		{% endblock %}
+		</main>
 
 	<div id="footer" style="height: 100px;"></div>
 </body>

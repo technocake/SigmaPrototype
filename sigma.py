@@ -124,7 +124,6 @@ def get_links(user):
 
 
 
-
 def fetch_meta(url, filter=None):
     """ 
             Responsible for scraping all the metadata from a given url.
@@ -510,6 +509,7 @@ class KnowledgeMap(SigmaObject):
     
 
         return result
+
 
    # All classes inheriting from SigmaObject will 
    # get a to_json() method for free. Removed the custom

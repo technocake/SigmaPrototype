@@ -5,7 +5,6 @@
     Navn: __init__.py
     Prosjekt: SigmaPrototype
     Opprettet av: Jonas
-<<<<<<< HEAD
    
     Beskrivelse: __init__.py  --> flyttet til websigma.py for å kunne deployes.
 """

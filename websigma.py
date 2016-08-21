@@ -138,7 +138,7 @@ def login():
 @login_required
 def meny():
 
-    return render_template('base.html')
+    return render_template('input.html')
 
 
 @app.route('/inputurl')
@@ -192,7 +192,8 @@ def map_thumbnail(user, mapid):
 @login_required
 def maps_svg():
 
-    return render_template('mapssvg.html')
+    tags = sigma.get_tags(session['user'])
+    return render_template('mapssvg.html', first_map = tags[0])
 
 
 # --------- FORM POST request ROUTES -----------------

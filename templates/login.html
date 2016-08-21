@@ -2,17 +2,18 @@
 
 
 {% extends "base.html" %}
-{% block body %}
-	
-	<h1> login.html </h1>
+{% block main %}
 
-	<form action="/postuser" method="post">
+    	<h1> login.html </h1>
 
-	<label for="iUser">Username:</label>
-		<input name="iUser" type="text"/>
+    	<form action="/postuser" method="post">
 
-	<button type="submit">Log in</button>
+    	<label for="iUser">Username:</label>
+    		<input name="iUser" type="text"/>
 
-	</form>
+    	<button type="submit">Log in</button>
+
+    	</form>
+
 
 {% endblock %}
