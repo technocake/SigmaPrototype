@@ -238,14 +238,13 @@ def post_meta():
 @app.route('/getmap', methods=['POST'])
 @login_required
 def get_map():
-
+    
     user = session['user']
     json = request.get_json()
     
     try:
         mapid = json.get('mapid', None)
         the_map = sigma.get_map(user, mapid, True) 
-
         return jsonify(status='Getmap OK', map=the_map)
 
     except Exception as e:

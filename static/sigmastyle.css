@@ -19,7 +19,7 @@ main {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-
+	width: 90%; /* Firefox stretching mega-inputs.*/
 }
 
 table {table-layout: fixed;}
@@ -30,6 +30,17 @@ a {
 
 a:hover {
 	background-color: lightgreen;
+}
+
+/* Rules for navigation */
+/* ------------------- */
+
+#left-bar {
+	margin: 2em;
+}
+
+nav {
+	
 }
 
 
@@ -52,6 +63,7 @@ a:hover {
 	width: 90%;
 	font-size: 30px;
 	text-align: center;
+	max-width: 1000px; /* wide screen tvs wont have to have wide inputs. */
 }
 
 .metainfo {
