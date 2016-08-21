@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block main %}
+
+
+    <svg id="s" xmlns="http://www.w3.org/2000/svg">
+
+
+    </svg>
+
+
+
+<script type="text/javascript">
+
+// GLOBALS
+var ww;
+var wh;
+var S;
+var subnodes = [];
+var mx;
+var my;
+
+
+// MISC functions
+ function updateWwWh(){
+    ww = window.innerWidth - 300; 
+    wh = window.innerHeight;
+    // console.log('Width: ' + ww + ' Height: ' + wh);
+}
+
+function makeSVG(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs)
+        el.setAttribute(k, attrs[k]);
+    return el; 
+}
+
+
+function addNode(evt){               // void function with event parameter
+
+    // CREATE NODE
+    var node;
+
+    node = makeSVG('circle', {cx: mx, cy: my,                                      
+                                     r: 10,
+                                 class: 'node',
+                                stroke: 'green',
+                                  fill: 'green'});
+    subnodes.push(node);
+
+
+    // UPDATE VIEW 
+    var sx = mx;
+    var sy = my;
+    var iter_node;
+    var number_of_nodes = Object.keys(subnodes).length;
+
+    var left_up = 0;
+    var left_down = 0;
+    var right_up = 0;
+    var right_down = 0;
+
+    console.log('Adding node....: ' + number_of_nodes);
+
+
+    for (i=0; i < number_of_nodes; i++){
+
+        iter_node = subnodes[i];
+
+        if (i % 2 == 0){
+
+            if (i === 0){    console.log('rc');  sx = mx + 200;    }
+            else if (i % 4 == 0){   
+                console.log('ru');  
+                right_up+=1;  
+                sx = mx + 200;  
+                sy = my + (-100*right_up);
+            }
+            else if (i % 2 == 0){   
+                console.log('rd');  
+                right_down+=1;  
+                sx = mx + 200;
+                sy = my + (100*right_down);    
+            };
+
+        } else {
+
+            if (i == 1){    
+                console.log('lc');  
+                sx = mx - 200;  
+            }
+            else if (i % 4 === 1){    
+                console.log('lu');  
+                left_up+=1;
+                sx = mx - 200;    
+                sy = my + (-100*left_up);
+            }
+            else if (i % 2 === 1){    
+                console.log('ld');  
+                left_down+=1;
+                sx = mx - 200;  
+                sy = my + (100*left_down);
+            };  
+        };
+
+        iter_node.setAttribute('cx', sx);
+        iter_node.setAttribute('cy', sy);
+        S.appendChild(iter_node);
+    }
+}
+
+        
+$(document).ready(function(){
+
+    S = document.getElementById('s'); // SVG object
+
+    function initSVG(){
+
+        var main_node;
+        var plus_node;
+
+
+        // Init width and height
+        updateWwWh();
+        S.setAttribute('width', ww);
+        S.setAttribute('height', wh);
+
+
+
+        // Set up main_node
+        mx = ww/2;
+        my = wh/2;
+        main_node = makeSVG('circle', {
+                                            id: 'main_node', 
+                                            cx: mx, 
+                                            cy: my, 
+                                             r: 10,
+                                         class: 'node',
+                                        stroke: 'black'      });
+
+        plus_node = makeSVG('circle', {
+                                    id: 'main_node', 
+                                    cx: mx, 
+                                    cy: my + 30, 
+                                     r: 10,
+                                 class: 'node',
+                                stroke: 'green',
+                                  fill: 'green',
+                               onclick: 'addNode(evt)'   });
+        S.appendChild(main_node);
+        S.appendChild(plus_node);
+
+
+    };
+
+     // ---- MAIN ----- 
+
+    initSVG();
+
+    $(document).resize(function(){    initSVG();    });
+
+});
+
+</script>
+
+<script type="text/javascript">
+    
+
+</script>
+
+
+{% endblock %}

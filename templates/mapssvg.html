@@ -65,6 +65,7 @@ $(document).ready(function(){
 	var ww;
  	var wh;
  	var current_topic = '{{ first_map | safe }}';
+    var current_map_object;
  	var s;
     s = document.getElementById('s'); // SVG object
 
@@ -326,15 +327,25 @@ $(document).ready(function(){
                     type : 'POST',
                     success : function(data){
                         console.log(data.status);
+
+                        current_map_object = data.map;
                         initSVG(data.map);
                     },
                     error : function(data){
-                        console.log('Status:'+data.status); 
+                        console.log(data.status); 
                     }
                 });
     };
 
     newMap(current_topic);
+
+
+    // Does not work yet
+    $(document).resize(function(){    
+
+        console.log("Resizing - width: " + ww + " height: " + wh);
+        initSVG(current_map_object);    
+    });
 
 });
 

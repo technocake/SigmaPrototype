@@ -8,10 +8,9 @@ html, body {
 
 
 body {
-	display: flex; 
-	margin: 0px 10px 0px 10px ;}
+	display: flex; }
 
-nav {}
+#navigation {margin-left: 50px;}
 
 main {
 	margin: auto;
