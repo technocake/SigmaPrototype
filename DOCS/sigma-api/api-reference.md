@@ -12,7 +12,7 @@ Data is represented in JSON, both in requests by clients and responses from the 
 - /[updatemap](updatemap.md) -- Used to add a subtopic and or urls in a map.
 - /[relabeltopic](relabeltopic.md) -- Changes a subtopics text in a map.
 - /[moveurl](moveurl.md) -- Moves a url from one subtopic to another subtopic.
-
+- /[sharingpermissions](sharingpermissions.md) --- Shows or sets shared access for a map.
 
 ### Things that are for searching and autosuggestions
 - /[tags](tags.md)  -- returns a flat list of the users tags( topics / subtopics from maps)
