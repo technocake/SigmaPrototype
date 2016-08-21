@@ -190,6 +190,9 @@ def save_map(user, mapid, the_map):
         pickle.dump(maps, userfile) 
 
 
+
+
+
 def get_map(user, mapid, jsonable=False):
     """
         Retrieves a requested map
@@ -225,6 +228,100 @@ def get_maps(user, jsonable=False):
     if jsonable:
         return sigmaserialize(maps)
     return maps
+
+
+def save_permissions(user, mapid, permissions):
+    """
+        Saves a permissions beloning to a map.
+    """
+    permsfile = secure_filename('%s.permissions'%(user))
+    perms = get_all_permissions(user)
+
+    for k,v in perms.items():
+        permdict = v.__dict__
+        perms[k] = permdict
+    perms[mapid] = permissions.__dict__
+
+    with codecs.open(permsfile, 'wb') as userfile: 
+        pickle.dump(perms, userfile) 
+
+
+def get_all_permissions(user, jsonable=False):
+    """
+        Returns all  permissions beloning to all  maps of the user.
+        PARAMS
+            user:
+                username string.
+            jsonable:
+                  True --> returns data as pure dicts.
+                  False --> returns data as SharingPermission objects in a dict.
+    """
+    permsfile = secure_filename('%s.permissions'%(user))
+    try:
+        with codecs.open(permsfile, 'rb') as userfile: 
+            perms_dict = pickle.loads(userfile.read())
+            # Due to a issue with pickling a class
+            # in a sub module and depickling in the flask module
+            # the stored data is the __dict__ of the Object.
+            # This is then converted to a SharingPermission object.
+            perms = {}
+            for k,v in perms_dict.items():
+                the_perms = SharingPermissions()
+                the_perms.__dict__ = v
+                perms[k] = the_perms
+    except Exception as e:
+        # If the file does not exist, create an empty list of links.
+        perms = {}
+    if jsonable:
+        return sigmaserialize(perms)
+    return perms
+
+
+def get_map_permissions(user, mapid, jsonable=False):
+    """
+        Returns  permissions beloning to one map.
+        PARAMS
+            user:
+                username string.
+            mapid:
+                mapid string
+            jsonable:
+                  True --> returns data as pure dicts.
+                  False --> returns data as SharingPermissions object.
+    """
+    
+    perms = get_all_permissions(user)
+    the_perms = perms.get(mapid, None)
+    if jsonable:
+        return sigmaserialize(the_perms)
+    return the_perms
+
+
+
+def update_permissions(user, mapid, permissions):
+    """
+        Updates and or creates a SharingPermissions object for the 
+        map with id <mapid>
+        returns true if a new object was created, false if not.
+
+        PARAMS:
+            user: string of username
+            mapid: string mapid
+            permissions: dict with permissions
+    """
+    # does the object exists?
+    new = False
+    the_perms = get_map_permissions(user, mapid)
+
+    if the_perms is None:
+        the_perms = SharingPermissions(mapid)
+        new = True
+
+    the_perms.update(permissions)
+    save_permissions(user, mapid, the_perms)
+    return new
+
+
 
 
 def get_searchdata(user, filter=None):
@@ -546,6 +643,42 @@ class Topic(SigmaObject):
     def add_url(self, url):
         self.urls[url] = url
     
+
+
+class SharingPermissions(SigmaObject):
+    """
+        Holding sharing permisions for a users' map. 
+
+        Currently only public/private is beeing used.
+    """
+    def __init__(self, mapid=None, global_permissions=None):
+        """
+            Builds a permissions object for a map. 
+            basically now it is - "Is the map private or public?"
+            More finegrained access control can be added later, like:
+                - "has user A access to this map? "
+        """
+        self.mapid = mapid
+        if global_permissions is None:
+            self.permissions = {"global": "private"}
+        else:
+            self.permissions = global_permissions
+
+
+    def update(self, permissions):
+        """ 
+            Updates a sharing permissions for a map.
+        """
+        # Updating the subtopic
+        self.permissions = permissions
+
+
+    def __getitem__(self, permissiontype):
+        """ 
+            makes it possible to do  perms = SharingPermissions()
+            perms["global"] --> "private"
+        """
+        return self.permissions[permissiontype]
 
 
 

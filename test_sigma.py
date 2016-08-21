@@ -80,9 +80,70 @@ def test_scenario_one():
 
 
 
+def test_get_map():
+    """
+        Scenario: 
+            A map is saved, retrieve it. 
+    """
+    m = get_map(user, "Python")
+
+
+
+def test_get_permissions():
+    """
+        should return a dict with default
+        permissions on non-existing map. 
+    """
+    # Non-existing perms
+    perms = get_map_permissions(user, "THIS-MAP-DOES-NOT-EXIST")
+    assert perms is None, "Permissions on non existing map should return None."
+    
+    # Make sure some perms are in here
+    test_save_permissions()
+    perms = get_map_permissions(user, "Python")
+    assert perms is not None, "Should get som perms."
+
+
+def test_save_permissions():
+    """
+        Makes some global permissions and save it.
+    """
+    mapid= "Python"
+    perms = SharingPermissions(mapid, {"global": "public"})
+    save_permissions(user, mapid, perms)
+    
+
+def test_update_permissions():
+    """
+        Change some global permissions 
+    """
+    mapid= "Python"
+    update_permissions(user, mapid, {"global": "public"})
+    perms = get_map_permissions(user, mapid)
+    assert perms["global"] == "public", "Update permissions failed." 
+
+
+def test_get_all_permissions():
+    """
+        Should return a dict.
+    """
+    # make sure there is perms in here:
+    test_save_permissions()
+
+    perms = get_all_permissions(user)
+    perms = get_all_permissions(user, True)
+    print( perms )
+
+
 if __name__ == '__main__':
+    test_get_map()
     test_move_url()
     test_relabel_topic()
     test_get_searchdata()
     test_scenario_one()
     test_get_searchdata()
+    # Permissions
+    test_get_permissions()
+    test_save_permissions()
+    test_update_permissions()
+    test_get_all_permissions()

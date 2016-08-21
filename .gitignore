@@ -5,9 +5,13 @@ config.py
 # Let's not check in data to the source-code.
 # The request-cache module uses a sqlite file to store previously fetched urls.
 # .links files are (currently) used to store the links of the users. 
+# .maps = maps of a user
+# .permissions = sharing permissions on maps of a user.
+################
 *.sqlite
 *.links
 *.maps
+*.permissions
 __pycache__
 
 
