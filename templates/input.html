@@ -373,8 +373,11 @@
 			// Metainfo
 			maintopic = row[0];
 			subtopic = row[1]
-			url = row[2];
+			url = row[3]; // THIS IS HARDCODE. I suggest having the indexpositions as a parameter to this function. i.e a dict of key --> index mappings.  This could be provided for free by the /fetchsearchdata if wanted. (signal it by making an issue ^^)
 
+			// Should probably not rely on having metadata on ALL urls, 
+			// i.e support hte case when searchdata has a url that has
+			// not been metadata-fetched, and thus is not in links. 
 			title = LINKSDATA[url].title.slice(0, 70);
 			if(LINKSDATA[url].title.length > 70){
 				title += '...';

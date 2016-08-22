@@ -338,6 +338,44 @@ def get_searchdata(user, filter=None):
         topic = the_map.main_topic
         for subtopic in the_map.subtopics.values():
             for url in subtopic.urls.values():
+                ##
+                ##
+                ## REMOVE THIS IN BETA.
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                ##
+                if url not in links:
+                    meta = fetch_meta(url)
+                    save_link(url, meta.__dict__, user)
+                    links = get_links(user)
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
+                #######
                 # title from metadata
                 title = links.get(url, {}).get("title", "")
                 searchdata.append([topic, subtopic.text, title, url])
@@ -504,6 +542,8 @@ class LinkMeta(SigmaObject):
     def __repr__(self):
         """ Defaults to textual representation """
         return self.textual_representation().encode("utf-8")
+
+
 
 
     def textual_representation(self):
