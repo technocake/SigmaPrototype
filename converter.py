@@ -67,8 +67,8 @@ class Converter():
 						#add to map
 						if link == True:
 							link = False
-							new_map.update(last_topic, text)
 							last_topic.add_url(text)
+							new_map.update(last_topic, text)
 						else:
 							new_topic = Topic(text)
 							new_map.update(new_topic)
