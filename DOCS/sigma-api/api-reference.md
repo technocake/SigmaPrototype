@@ -5,6 +5,10 @@
 These urls are used by clients to speak with the sigma engine. These are not meant to be used by users directly.
 Data is represented in JSON, both in requests by clients and responses from the server. 
 
+### Things that are social
+- /[users](users.md) -- returns a flat lists of users.
+
+
 ### Things that are about knowledgemaps
 - /[getmap](getmap.md) -- returns a knowledgemap by its mapid.
 - /[getmaps](getmaps.md) -- returns a dictionary of all knowledgemap associated with a user.
