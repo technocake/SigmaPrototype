@@ -95,8 +95,10 @@ def test_get_permissions():
         permissions on non-existing map. 
     """
     # Non-existing perms
-    perms = get_map_permissions(user, "THIS-MAP-DOES-NOT-EXIST")
-    assert perms is None, "Permissions on non existing map should return None."
+    #perms = get_map_permissions(user, "THIS-MAP-DOES-NOT-EXIST")
+    #assert perms is None, "Permissions on non existing map should return None."
+
+    # Changed behavior to just create it. simplifies explorating dev.
     
     # Make sure some perms are in here
     test_save_permissions()
@@ -135,7 +137,76 @@ def test_get_all_permissions():
     print( perms )
 
 
+def make_and_save_test_map():
+    """ 
+        Used to build mock-data
+    """
+    m = KnowledgeMap("Test")
+    m.update("subtopic1")
+    m.update("subtopic2")
+    m.update("subtopic2", "http://komsys.org")
+
+    save_map(user, "Test", m)
+
+
+
+def test_share_and_unshare():
+    """
+        Share a map from User A with user B.
+    """
+    mapid = "Test"
+    
+    # test share
+    share(user, mapid, "jonas")
+    perms = get_map_permissions(user, mapid)
+    assert "jonas" in perms.shared_with, "Map permissions not updated after shareing."
+
+    # test unshare
+    unshare(user, mapid, "jonas")
+    perms = get_map_permissions(user, mapid)
+    assert "jonas" not in perms.shared_with, "Map permissions not updated after un-shareing."
+
+
+def test_get_owner():
+    """
+        who owns the map?
+        assumes make_and_save_test_map has been run.
+    """
+    
+    # test 1)   symbolic mapid of format <user>/mapid
+    mapid = "%s/Test" % user
+    owner = get_owner(user, mapid)
+    assert owner == user, "SYMBOLIC mapid failed"
+
+    
+    # test 2)   getting owner from a map not existing
+    error = ""
+    try:
+        mapid = "NOT-exists"
+        owner = get_owner(user, mapid)
+    except Exception as e:
+        error = str(e)
+    assert error == "Unknown Owner", "non existing map returned owner."
+
+
+    # test 3)   getting a users map.
+    mapid="Test"
+    owner = get_owner(user, mapid)
+    assert owner == user, "mapid failed"
+
+
+def cleanup():
+    """
+        removes test data
+    """
+    # delete_map(user, "Test")
+    pass
+
+
 if __name__ == '__main__':
+    # setup
+    make_and_save_test_map()
+    
     test_get_map()
     test_move_url()
     test_relabel_topic()
@@ -147,3 +218,8 @@ if __name__ == '__main__':
     test_save_permissions()
     test_update_permissions()
     test_get_all_permissions()
+
+    # Sharing
+    test_share_and_unshare()
+    test_get_owner()
+    cleanup()

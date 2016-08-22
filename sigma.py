@@ -155,21 +155,24 @@ def fetch_meta(url, filter=None):
     return link
 
 
-def update_map(user, main_topic, subtopic, url=None):
+def update_map(user, mapid, subtopic, url=None):
     """
-        Updates and or creates a Knowledge map with id <main_topic>
+        Updates and or creates a Knowledge map with id <mapid>
         returns true if a map was created, false if not.
+
+        Makes default SharingPermissions object and
+        associate it with the map if the map is new.
     """
     # does the knowledge map exists?
     new = False
-    the_map = get_map(user, main_topic)
+    the_map = get_map(user, mapid)
 
     if the_map is None:
-        the_map = KnowledgeMap(main_topic)
+        the_map = KnowledgeMap(mapid)
         new = True
 
     the_map.update(subtopic, url)
-    save_map(user, main_topic, the_map)
+    save_map(user, mapid, the_map)
     return new
 
 
@@ -229,6 +232,12 @@ def get_maps(user, jsonable=False):
         return sigmaserialize(maps)
     return maps
 
+###########################################
+#
+#       PERMISSIONS
+#
+#
+###########################################
 
 def save_permissions(user, mapid, permissions):
     """
@@ -280,6 +289,8 @@ def get_all_permissions(user, jsonable=False):
 def get_map_permissions(user, mapid, jsonable=False):
     """
         Returns  permissions beloning to one map.
+        if none exists for a map, it is created.
+
         PARAMS
             user:
                 username string.
@@ -292,6 +303,10 @@ def get_map_permissions(user, mapid, jsonable=False):
     
     perms = get_all_permissions(user)
     the_perms = perms.get(mapid, None)
+    if the_perms is None:
+         # make default permisions.
+        the_perms = SharingPermissions(mapid)
+        save_permissions(user, mapid, the_perms)
     if jsonable:
         return sigmaserialize(the_perms)
     return the_perms
@@ -322,6 +337,73 @@ def update_permissions(user, mapid, permissions):
     return new
 
 
+def get_owner(user, mapid):
+    """ 
+        retuns owner of a given mapid
+        the user param is there to check if the
+        map is in the users maps.
+    """
+    if "/" in mapid:
+        owner, mapid = mapid.split("/")
+        return owner
+    if mapid in get_maps(user).keys():
+        return user
+    raise Exception("Unknown Owner")
+
+
+def parse_mapid(mapid):
+    """
+        Returns owner and mapid if some.
+    """
+    owner = None
+    if "/" in mapid:
+        owner, mapid = mapid.split("/")
+    return owner, mapid
+
+
+########################################################
+#
+#
+#           SHARING !!!!
+#
+#
+#
+########################################################
+
+
+def share(owner, mapid, user):
+    """
+        Shares a map with mapid <mapid> and made by user <owner>
+        with user <user>.
+    """
+    perms = get_map_permissions(owner, mapid)
+    perms.share(user)
+    save_permissions(owner, mapid, perms)
+    
+    # Add symbolic mapid: <owner/mapid> to user's maps
+
+    # sync links.
+    sync_links(owner, mapid, user)
+
+
+def unshare(owner, mapid, user):
+    """
+        Removes a user from maps shared_with list.
+    """
+    perms = get_map_permissions(owner, mapid)
+    perms.unshare(user)
+    save_permissions(owner, mapid, perms)
+
+
+def sync_links(owner, mapid, user):
+    """
+        Syncs links from a map shared with a user. 
+        The targeted user should get the links in the map 
+        in her/his links file.
+
+        - wont work for delete of links. 
+    """
+    pass
 
 
 def get_searchdata(user, filter=None):
@@ -628,11 +710,12 @@ class KnowledgeMap(SigmaObject):
     def create_subtopic(self, subtopic):
         """
             Creates a new subtopic. 
+            re-using update for this.
 
             PARAMS:
                 subtopic: string
         """
-        self.subtopics[subtopic] = Topic(subtopic)
+        self.update(subtopic)
 
 
     #For testing purposes with the converter
@@ -699,10 +782,26 @@ class SharingPermissions(SigmaObject):
                 - "has user A access to this map? "
         """
         self.mapid = mapid
+        self.shared_with = []
         if global_permissions is None:
             self.permissions = {"global": "private"}
         else:
             self.permissions = global_permissions
+
+
+    def share(self, user):
+        """
+            Adds the user to the shared_with list.
+        """
+        self.shared_with.append(user)
+
+
+    def unshare(self, user):
+        """
+            Unshares a map with a user.
+        """
+        self.shared_with = [u for u in self.shared_with if u != user]
+
 
 
     def update(self, permissions):
