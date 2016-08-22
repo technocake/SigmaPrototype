@@ -330,17 +330,17 @@ def get_searchdata(user, filter=None):
         and returns it to the client. This is meant to provide data for
         client-side searching.
     """
-    # note to Jonas, useful python debuging tool. 
-    #import pdb
     maps = get_maps(user)
+    links = get_links(user)
+
     searchdata = []
     for the_map in maps.values():
         topic = the_map.main_topic
         for subtopic in the_map.subtopics.values():
-            
-            #pdb.set_trace()
             for url in subtopic.urls.values():
-                searchdata.append([topic, subtopic.text, url])
+                # title from metadata
+                title = links.get(url, {}).get("title", "")
+                searchdata.append([topic, subtopic.text, title, url])
     return searchdata
 
 
