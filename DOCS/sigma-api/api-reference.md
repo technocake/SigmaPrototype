@@ -6,7 +6,7 @@ These urls are used by clients to speak with the sigma engine. These are not mea
 Data is represented in JSON, both in requests by clients and responses from the server. 
 
 ### Things that are social
-- /[users](users.md) -- returns a flat lists of users.
+- /[users](users.md) -- returns a flat list of users.
 
 
 ### Things that are about knowledgemaps
