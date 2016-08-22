@@ -24,6 +24,7 @@ Essential information:
 Status code 200, along with a JSON array containing 
 - **status** — Either OK or NOT OK
 - **map** — a dict containing all knowledge maps associated with a user.
+- **mapid** — the mapid of the map
 ***
 
 ## Errors
@@ -36,10 +37,6 @@ Status code 200, along with a JSON array containing
 **Request**
 
     GET /getmaps
-
-**Payload**
-``` json
-```
 
 
 **Return**
@@ -58,6 +55,7 @@ Status code 200, along with a JSON array containing
       }
     }
   }, 
+  "map_id": "technocake/Python"
   "status": "Getmap OK"
 }
 

@@ -1,0 +1,23 @@
+<!-- 	share-map.html !-->
+
+<form action="/share" method="POST" accept-charset="utf-8">
+	<input type="hidden" name="mapid" value="{{ mapid }}">
+	<input class="shareinput" type="text" name="users" value="" placeholder="Share with...">
+	<input type="submit" name="" value="Share Map">
+</form>
+
+
+<script  type="text/javascript" charset="utf-8" async defer>
+	$(document).ready(function(){
+		$.ajax({
+			url: '/users',
+			type: 'get',
+			success: function (data) {
+				
+				$(".shareinput").autocomplete({
+					source: data.users
+				});
+			}
+		});
+	});
+</script>

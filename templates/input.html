@@ -148,7 +148,8 @@
 		var json_topics = {
 			url : APP.old_url,
 			main_topic : APP.$maintop.val(),
-			subtopic : APP.$subtop.val()
+			subtopic : APP.$subtop.val(),
+			map_id: APP.$maintop.val(),
 		};
 
 		// Post 1 
@@ -443,7 +444,19 @@
 				};
 			}
 		);
+
+	$.ajax({
+			url: '/users',
+			type: 'get',
+			success: function (data) {
+				APP.users = data.users
+				$(".shareinput").autocomplete({
+					source: APP.users
+				});
+			}
+		});
 	};
+	
 
 // ---------------------- MAIN INIT -----------------------
 

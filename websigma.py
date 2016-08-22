@@ -175,7 +175,7 @@ def show_map(user, mapid):
     if the_map is None:
         return "There is no map with this main_topic"
     #the_map = sigma.KnowledgeMap("Python", "flask")
-    return render_template('map.html', map=the_map)
+    return render_template('map.html', map=the_map, mapid=mapid)
  
 
 @app.route('/<user>/map/<mapid>/thumbnail')
@@ -255,8 +255,14 @@ def get_map():
     
     try:
         mapid = json.get('mapid', None)
-        the_map = sigma.get_map(user, mapid, True) 
-        return jsonify(status='Getmap OK', map=the_map)
+        # if <owner>/<mapid> format, split it.
+        # if not, owner = user
+        owner, real_mapid = sigma.parse_mapid(mapid, user)
+        if auth.can_access(user, mapid):
+            the_map = sigma.get_map(owner, real_mapid, jsonable=True)
+            return jsonify(status='Getmap OK', map=the_map, map_id=mapid)
+        else:
+            raise Exception("Not Authorized")
 
     except Exception as e:
         return jsonify(status='Getmap ERROR:' + str(e))
@@ -307,9 +313,14 @@ def update_map():
         url = json.get('url', None)
         main_topic = json['main_topic']
         subtopic = json['subtopic']
+        mapid = json['map_id']
 
-        new = sigma.update_map(user, main_topic, subtopic, url)
-        return jsonify(status='Updatemap OK', new=new)
+        owner, real_mapid = sigma.parse_mapid(mapid, user)
+        if auth.can_update(user, mapid):
+            new = sigma.update_map(user, main_topic, subtopic, url)
+            return jsonify(status='Updatemap OK', new=new)
+        else:
+            raise Exception("Not Authorized")
     except Exception as e:
         return jsonify(status='Updatemap ERROR: ' + str(e))
 

@@ -200,7 +200,6 @@ def get_map(user, mapid, jsonable=False):
     """
         Retrieves a requested map
     """
-
     maps = get_maps(user)
     the_map = maps.get(mapid, None)
     if jsonable:
@@ -231,6 +230,14 @@ def get_maps(user, jsonable=False):
     if jsonable:
         return sigmaserialize(maps)
     return maps
+
+
+def is_new_map(user, mapid):
+    """
+        Helper function to tell if the map is new for a user
+    """
+    owner, mid = parse_mapid(mapid, user)
+    return mapid not in get_maps(owner).keys()
 
 ###########################################
 #
@@ -351,13 +358,15 @@ def get_owner(user, mapid):
     raise Exception("Unknown Owner")
 
 
-def parse_mapid(mapid):
+def parse_mapid(mapid, user=None):
     """
         Returns owner and mapid if some.
     """
     owner = None
     if "/" in mapid:
         owner, mapid = mapid.split("/")
+    else:
+        owner = user #not authorative, but get_map will fail if not.
     return owner, mapid
 
 
@@ -441,10 +450,10 @@ def get_searchdata(user, filter=None):
                 ##
                 ##
                 ##
-                if url not in links:
-                    meta = fetch_meta(url)
-                    save_link(url, meta.__dict__, user)
-                    links = get_links(user)
+                #if url not in links:
+                #    meta = fetch_meta(url)
+                #    save_link(url, meta.__dict__, user)
+                #    links = get_links(user)
                 #######
                 #######
                 #######

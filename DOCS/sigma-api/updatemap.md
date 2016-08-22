@@ -43,7 +43,8 @@ Status code 200, along with a JSON array containing
 
 **Payload**
 ``` json
-{
+{ 
+  "map_id": "Javascript",
   "main_topic": "Javascript",
   "subtopic": "arrays",
   "url": "http://example.com/arrays/push"

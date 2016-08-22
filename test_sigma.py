@@ -195,6 +195,11 @@ def test_get_owner():
     assert owner == user, "mapid failed"
 
 
+
+def test_is_new_map():
+    assert is_new_map(user, "doesnotexist") == True, "Should be new"
+
+
 def cleanup():
     """
         removes test data
@@ -213,6 +218,8 @@ if __name__ == '__main__':
     test_get_searchdata()
     test_scenario_one()
     test_get_searchdata()
+    test_is_new_map()
+    
     # Permissions
     test_get_permissions()
     test_save_permissions()
