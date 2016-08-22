@@ -177,9 +177,15 @@ def update_map(user, mapid, subtopic, url=None):
 
 
 
-def save_map(user, mapid, the_map):
+def save_map(user, mapid, the_map=None):
     """
         Saves a knowledgemap
+
+        new in Phase 2 - sharing,
+        the_map argument is made optional to support 
+        saving symbolic links to maps. 
+
+
     """
     mapsfile = secure_filename('%s.maps'%(user))
     maps = get_maps(user)
@@ -187,7 +193,30 @@ def save_map(user, mapid, the_map):
     for k,v in maps.items():
         mapdict = v.__dict__
         maps[k] = mapdict
-    maps[mapid] = the_map.__dict__
+    if the_map is None:
+        maps[mapid] = "SYMBOLIC"
+    else:
+        maps[mapid] = the_map.__dict__
+
+    with codecs.open(mapsfile, 'wb') as userfile: 
+        pickle.dump(maps, userfile) 
+
+
+def save_maps(user, maps):
+    """
+        Saves a dict of knowledgemaps
+
+        new in Phase 2 - sharing,
+        the_map argument is made optional to support 
+        saving symbolic links to maps. 
+
+
+    """
+    mapsfile = secure_filename('%s.maps'%(user))
+
+    for k,v in maps.items():
+        mapdict = v.__dict__
+        maps[k] = mapdict
 
     with codecs.open(mapsfile, 'wb') as userfile: 
         pickle.dump(maps, userfile) 
@@ -202,6 +231,10 @@ def get_map(user, mapid, jsonable=False):
     """
     maps = get_maps(user)
     the_map = maps.get(mapid, None)
+    if the_map == "SYMBOLIC":
+        # load map from other user.
+        owner, mapid = parse_mapid(mapid, user)
+        the_map = get_map(owner, mapid)
     if jsonable:
         return sigmaserialize(the_map)
     return the_map
@@ -221,8 +254,13 @@ def get_maps(user, jsonable=False):
             # This is then converted to a Knowledgemap object.
             maps = {}
             for k,v in dict_maps.items():
-                the_map = KnowledgeMap()
-                the_map.__dict__ = v
+                if v == "SYMBOLIC":
+                    # load map from other user.
+                    owner, mapid = parse_mapid(k, user)
+                    the_map = get_map(owner, mapid)
+                else:
+                    the_map = KnowledgeMap()
+                    the_map.__dict__ = v
                 maps[k] = the_map
     except Exception as e:
         # If the file does not exist, create an empty list of links.
@@ -230,6 +268,15 @@ def get_maps(user, jsonable=False):
     if jsonable:
         return sigmaserialize(maps)
     return maps
+
+
+def delete_map(user, mapid):
+    """
+        Deletes a users map
+    """
+    maps = get_maps(user)
+    maps.pop(mapid)
+    save_maps(user, maps)
 
 
 def is_new_map(user, mapid):
@@ -384,6 +431,8 @@ def share(owner, mapid, user):
     """
         Shares a map with mapid <mapid> and made by user <owner>
         with user <user>.
+
+        mapid is exected to be in local-format -ie not in owner/mapid format.
     """
     if user == owner:
         return
@@ -392,7 +441,9 @@ def share(owner, mapid, user):
     save_permissions(owner, mapid, perms)
     
     # Add symbolic mapid: <owner/mapid> to user's maps
-
+    
+    symid = "%s/%s" % (owner, mapid)
+    save_map(user, symid)
     # sync links.
     sync_links(owner, mapid, user)
 
@@ -414,7 +465,14 @@ def sync_links(owner, mapid, user):
 
         - wont work for delete of links. 
     """
-    pass
+    the_map = get_map(owner, mapid)
+    links = get_links(user)
+    owner_links = get_links(owner)
+    # Adding missing links...
+    for url in the_map.urls.keys():
+        if url not in links:
+            save_link(url, owner_links[url], user)
+    
 
 
 def get_searchdata(user, filter=None):
@@ -429,48 +487,11 @@ def get_searchdata(user, filter=None):
     searchdata = []
     for the_map in maps.values():
         topic = the_map.main_topic
+
         for subtopic in the_map.subtopics.values():
             for url in subtopic.urls.values():
-                ##
-                ##
-                ## REMOVE THIS IN BETA.
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                ##
-                #if url not in links:
-                #    meta = fetch_meta(url)
-                #    save_link(url, meta.__dict__, user)
-                #    links = get_links(user)
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                #######
-                # title from metadata
                 title = links.get(url, {}).get("title", "")
+                # Adding a row here
                 searchdata.append([topic, subtopic.text, title, url])
     return searchdata
 
@@ -718,6 +739,20 @@ class KnowledgeMap(SigmaObject):
         self.update(to_node, link)
 
 
+    @property
+    def urls(self):
+        """
+            the @property makes this method work like a attribute.
+            ie. you don't say  m=KnowledgeMap(),  m.urls() , no no.
+            you say m.urls
+        """
+        all_urls = {}
+        for sub in self.subtopics.values():
+            for url in sub.urls.keys():
+                all_urls[url] = url
+        return all_urls
+
+
     def create_subtopic(self, subtopic):
         """
             Creates a new subtopic. 
@@ -730,6 +765,11 @@ class KnowledgeMap(SigmaObject):
 
 
     #For testing purposes with the converter
+    # Note, this is cool, I recommend looking at
+    # pythons synonym to Javas to_string method:
+    #   __str__(self)
+    # (google it)
+    ###########################
     def to_string(self):
         result = 'Main topic : ' + self.main_topic.text + "\n"
 

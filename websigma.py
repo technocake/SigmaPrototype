@@ -290,11 +290,7 @@ def get_map_names():
     user = session['user']
     try:
         the_maps = sigma.get_maps(user)
-
-        map_names = []
-        for k in the_maps:
-            map_names.append(k)
-
+        map_names = the_maps.keys()
         return jsonify(status='Names OK', names=map_names)
 
     except Exception as e:

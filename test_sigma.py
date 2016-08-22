@@ -79,6 +79,14 @@ def test_scenario_one():
     #print ( get_map(user, "Python").subtopics["functions"])
 
 
+def test_delete_map():
+    mapid = "TestTest"
+    m = KnowledgeMap(mapid)
+    save_map(user, mapid, m)
+
+    delete_map(user, mapid)
+    assert mapid not in get_maps(user), "Should be deleted"
+
 
 def test_get_map():
     """
@@ -219,6 +227,7 @@ if __name__ == '__main__':
     test_scenario_one()
     test_get_searchdata()
     test_is_new_map()
+    test_delete_map()
     
     # Permissions
     test_get_permissions()
