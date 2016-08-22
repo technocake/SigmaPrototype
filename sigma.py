@@ -385,6 +385,8 @@ def share(owner, mapid, user):
         Shares a map with mapid <mapid> and made by user <owner>
         with user <user>.
     """
+    if user == owner:
+        return
     perms = get_map_permissions(owner, mapid)
     perms.share(user)
     save_permissions(owner, mapid, perms)
@@ -791,7 +793,7 @@ class SharingPermissions(SigmaObject):
                 - "has user A access to this map? "
         """
         self.mapid = mapid
-        self.shared_with = []
+        self.shared_with = {}
         if global_permissions is None:
             self.permissions = {"global": "private"}
         else:
@@ -802,14 +804,14 @@ class SharingPermissions(SigmaObject):
         """
             Adds the user to the shared_with list.
         """
-        self.shared_with.append(user)
+        self.shared_with[user] = "all"
 
 
     def unshare(self, user):
         """
             Unshares a map with a user.
         """
-        self.shared_with = [u for u in self.shared_with if u != user]
+        self.shared_with.pop(user)
 
 
 

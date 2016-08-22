@@ -9,6 +9,8 @@
 				onblur="onblurHandler(this)" 
 				onkeyup="getMeta(this.value)" 
 				onclick="this.select()"/>
+				
+				
 
 		<div class="metainfo" hidden>	
 
@@ -465,6 +467,9 @@
 		APP.$metainfo.hide();
 
 		initDocumentData();
+
+		
+
 
 		// building taglist for autocompletion
 		$.get('/tags', 

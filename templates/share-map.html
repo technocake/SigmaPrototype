@@ -1,10 +1,10 @@
 <!-- 	share-map.html !-->
 
-<form action="/share" method="POST" accept-charset="utf-8">
-	<input type="hidden" name="mapid" value="{{ mapid }}">
-	<input class="shareinput" type="text" name="users" value="" placeholder="Share with...">
-	<input type="submit" name="" value="Share Map">
-</form>
+
+
+	<input id="share-with-users" class="shareinput" type="text" name="users" value="" placeholder="Share with...">
+	<input type="button" name="" value="Share Map" onclick="share('{{ mapid }}')">
+
 
 
 <script  type="text/javascript" charset="utf-8" async defer>
@@ -20,4 +20,25 @@
 			}
 		});
 	});
+
+
+	function share(mapid) {
+		users = $('#share-with-users').val().split(" ");
+		var data = {
+			map_id: mapid,
+			users: users
+		};
+
+		$.ajax({
+			url: '/share',
+			type: 'post',
+			data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8",
+    		dataType: "json",
+			success: function (data) {
+				console.log(data.status)
+			}
+		});
+	};
+
 </script>

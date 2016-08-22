@@ -361,6 +361,31 @@ def move_url():
 
 
 
+
+@app.route('/share', methods=['POST'])
+@login_required
+def share_map():
+
+    user = session['user']
+    json = request.get_json()
+ 
+    try:
+        mapid = json['map_id']
+        users = json['users']
+
+        owner, real_mapid = sigma.parse_mapid(mapid, user)
+        if auth.can_update(user, mapid):
+            all_users = auth.users
+            for u in users:
+                if u in all_users:
+                    sigma.share(owner, mapid, u)
+            return jsonify(status='Share OK', map_id=mapid)
+        else:
+            raise Exception("Not Authorized")
+    except Exception as e:
+        return jsonify(status='Share ERROR: ' + str(e))
+
+
 @app.route('/fetchsearchdata', methods=['POST'])
 @login_required
 def fetch_searchdata():
@@ -394,6 +419,9 @@ def get_users():
         return jsonify(status='users OK', users=users)
     except Exception as e:
         return jsonify(status='users ERROR: ' + str(e))
+
+
+
 
 
 @app.route('/deletelink', methods=['POST'])

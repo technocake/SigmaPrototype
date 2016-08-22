@@ -7,6 +7,7 @@ Data is represented in JSON, both in requests by clients and responses from the 
 
 ### Things that are social
 - /[users](users.md) -- returns a flat list of users.
+- /[share](share.md) -- share a map with other users.
 
 
 ### Things that are about knowledgemaps
