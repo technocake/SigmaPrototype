@@ -6,6 +6,7 @@ Builds a search-able datastructure of the users maps and links and returns it to
 This is meant to provide data for client-side searching. User is implied through the
 session login.
 
+a searchdata row is structured like this:  ``` [topic, subtopic, title, url] ```
 ***
 
 ## Requires authentication
@@ -49,11 +50,11 @@ None
 {
   "status": "OK",
   "searchdata": [ 
-                    ["Python", "functions", "http://example.com/python-functions"], 
-                    ["Python", "functions", "http://example.com/python-use-def"], 
-                    ["Python", "syntax", "http://example.com/python-syntax"],
-                    ["Java", "functions", "http://example.com/java-functions"],
-                    ["Java", "inventor", "http://example.com/James-gosling"]
+                    ["Python", "functions", "function in python", "http://example.com/python-functions"], 
+                    ["Python", "functions","def introduciton", "http://example.com/python-use-def"], 
+                    ["Python", "syntax", "", "http://example.com/python-syntax"],
+                    ["Java", "functions", "java functions title", "http://example.com/java-functions"],
+                    ["Java", "inventor", "", "http://example.com/James-gosling"]
                 ],
     "linksdata": {
     "http://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable": {
