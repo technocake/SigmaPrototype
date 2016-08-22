@@ -3,12 +3,14 @@
 
 # auth.py
 import sigma
+users = ["technocake", "jonas", "carl henrik", "andre", "kjell", "amund", "oliwia", "lars"]
+
 
 def authenticate(user, password):
 	""" 
 		This function is responsible to handle authentication reuquests.
 	"""
-	return user in ["technocake", "jonas", "carl henrik", "andre", "kjell", "amund", "oliwia", "lars"]
+	return user in users
 
 
 def can_access(user, mapid):

@@ -41,11 +41,12 @@
     18. /moveurl                       -> jsonify()
     19. /fetchsearchdata               -> jsonify(searchdata=searchdata)    
     20. /tags                          -> jsonify(tags=tags)
-    21. /deletelink                    -> jsonify()
-    22. /fetchmeta                     -> jsonify(meta=meta.__dict__)
-    23. /fetchlinks                    -> jsonify(links=links)
-    24. /fetchtitle                    -> jsonify(title=title)
-    25. /sharingpermissions            -> jsonify(mapid=mapid, [permissions=...]) GET and POST
+    21. /usesrs                        -> jsonify(users=[abba, babba, bob])
+    22. /deletelink                    -> jsonify()
+    23. /fetchmeta                     -> jsonify(meta=meta.__dict__)
+    24. /fetchlinks                    -> jsonify(links=links)
+    25. /fetchtitle                    -> jsonify(title=title)
+    26. /sharingpermissions            -> jsonify(mapid=mapid, [permissions=...]) GET and POST
 
                                         * All jsonify return (status=status)
 # ------------------------------------------------------------------------------ # 
@@ -371,6 +372,17 @@ def get_tags():
         return jsonify(status='Tags OK', tags=tags)
     except Exception as e:
         return jsonify(status='Tags ERROR: ' + str(e))
+
+
+@app.route('/users', methods=['GET'])
+@login_required
+def get_users():
+    user = session['user']
+    try:
+        users = auth.users
+        return jsonify(status='users OK', users=users)
+    except Exception as e:
+        return jsonify(status='users ERROR: ' + str(e))
 
 
 @app.route('/deletelink', methods=['POST'])
