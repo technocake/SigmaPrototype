@@ -667,7 +667,7 @@ class MapID(SigmaObject):
     """
         Holds the format of mapids.
     """
-    delim= "_"
+    delim= "--"
 
     def __init__(self, mapid, owner=None):
         if self.delim in mapid:

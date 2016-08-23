@@ -59,7 +59,9 @@
 <script type="text/javascript">
 	    
 $(document).ready(function(){
-
+    $STATE = {
+        names: []
+    }
 
 	// GLOBALS
 	var ww;
@@ -293,7 +295,7 @@ $(document).ready(function(){
 
     	var $topnav = $('#topnav');
     	for (i in names){
-    		$topnav.append('<button id="button_'+names[i]+'" class="menubutton">'+
+    		$topnav.append('<button id="button_'+i+'" class="menubutton">'+
                             names[i]+
                             '</button>');
         };
@@ -301,8 +303,11 @@ $(document).ready(function(){
         $('.menubutton').click(function(){
             
             $this = $(this);  
-            var newtopic = this.id.split('_')[1];
-            newMap(newtopic);
+            // Saving a index instead of map-id in 
+            // things. resolving map-id from mapindex.
+            var mapindex = this.id.split('_')[1];
+            newMap($STATE.names[mapindex]);
+            console.log($STATE.names)
 
         });
     	
@@ -312,13 +317,14 @@ $(document).ready(function(){
 
 	$.get('/mapnames', function(data){
     	if (data.status === 'Names OK'){
+            $STATE.names = data.names
 	    	initNav(data.names);
 	    } else {
 	    	console.log(data.status);};
 	});
 
     function newMap(new_topic){
-        console.log(new_topic);
+        console.log("newMap: "+new_topic);
         current_topic = new_topic;
  
         $.ajax('/getmap', {
