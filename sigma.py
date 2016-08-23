@@ -171,6 +171,13 @@ def update_map(user, mapid, subtopic, url=None):
         the_map = KnowledgeMap(mapid)
         new = True
 
+    ######
+    #   Fetching meta about link serverside.
+    ####
+    if url is not None:
+        meta = fetch_meta(url).__dict__ 
+        save_link(url, meta, user)
+
     the_map.update(subtopic, url)
     save_map(user, mapid, the_map)
     return new
@@ -253,6 +260,7 @@ def get_maps(user, jsonable=False):
             # the stored data is the __dict__ of the Knowledgemap
             # This is then converted to a Knowledgemap object.
             maps = {}
+
             for k,v in dict_maps.items():
                 if v == "SYMBOLIC":
                     # load map from other user.
@@ -391,29 +399,17 @@ def update_permissions(user, mapid, permissions):
     return new
 
 
-def get_owner(user, mapid):
-    """ 
-        retuns owner of a given mapid
-        the user param is there to check if the
-        map is in the users maps.
-    """
-    if "/" in mapid:
-        owner, mapid = mapid.split("/")
-        return owner
-    if mapid in get_maps(user).keys():
-        return user
-    raise Exception("Unknown Owner")
 
 
 def parse_mapid(mapid, user=None):
     """
         Returns owner and mapid if some.
     """
-    owner = None
-    if "/" in mapid:
-        owner, mapid = mapid.split("/")
-    else:
+    mid = MapID(mapid)
+    owner, mapid = mid.parts()
+    if mid.owner is None:
         owner = user #not authorative, but get_map will fail if not.
+
     return owner, mapid
 
 
@@ -442,8 +438,8 @@ def share(owner, mapid, user):
     
     # Add symbolic mapid: <owner/mapid> to user's maps
     
-    symid = "%s/%s" % (owner, mapid)
-    save_map(user, symid)
+    symid = MapID(mapid, owner)
+    save_map(user, str(symid))
     # sync links.
     sync_links(owner, mapid, user)
 
@@ -666,6 +662,32 @@ class LinkMeta(SigmaObject):
         else:
             return "%s\n%s" % (self.title,  self.domain)
 
+
+class MapID(SigmaObject):
+    """
+        Holds the format of mapids.
+    """
+    delim= "_"
+
+    def __init__(self, mapid, owner=None):
+        if self.delim in mapid:
+            owner, mapid = mapid.split(self.delim)
+        self.mapid = mapid
+        self.owner = owner
+
+
+    def __repr__(self):
+        if self.owner is None:
+            return self.mapid
+        else:
+            return "%s%s%s" % (self.owner, self.delim, self.mapid)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def parts(self):
+        return self.owner, self.mapid
+    
 
 
 class KnowledgeMap(SigmaObject):
@@ -919,5 +941,4 @@ def sigmaserialize(obj):
 
 
 if __name__ == '__main__':
-    from test_sigma import *
-    test_get_searchdata()
+    pass

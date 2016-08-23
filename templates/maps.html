@@ -5,14 +5,14 @@
 	<h1> Maps </h1>
 	<div class="maindiv">
 	<ol class="maps-list"> 
-	{% for map in maps %}
+	{% for mapid, map in maps.items() %}
 		<li class="map-thumbnail">
 			<a href="{{ url_for('show_map', 
 									user=session['user'], 
-									mapid=map.main_topic) }}">
+									mapid=mapid) }}">
 			<h3>{{ map.main_topic }}</h3>
 			<p> {{ map.description }} </p>
-			<iframe width="200" src="{{ url_for('map_thumbnail', user=session['user'], mapid=map.main_topic) }}"></iframe>
+			<iframe width="200" src="{{ url_for('map_thumbnail', user=session['user'], mapid=mapid) }}"></iframe>
 		</a>
 		</li>
 	{% endfor %}

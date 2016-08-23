@@ -159,7 +159,7 @@ def input_url():
 @login_required
 def maps():
     user = session['user']
-    maps = sigma.get_maps(user).values()
+    maps = sigma.get_maps(user)
     
     return render_template('maps.html', maps=maps)
 

@@ -96,6 +96,14 @@ def test_get_map():
     m = get_map(user, "Python")
 
 
+def test_get_maps():
+    """
+        Scenario: 
+            A map is saved, retrieve it. 
+    """
+    maps = get_maps(user)
+    assert isinstance(maps, dict), "get_maps Should return dict"
+
 
 def test_get_permissions():
     """
@@ -149,12 +157,9 @@ def make_and_save_test_map():
     """ 
         Used to build mock-data
     """
-    m = KnowledgeMap("Test")
-    m.update("subtopic1")
-    m.update("subtopic2")
-    m.update("subtopic2", "http://komsys.org")
-
-    save_map(user, "Test", m)
+    update_map(user, "Test", "subtopic1")
+    update_map(user, "Test", "subtopic2")
+    update_map(user, "Test", "subtopic2", "http://komsys.org")
 
 
 
@@ -175,33 +180,6 @@ def test_share_and_unshare():
     assert "jonas" not in perms.shared_with, "Map permissions not updated after un-shareing."
 
 
-def test_get_owner():
-    """
-        who owns the map?
-        assumes make_and_save_test_map has been run.
-    """
-    
-    # test 1)   symbolic mapid of format <user>/mapid
-    mapid = "%s/Test" % user
-    owner = get_owner(user, mapid)
-    assert owner == user, "SYMBOLIC mapid failed"
-
-    
-    # test 2)   getting owner from a map not existing
-    error = ""
-    try:
-        mapid = "NOT-exists"
-        owner = get_owner(user, mapid)
-    except Exception as e:
-        error = str(e)
-    assert error == "Unknown Owner", "non existing map returned owner."
-
-
-    # test 3)   getting a users map.
-    mapid="Test"
-    owner = get_owner(user, mapid)
-    assert owner == user, "mapid failed"
-
 
 
 def test_is_new_map():
@@ -221,6 +199,7 @@ if __name__ == '__main__':
     make_and_save_test_map()
     
     test_get_map()
+    test_get_maps()
     test_move_url()
     test_relabel_topic()
     test_get_searchdata()
@@ -237,5 +216,4 @@ if __name__ == '__main__':
 
     # Sharing
     test_share_and_unshare()
-    test_get_owner()
     cleanup()
