@@ -362,13 +362,17 @@ def get_map_permissions(user, mapid, jsonable=False):
                   True --> returns data as pure dicts.
                   False --> returns data as SharingPermissions object.
     """
-    
-    perms = get_all_permissions(user)
-    the_perms = perms.get(mapid, None)
+    ####
+    #       Case: Mapid ==  owner--mapid --> resolve to 
+    #
+    owner, mid = parse_mapid(mapid, user)
+    perms = get_all_permissions(owner)
+    the_perms = perms.get(mid, None)
     if the_perms is None:
          # make default permisions.
-        the_perms = SharingPermissions(mapid)
-        save_permissions(user, mapid, the_perms)
+         #move to update.
+        the_perms = SharingPermissions(mid)
+        save_permissions(owner, mid, the_perms)
     if jsonable:
         return sigmaserialize(the_perms)
     return the_perms
@@ -398,7 +402,19 @@ def update_permissions(user, mapid, permissions):
     save_permissions(user, mapid, the_perms)
     return new
 
+############## #
+#   Helper functions
+###############
 
+def _make_default_perms(owner, mapid):
+    """
+        Creates a SharingPermissions object with default
+        settings for a given map.
+    """
+    mid = MapID(mapid)
+    owner, mapid = mid.parts()
+    perms = SharingPermissions(mid)
+    save_permissions(owner, mid, perms)
 
 
 def parse_mapid(mapid, user=None):
@@ -430,11 +446,15 @@ def share(owner, mapid, user):
 
         mapid is exected to be in local-format -ie not in owner/mapid format.
     """
+
     if user == owner:
         return
-    perms = get_map_permissions(owner, mapid)
+    # lookup the right mid.
+    map_owner, mid = parse_mapid(mapid, owner)
+    
+    perms = get_map_permissions(owner, mid)
     perms.share(user)
-    save_permissions(owner, mapid, perms)
+    save_permissions(owner, mid, perms)
     
     # Add symbolic mapid: <owner/mapid> to user's maps
     
@@ -461,7 +481,8 @@ def sync_links(owner, mapid, user):
 
         - wont work for delete of links. 
     """
-    the_map = get_map(owner, mapid)
+    o, mid = parse_mapid(mapid, owner)
+    the_map = get_map(owner, mid)
     links = get_links(user)
     owner_links = get_links(owner)
     # Adding missing links...
@@ -581,6 +602,15 @@ class SigmaObject():
             print(jsonmap) -->
         """
         return json.dumps(sigmaserialize(self), indent=4)
+
+
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__)
+
+    def __hash__(self):
+        return id(self)
+
 
 
 class LinkMeta(SigmaObject):

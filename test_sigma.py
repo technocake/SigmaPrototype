@@ -1,6 +1,6 @@
 # Sigma tester
 from sigma import *
-
+import sigma
 
 """	###############################################
 		TEST CONFIG
@@ -121,6 +121,40 @@ def test_get_permissions():
     perms = get_map_permissions(user, "Python")
     assert perms is not None, "Should get som perms."
 
+    ##  Resolving mapids, there
+    ##  should be only one SharingPermission object per map.
+    mapid = "technocake--Python"
+    mid = "Python"
+    perms = get_map_permissions("technocake", mapid)
+    perms2 = get_map_permissions("technocake", mid)
+    assert perms == perms2, "Global mapid should resolve to local mapid: owner--mapid --> mapid"
+
+    
+def test_scenario_get_perms_of_shared_map():
+    ##  This also applies for shared maps.
+    make_and_save_test_map()
+
+    mapid = "technocake--Test"
+    mid = "Test"
+    owner = "technocake"
+    user = "andre"
+
+    share(owner, mapid, user)
+
+    perms = get_map_permissions("andre", mapid)
+    assert user in perms.shared_with, "Map not shared"
+    assert perms.mapid == mid, "Permission object should be for mid not global mapid (Test instead of technocake--Test)"
+
+
+
+
+def test_make_default_perms():
+    """
+        Should generate a SharingPermissions object for a map adn save it. 
+    """
+    sigma._make_default_perms("technocake", "Does-not-exist-really")
+    assert get_map_permissions("technocake", "Does-not-exist-really") is not None, "Did not make default object for perms."
+
 
 def test_save_permissions():
     """
@@ -159,7 +193,7 @@ def make_and_save_test_map():
     """
     update_map(user, "Test", "subtopic1")
     update_map(user, "Test", "subtopic2")
-    update_map(user, "Test", "subtopic2", "http://komsys.org")
+    update_map(user, "Test", "subtopic2",   "http://komsys.org")
 
 
 
@@ -194,6 +228,8 @@ def cleanup():
     pass
 
 
+
+
 if __name__ == '__main__':
     # setup
     make_and_save_test_map()
@@ -209,6 +245,7 @@ if __name__ == '__main__':
     test_delete_map()
     
     # Permissions
+    test_make_default_perms()
     test_get_permissions()
     test_save_permissions()
     test_update_permissions()
@@ -217,3 +254,4 @@ if __name__ == '__main__':
     # Sharing
     test_share_and_unshare()
     cleanup()
+    test_scenario_get_perms_of_shared_map()

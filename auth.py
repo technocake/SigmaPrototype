@@ -3,7 +3,9 @@
 
 # auth.py
 import sigma
-users = ["technocake", "jonas", "carl henrik", "andre", "kjell", "amund", "oliwia", "lars"]
+robin_invited = ["amund", "oliwia", "lars", "lasseeli"]
+jonas_invited = ["kjell"]
+users = ["technocake", "jonas", "carl henrik", "andre"] + robin_invited + jonas_invited
 
 
 def authenticate(user, password):
