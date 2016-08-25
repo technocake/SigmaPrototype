@@ -46,9 +46,11 @@ import classification
 try:
     ## Python 3
     from urllib.parse import urlparse
+    from urllib.parse import ParseResult
 except:
     ## Python 2
     from urlparse import urlparse
+    from urlparse import ParseResult
 
 # from urlparse import urlparse
 
@@ -84,7 +86,7 @@ def save_link(id, meta, user):
             the username string.
     """
     if isinstance(meta, LinkMeta):
-        meta = meta.__dict__
+        meta = sigmaserialize(meta)
     
     # strips hacker attempts away from input. 
     linksfile = secure_filename('%s.links'%(user))
@@ -596,7 +598,7 @@ def fetch_title(url):
             title=""
     else:
         title=""
-    return title
+    return unicode(title)
 
 
 
@@ -700,12 +702,12 @@ class LinkMeta(SigmaObject):
         if r:
             soup = BeautifulSoup(r.text, 'html.parser')
             # First get the meta description tag
-            meta_desc = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'})
+            meta_desc = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'}, recursive=False)
 
             # If description meta tag was found, then get the content attribute and save it to db entry
             if meta_desc:
                 description = meta_desc.get('content')
-        return description
+        return unicode(description)
 
 
     def fetch_favicon(self):
@@ -1043,6 +1045,11 @@ def sigmaserialize(obj):
     """
     if isinstance(obj, SigmaObject):
         obj = obj.__dict__
+
+    #LinkMeta breaks ifnot.
+    if isinstance(obj, ParseResult):
+        # Had to dig deep to find this one!
+        obj = dict(obj._asdict())
 
     if isinstance(obj, dict):
         for k,v in obj.items():

@@ -67,10 +67,15 @@ def refetch_meta():
 
 	for user in users:
 		maps = sigma.get_maps(user)
-		for mapid in maps:
-			the_map = sigma.get_map(user, mapid)
+		for mapid, map_item in maps.items():
+			if map_item == "SYMBOLIC":
+
+				the_map = sigma.get_map(user, mapid)
+			else:
+				the_map = map_item
 			urls = the_map.urls
 			for url in urls:
+				print ("[%s]--[%s]-->(%s) " % (user, mapid, url))
 				link = sigma.fetch_meta(url)
 				sigma.save_link(url, link, user)
 

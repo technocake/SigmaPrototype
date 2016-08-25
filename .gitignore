@@ -13,7 +13,7 @@ config.py
 *.maps
 *.permissions
 __pycache__
-
+*.backup
 
 #### NO SECRETS
 # Apikeys are sensitivy informations. Let's not include those.
