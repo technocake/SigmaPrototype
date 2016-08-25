@@ -683,7 +683,8 @@ class LinkMeta(SigmaObject):
             self.title = fetch_title(self.url)
             self.domain = self.fetch_domain()
             self.favicon = self.fetch_favicon()
-            self.topics = self.classify_topics()
+            #we are not really using this, turned it off.
+            #self.topics = self.classify_topics()
             self.description = self.fetch_description()
         return self
 
