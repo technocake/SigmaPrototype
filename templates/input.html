@@ -309,14 +309,14 @@
 		});
 	};	
 
-	function revealHiddenRow($row){
+	function revealHiddenRow(rowid){
 		// OBJECTIVE:
 		//		Reveal a row just beneath a row with a click-handler.
 		//       The new row is supposed to show extra information.
 		// INPUT:
 		//    jQuery - row : The row number which was clicked.
 
-		var $hidden = $('#'+$row.id+'hidden'); 
+		var $hidden = $('#'+rowid+'hidden'); 
 
 		if ($hidden.hasClass('out')){
 
@@ -370,7 +370,8 @@
 
 			// Event handler
 			$row.click(function(){
-				revealHiddenRow(this);
+				//revealHiddenRow(this); <-- moved down to icon
+				//window.open(url, "_blank"); // opening url on row click instead.
 			});
 
 			// Metainfo
@@ -387,15 +388,19 @@
 			};
 
 			// row[0]
-			$row.append('<td><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></td>');
+			$row.append('<td><a href="' + url + '" target="_blank"><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></a></td>');
+			
+			// row[1]
 			$row.append('<td>'+ maintopic +' - </td>');
 
-			// row[1]
 			//$row.append('<td>'+ subtopic +' - </td>');
 
 			// row[2]
-			$row.append('<td id="urlkey_'+i+'">'+ title +'</td>');
-			$row.append('<td><a href="'+url+'"><i class="fa fa-external-link fa-4" aria-hidden="true"></i></a></td>');
+			$row.append('<td id="urlkey_'+i+'"><a href="' + url + '" target="_blank">' + title +'</a></td>');
+			
+			// row[3]
+			// changed it to open link when clicking the row.
+			$row.append('<td><a href="#" onclick="revealHiddenRow(\'' + rowID + '\');"><i class="fa fa-caret-square-o-down fa-4" aria-hidden="true"></i></a></td>');
 
 			// Insert hidden row
 			$hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
