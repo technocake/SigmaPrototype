@@ -21,6 +21,10 @@ __pycache__
 # for future api-keys to future services.
 *.api-key.txt
 
+#### NO logs
+#
+*.log
+
 #### Visual Studios
 # Removing files/folders from visual studios solutions
 # that are not source code 
