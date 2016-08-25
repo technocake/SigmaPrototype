@@ -361,7 +361,7 @@ def move_url():
 @app.route('/share', methods=['POST'])
 @login_required
 def share_map():
-
+    
     user = session['user']
     json = request.get_json()
  

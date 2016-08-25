@@ -23,7 +23,14 @@
 
 
 	function share(mapid) {
-		users = $('#share-with-users').val().split(" ");
+		raw_users = $('#share-with-users').val().split(",");
+		users = []
+		$.each(raw_users, function(i, user) {
+			//Removing whitespace before/after
+			// the user.
+			users[i] = $.trim(user);
+		});
+
 		var data = {
 			map_id: mapid,
 			users: users
