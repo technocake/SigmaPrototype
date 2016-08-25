@@ -177,8 +177,6 @@ def test_scenario_shared_map_gets_more_links():
     update_map(owner, mid, "added-by-owner", url1)
 
     # user B
-    import pdb
-    pdb.set_trace()
     assert url1 in get_map(user, mapid).urls, "Added link to shared map did not propagate to shared users."
     assert url1 in get_links(user), "Added link to shared map did not propagate to shared users."
     # user B
@@ -234,6 +232,12 @@ def make_and_save_test_map():
     update_map(user, "Test", "subtopic2",   "http://komsys.org")
 
 
+def test_mapid():
+    the_id = MapID("technocake--Test")
+    assert str(the_id) == "technocake--Test", "representation of mapid is wrong."
+
+
+
 def test_mapid_is_global():
     the_id = MapID("technocake--Test")
     assert the_id.is_global(), "Should be flagged as global"
@@ -256,16 +260,22 @@ def test_share_and_unshare():
     perms = get_map_permissions(owner, mid)
     assert user in perms.shared_with, "Map permissions not updated after shareing."
 
-    # Get local map
+    # owner gets own local map
     the_map = get_map(owner, mid)
     assert the_map is not None, "Local Map retrieve failed for owner"
 
+    # owner gets own global map
     the_map = get_map(owner, mapid)
     assert the_map is not None, "Global Map retrieve failed for owner"
 
+    # shared map retrieved by global id by the user that was shared with.
     the_map = get_map(user, mapid)
     assert the_map is not None, "Global Map retrieve failed for shared user"
 
+    # user wont get by local id.  
+    # should resolv in a non-existent map. 
+    # (since user B does not have a map with the same name as the one
+    # from user A)
     the_map = get_map(user, mid)
     assert the_map is None, "Local Map retrieve of owners map should fail for shared user "
 
@@ -296,6 +306,7 @@ if __name__ == '__main__':
     make_and_save_test_map()
     
     # MapID
+    test_mapid()
     test_mapid_is_global()
 
     test_get_map()

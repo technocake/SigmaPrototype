@@ -504,6 +504,8 @@ def unshare(owner, mapid, user):
     perms.unshare(user)
     save_permissions(owner, mid, perms)
 
+    #unsync links
+
 
 def sync_links(owner, mapid, user):
     """
@@ -783,9 +785,9 @@ class MapID(SigmaObject):
 
     def __repr__(self):
         if self.owner is None:
-            return self.mapid
+            return self.mid
         else:
-            return "%s%s%s" % (self.owner, self.delim, self.mapid)
+            return "%s%s%s" % (self.owner, self.delim, self.mid)
 
 
     def __str__(self):
