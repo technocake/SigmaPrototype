@@ -57,10 +57,30 @@ def load_config(app):
 
 
 
+def refetch_meta():
+	"""
+		Use with care. 
+
+		Will refetch all links from all maps.
+	"""
+	from auth import users
+
+	for user in users:
+		maps = sigma.get_maps(user)
+		for mapid in maps:
+			the_map = sigma.get_map(user, mapid)
+			urls = the_map.urls
+			for url in urls:
+				link = sigma.fetch_meta(url)
+				sigma.save_link(url, link, user)
+
+
+
 
 
 if __name__ == '__main__':
-	make_minimum_configuration()
+	pass
+	#make_minimum_configuration()
 	#user = "jonas"
 	#for mapid, the_map in sigma.get_maps(user).items():
 	#	print("Converting map: %s from v1 to v2..." % mapid)

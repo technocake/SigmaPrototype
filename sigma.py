@@ -83,9 +83,11 @@ def save_link(id, meta, user):
         user:
             the username string.
     """
+    if isinstance(meta, LinkMeta):
+        meta = meta.__dict__
+    
     # strips hacker attempts away from input. 
     linksfile = secure_filename('%s.links'%(user))
-    
 
     # First, read the list of links from the users link file. 
     try:
