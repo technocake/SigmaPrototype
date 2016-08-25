@@ -147,6 +147,26 @@ def test_scenario_get_perms_of_shared_map():
 
 
 
+def test_scenario_shared_map_gets_more_links():
+    """
+        Both owner and the new user update of the map
+        should be synced. 
+    """
+    test_scenario_get_perms_of_shared_map()
+    mapid = "technocake--Test"
+    mid = "Test"
+    owner = "technocake"
+    user = "andre"
+    url1 = "http://funkify.it"
+    url2 = "http://funkify.it/lol"
+    # Case 1 . owner adds a link
+    the_map = get_map(owner, mid)
+    the_map.update("added-by-owner", url1)
+    save_map(owner, mid, the_map)
+
+    assert url1 in get_map(user, mapid).urls, "Added link to shared map did not propagate to shared users."
+    assert url1 in get_links(user), "Added link to shared map did not propagate to shared users."
+
 
 def test_make_default_perms():
     """
@@ -255,3 +275,4 @@ if __name__ == '__main__':
     test_share_and_unshare()
     cleanup()
     test_scenario_get_perms_of_shared_map()
+    test_scenario_shared_map_gets_more_links()

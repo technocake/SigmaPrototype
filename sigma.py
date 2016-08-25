@@ -441,23 +441,30 @@ def parse_mapid(mapid, user=None):
 
 def share(owner, mapid, user):
     """
-        Shares a map with mapid <mapid> and made by user <owner>
-        with user <user>.
+        Shares <owner>'s map with <user>. 
+        The map made by user <owner> with mapid <mapid>  
+        is shared to the user <user>.
 
         mapid is exected to be in local-format -ie not in owner/mapid format.
-    """
 
+    """
+    # Let's not put ourself in our shared with list.
     if user == owner:
         return
-    # lookup the right mid.
+    # lookup the local mapid.
     map_owner, mid = parse_mapid(mapid, owner)
     
+    # Get permissions    
     perms = get_map_permissions(owner, mid)
+    if perms is None:
+        _make_default_perms(owner, mid)
+    
+    # Share and save
     perms.share(user)
     save_permissions(owner, mid, perms)
     
-    # Add symbolic mapid: <owner/mapid> to user's maps
-    
+    # Add symbolic mapid: <owner>--<mapid> to maps of the user
+    # we shared the map with.
     symid = MapID(mapid, owner)
     save_map(user, str(symid))
     # sync links.
