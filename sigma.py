@@ -180,6 +180,18 @@ def update_map(user, mapid, subtopic, url=None):
 
     the_map.update(subtopic, url)
     save_map(user, mapid, the_map)
+
+    ######
+    #   sync-links to shared users
+    ####
+    perms = get_map_permissions(user, mapid)
+    if perms is None:
+        _make_default_perms(user, mapid)
+        perms = get_map_permissions(user, mapid)
+
+    for u in perms.shared_with.keys():
+        sync_links(owner=user, mapid=mapid, user=u)
+
     return new
 
 
@@ -236,9 +248,17 @@ def get_map(user, mapid, jsonable=False):
     """
         Retrieves a requested map
     """
+    the_id = MapID(mapid, user)
+    if the_id.is_global():
+        if the_id.owner == user:
+            # Resolve to local mapid.
+            return get_map(user, the_id.mid, jsonable)
     maps = get_maps(user)
     the_map = maps.get(mapid, None)
-    if the_map == "SYMBOLIC":
+
+    
+    #note: move this logic into the KnowledgeMap class.
+    if the_map == "SYMBOLIC": 
         # load map from other user.
         owner, mapid = parse_mapid(mapid, user)
         the_map = get_map(owner, mapid)
@@ -410,23 +430,26 @@ def _make_default_perms(owner, mapid):
     """
         Creates a SharingPermissions object with default
         settings for a given map.
+
+        mid == local mapid, a permission object should only exist for
+        the actual local map, and not for a global mapid.
     """
-    mid = MapID(mapid)
-    owner, mapid = mid.parts()
+    mapid = MapID(mapid)
+    owner, mid = mapid.parts()
     perms = SharingPermissions(mid)
     save_permissions(owner, mid, perms)
+
 
 
 def parse_mapid(mapid, user=None):
     """
         Returns owner and mapid if some.
     """
-    mid = MapID(mapid)
-    owner, mapid = mid.parts()
-    if mid.owner is None:
+    the_id = MapID(mapid)
+    owner, mid = the_id.parts()
+    if the_id.owner is None:
         owner = user #not authorative, but get_map will fail if not.
-
-    return owner, mapid
+    return owner, mid
 
 
 ########################################################
@@ -458,6 +481,7 @@ def share(owner, mapid, user):
     perms = get_map_permissions(owner, mid)
     if perms is None:
         _make_default_perms(owner, mid)
+        perms = get_map_permissions(user, mapid)
     
     # Share and save
     perms.share(user)
@@ -475,9 +499,10 @@ def unshare(owner, mapid, user):
     """
         Removes a user from maps shared_with list.
     """
+    owner, mid = parse_mapid(mapid, owner)
     perms = get_map_permissions(owner, mapid)
     perms.unshare(user)
-    save_permissions(owner, mapid, perms)
+    save_permissions(owner, mid, perms)
 
 
 def sync_links(owner, mapid, user):
@@ -612,10 +637,23 @@ class SigmaObject():
 
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__)
+        """
+            Redefining equality check of Sigma Objects.
+            If they contain the same data, they should be 
+            considered equal, even if they are different 
+            instances.
+        """
+        if isinstance(other, self.__class__):
+            if self.__dict__ == other.__dict__:
+                return True
+        return False
+
 
     def __hash__(self):
+        """
+            this is the object id used by Python to distinguish objects 
+            from each other.
+        """
         return id(self)
 
 
@@ -703,14 +741,44 @@ class LinkMeta(SigmaObject):
 class MapID(SigmaObject):
     """
         Holds the format of mapids.
+        
+
+        Global formats:
+            <username>--<mapname>
+
+            example:
+                "technocake--Bananer"
+                "andre--Disco Party"
+        
+
+        Local format:
+            <mapname>
+
+            example:
+                "Bananer"
+                "Disco Party"
     """
     delim= "--"
 
     def __init__(self, mapid, owner=None):
-        if self.delim in mapid:
-            owner, mapid = mapid.split(self.delim)
         self.mapid = mapid
+        self.mid = mapid
+        if self.delim in mapid:
+            owner, mid = mapid.split(self.delim)
+            self.mid = mid
         self.owner = owner
+
+
+    def is_global(self):
+        """ 
+            Checks if this instance of MapID is global,
+            that means the string contains both username
+            and mapname
+        """
+        if self.delim in self.mapid:
+            return True
+        else:
+            return False
 
 
     def __repr__(self):
@@ -719,11 +787,16 @@ class MapID(SigmaObject):
         else:
             return "%s%s%s" % (self.owner, self.delim, self.mapid)
 
+
     def __str__(self):
         return self.__repr__()
 
     def parts(self):
-        return self.owner, self.mapid
+        """
+            Returns the owner and mid of a mapid
+            example: technocake--Python --> ('technocake', 'Python')
+        """
+        return self.owner, self.mid
     
 
 

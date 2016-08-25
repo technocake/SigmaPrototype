@@ -93,7 +93,16 @@ def test_get_map():
         Scenario: 
             A map is saved, retrieve it. 
     """
-    m = get_map(user, "Python")
+    make_and_save_test_map()
+
+    # Case 1: accessing local map
+    m = get_map(user, "Test")
+    assert m is not None, "Getting local mapid failed."
+    
+    # Case 2:  accessing global id of self owned map should return local map.
+    mapid = MapID("Test", user)
+    m = get_map(user, str(mapid))
+    assert m is not None, "Getting global mapid didnt resolve to existing local map."
 
 
 def test_get_maps():
@@ -125,9 +134,13 @@ def test_get_permissions():
     ##  should be only one SharingPermission object per map.
     mapid = "technocake--Python"
     mid = "Python"
+    
+    
     perms = get_map_permissions("technocake", mapid)
     perms2 = get_map_permissions("technocake", mid)
-    assert perms == perms2, "Global mapid should resolve to local mapid: owner--mapid --> mapid"
+
+
+    assert perms == perms2, "Global mapid should resolve to local mapid: owner--mapid --> mapid data: " % (perms.mapid, perms2.mapid)
 
     
 def test_scenario_get_perms_of_shared_map():
@@ -147,6 +160,7 @@ def test_scenario_get_perms_of_shared_map():
 
 
 
+
 def test_scenario_shared_map_gets_more_links():
     """
         Both owner and the new user update of the map
@@ -160,12 +174,16 @@ def test_scenario_shared_map_gets_more_links():
     url1 = "http://funkify.it"
     url2 = "http://funkify.it/lol"
     # Case 1 . owner adds a link
-    the_map = get_map(owner, mid)
-    the_map.update("added-by-owner", url1)
-    save_map(owner, mid, the_map)
+    update_map(owner, mid, "added-by-owner", url1)
 
+    # user B
+    import pdb
+    pdb.set_trace()
     assert url1 in get_map(user, mapid).urls, "Added link to shared map did not propagate to shared users."
     assert url1 in get_links(user), "Added link to shared map did not propagate to shared users."
+    # user B
+    assert url1 in get_map(owner, mid).urls, "Added link to shared map did not propagate to shared users."
+    assert url1 in get_links(owner), " Added link to shared map did not propagate to shared users."
 
 
 def test_make_default_perms():
@@ -216,17 +234,40 @@ def make_and_save_test_map():
     update_map(user, "Test", "subtopic2",   "http://komsys.org")
 
 
+def test_mapid_is_global():
+    the_id = MapID("technocake--Test")
+    assert the_id.is_global(), "Should be flagged as global"
+    the_id = MapID("Test")
+    assert the_id.is_global() is not True, "Should not be flagged as global"
+
 
 def test_share_and_unshare():
     """
         Share a map from User A with user B.
     """
-    mapid = "Test"
-    
+    owner = "technocake"
+    user = "jonas"
+    mid = "Test"
+    mapid = str(MapID(mid, owner)) # technocake--Test
+
     # test share
-    share(user, mapid, "jonas")
-    perms = get_map_permissions(user, mapid)
-    assert "jonas" in perms.shared_with, "Map permissions not updated after shareing."
+    share(owner, mid, user)
+    
+    perms = get_map_permissions(owner, mid)
+    assert user in perms.shared_with, "Map permissions not updated after shareing."
+
+    # Get local map
+    the_map = get_map(owner, mid)
+    assert the_map is not None, "Local Map retrieve failed for owner"
+
+    the_map = get_map(owner, mapid)
+    assert the_map is not None, "Global Map retrieve failed for owner"
+
+    the_map = get_map(user, mapid)
+    assert the_map is not None, "Global Map retrieve failed for shared user"
+
+    the_map = get_map(user, mid)
+    assert the_map is None, "Local Map retrieve of owners map should fail for shared user "
 
     # test unshare
     unshare(user, mapid, "jonas")
@@ -254,6 +295,9 @@ if __name__ == '__main__':
     # setup
     make_and_save_test_map()
     
+    # MapID
+    test_mapid_is_global()
+
     test_get_map()
     test_get_maps()
     test_move_url()
