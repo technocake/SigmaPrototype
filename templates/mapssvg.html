@@ -20,31 +20,27 @@
     #topnav button {
         font-size: 16px;
         flex: 0 1 120px;
-
     }
 
-    /* SVG is stylable by CSS just as any other html. 
-        Added class="node" to all circles drawn. */
     .node{
         fill: black;
     }
 
-    /* Some events requires js functions to do stuff. f.ex 
-       add new nodes. However visual feedback should and could be implemented
-       with CSS3 alone. 
-        removed onmouseover/onmouseout events to blow up / smash down. 
 
-    see this guy: http://tutorials.jenkov.com/svg/svg-and-css.html;
-
-       */
-    .node:hover{
-        /* Buggy. is also scaling the GRID 
-            Solution is here: https://css-tricks.com/transforms-on-svg-elements/;
-        */
-        /* didn't work. 
-        transform: translate(2,2) scale(2.0) translate(-2, -2);
-        */
+/* Widescreen transparent overlay */
+    #url-overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #4e4e4e transparent;
+        background-color: rgba(88,88,88,0.6); 
     }
+    .middle {margin: 0 auto;
+             text-align: center;}
+    .vertical-center { margin-top: 35%;}
+    .hide{display: none;}
 </style>
 
 
@@ -53,6 +49,16 @@
 	<nav id="topnav" style="display:flex; justify-content: center"></nav>
 
 	<svg id="s" xmlns="http://www.w3.org/2000/svg">
+
+    <div id="url-overlay" class="hide">
+        <!--
+            Overlay stuff in here
+        -->
+        <div class="middle vertical-center">
+            <input type="url" name="link" value="" placeholder="Enter URL">
+            <input type="button" name="add-link-btn" id="add-link-btn" value="Add Link">
+        </div>
+    </div>
 
 
     </svg>
@@ -63,7 +69,7 @@
 $(document).ready(function(){
     $APP = {
         names: [],
-        meta: null,
+        links: null,
     }
 
 	// GLOBALS
@@ -351,11 +357,11 @@ $(document).ready(function(){
         sigma.fetchlinks(
             function(data){
                 console.log("LOADED LINKS");
-                $APP.meta = data.links;
+                $APP.links = data.links;
             });
     }
 
-    //  Note to devs. here a GET parameter with mapid could be used:  /mapssvg?map_id=C++
+    //  SUGGESTION: Note to devs. here a GET parameter with mapid could be used:  /mapssvg?map_id=C++
     //   Intial topic would then be:  current_topic =  "C++"
     //  If the user changes map from C++ (which stands in the url), 
     //  JS could rewrite the url to:   /mapssvg?map_id=NewMapID
@@ -414,6 +420,13 @@ $(document).ready(function(){
 
         var r = evt.target.getAttribute("r");
         evt.target.setAttribute("r", r / 2);
+    }
+
+
+    function addLink(mapid, topic, node) {
+        /*  Opens url-overlay for user to add link  */
+        $("#url-overlay").show();
+        $(node).css('fill',  "yellow");
     }
 
 </script>
