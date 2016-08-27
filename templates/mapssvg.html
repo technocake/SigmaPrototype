@@ -9,6 +9,8 @@
 <title>Sigma - Svg test</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+<!-- For using the sigma api !-->
+<script src="/static/js/sigma.js" type="text/javascript" charset="utf-8"></script>
 <style>
     
     #topnav {
@@ -59,8 +61,9 @@
 <script type="text/javascript">
 	    
 $(document).ready(function(){
-    $STATE = {
-        names: []
+    $APP = {
+        names: [],
+        meta: null,
     }
 
 	// GLOBALS
@@ -306,8 +309,8 @@ $(document).ready(function(){
             // Saving a index instead of map-id in 
             // things. resolving map-id from mapindex.
             var mapindex = this.id.split('_')[1];
-            newMap($STATE.names[mapindex]);
-            console.log($STATE.names)
+            newMap($APP.names[mapindex]);
+            console.log($APP.names)
 
         });
     	
@@ -317,7 +320,7 @@ $(document).ready(function(){
 
 	$.get('/mapnames', function(data){
     	if (data.status === 'Names OK'){
-            $STATE.names = data.names
+            $APP.names = data.names
 	    	initNav(data.names);
 	    } else {
 	    	console.log(data.status);};
@@ -343,6 +346,24 @@ $(document).ready(function(){
                 });
     };
 
+    function initDocumentState() {
+        
+        sigma.fetchlinks(
+            function(data){
+                console.log("LOADED LINKS");
+                $APP.meta = data.links;
+            });
+    }
+
+    //  Note to devs. here a GET parameter with mapid could be used:  /mapssvg?map_id=C++
+    //   Intial topic would then be:  current_topic =  "C++"
+    //  If the user changes map from C++ (which stands in the url), 
+    //  JS could rewrite the url to:   /mapssvg?map_id=NewMapID
+    //  I believe this is possible without reloading the webpage.
+    //
+    //  Also  JS could alter the browser history to have the old maps added, such that 
+    //  a user may use the back button to get the last used map (refreshed)
+    initDocumentState();
     newMap(current_topic);
 
 
