@@ -279,6 +279,18 @@ def test_share_and_unshare():
     the_map = get_map(user, mid)
     assert the_map is None, "Local Map retrieve of owners map should fail for shared user "
 
+
+    #### Dont save username--maps
+    ###
+    #
+    maps = get_maps(user)
+    _id = MapID("use-me-for-delim-character")
+
+    for mid, m in maps.items():
+        if _id.delim in mid:
+            if MapID(mid).owner != user:
+                assert m == "SYMBOLIC",  "Stored a symbolic map, oh noes. data: %s "%(mid, m.__dict__) 
+
     # test unshare
     unshare(user, mapid, "jonas")
     perms = get_map_permissions(user, mapid)
