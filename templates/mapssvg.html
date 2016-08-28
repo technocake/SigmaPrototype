@@ -386,15 +386,17 @@ $(document).ready(function(){
             });
     }
 
-    //  SUGGESTION: Note to devs. here a GET parameter with mapid could be used:  /mapssvg?map_id=C++
-    //   Intial topic would then be:  current_topic =  "C++"
-    //  If the user changes map from C++ (which stands in the url), 
-    //  JS could rewrite the url to:   /mapssvg?map_id=NewMapID
-    //  I believe this is possible without reloading the webpage.
-    //
-    //  Also  JS could alter the browser history to have the old maps added, such that 
-    //  a user may use the back button to get the last used map (refreshed)
-
+    
+    /*
+        Close overlay on escape key.
+    */
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { $("#LoadingData").dialog('close'); }   // esc
+    });
+    
+    /*
+        Draw map
+    */
     newMap(current_topic);
 
 
