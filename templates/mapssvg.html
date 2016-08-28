@@ -225,7 +225,8 @@ $(document).ready(function(){
                                            style: 'stroke: red; fill: red;',
                                            class: 'node',
                                     onmouseover : "blowUp(evt)",
-                                     onmouseout : "smashDown(evt)"  });
+                                     onmouseout : "smashDown(evt)",
+                                     onclick: "addLink('"+current_topic +"', '"+subkey+"', this)"  });
 
             
 
