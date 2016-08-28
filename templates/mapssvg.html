@@ -126,6 +126,35 @@ $(document).ready(function(){
         return coords;
     };
 
+    function test_findNodeCoords(bx,by,rx,ry,length){
+        // Create coordinates of all sub nodes
+        // input bx, by -- basex, basey
+        var step = (Math.PI) / length;
+
+        //var alpha = Math.random() * (2 * Math.PI);    // Use this to make view more random
+        var alpha = Math.PI/2;                      // Use this to make view static
+
+        var nx = 0; // new x
+        var ny = 0;
+        var coords = [];
+
+        //console.log('Length : ' + length);
+
+        for (i=0; i < length; i++){
+
+            nx = parseInt(bx + (rx * Math.cos(alpha)));
+            ny = parseInt(by - (ry * Math.sin(alpha)));
+
+            //console.log('Nx: ' + nx + ' Ny: ' + ny + ' alhpa : ' + alpha )
+
+            var pair = [nx, ny];
+            coords.push(pair);
+
+            alpha -= step;
+        };
+        return coords;
+    };
+
 
     // --------------------- INIT function -------------------------
 
@@ -241,7 +270,7 @@ $(document).ready(function(){
             urlkeys_array = Object.keys(map.subtopics[subkey]['urls']);
             urlarr_length = urlkeys_array.length;
 
-            url_coords[i] = findNodeCoords(sx, sy, urlrad[0], urlrad[1], urlarr_length);
+            url_coords[i] = test_findNodeCoords(sx, sy, urlrad[0], urlrad[1], urlarr_length);
 
             for (var j=0; j < urlarr_length; j++){
 
