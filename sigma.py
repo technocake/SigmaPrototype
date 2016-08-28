@@ -582,29 +582,10 @@ def delete_link(user, mapid, subtopic, url): #in context of a map.
 
 
 def fetch_title(url):
-    """ 
-        Responsible for retrieveing the  title of a url. 
-        based on graph.py.
     """
-    # validate url.
-
-    title = ""
-
-    if "http" not in url or len(url) <= 11:
-       return ""
-    r = requests.get(url)
-    if r:
-        soup = BeautifulSoup(r.text, 'html.parser')
-        try:
-            title = soup.select("title")[0].string
-        except:
-            pass
-
-    try:
-        return unicode(title)            # python 2
-    except:
-        return str(title)                # python 3
-
+        Currently not used.
+    """
+    pass
 
 
 #########   -----   TAGS ------ ##############
@@ -687,8 +668,8 @@ class LinkMeta(SigmaObject):
         
         r = requests.get(self.url)
         if r:
-            self.title = fetch_title(self.url)
             self.domain = self.fetch_domain()
+            self.title = self.fetch_title(self.url)
             self.favicon = self.fetch_favicon()
             #we are not really using this, turned it off.
             #self.topics = self.classify_topics()
@@ -696,11 +677,41 @@ class LinkMeta(SigmaObject):
         return self
 
 
+    def fetch_title(self, url):
+        """ 
+        Responsible for retrieveing the  title of a url. 
+        based on graph.py.
+    """
+        # validate url.
+        title = ""
+
+        if "http" not in url or len(url) <= 11:
+           return ""
+        r = requests.get(url)
+        if r:
+            soup = BeautifulSoup(r.text, 'html.parser')
+            try:
+                title = soup.select("title")[0].string
+            except:
+                title = "%s - %s" %(self.domain, self.urlparts.path.split("/")[-1])
+
+        try:
+            return unicode(title)            # python 2
+        except:
+            return str(title)                # python 3
+
+
     def fetch_domain(self):
+        """
+            Extracting domain out of the url.
+        """
         return self.urlparts.netloc.split(":")[0]
 
 
     def fetch_description(self):
+        """
+            Finds the meta description if present in a link.
+        """
         description = ""
 
         r = requests.get(self.url)
