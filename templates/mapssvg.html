@@ -10,7 +10,10 @@
 <!-- For using the sigma api !-->
 <script src="/static/js/sigma.js" type="text/javascript" charset="utf-8"></script>
 <style>
-    
+  
+    html, body {background-color: #f9f9f9;
+                    font-family: sans-serif; }
+
     #topnav {
         display:flex; justify-content: center;
         flex-wrap: wrap;
@@ -160,8 +163,8 @@ $(document).ready(function(){
         var redline;
         var blueline;
 
-        var subrad = [ww * (3.5/10), wh * (2.5/10)];     // radius x and y from main_node
-        var urlrad = [ww * (5/50), ww * (4/50)];         // radiues x and y from sub_node
+        var subrad = [ww * (2.7/10), wh * (2.5/10)];     // radius x and y from main_node
+        var urlrad = [ww * (4.5/50), ww * (2.5/50)];         // radiues x and y from sub_node
         
         // Clear SVG screen of existing elements
         while (s.lastChild) {
@@ -178,10 +181,9 @@ $(document).ready(function(){
                                        cy: wh/2, 
                                         r: 10,
                                     class: 'node',
-                                   stroke: 'black',
+                                    style: 'stroke: #00e673; fill: #00e673;',
                              onmouseover : "blowUp(evt)",
                               onmouseout : "smashDown(evt)"  });
-        s.appendChild(main_node);
 
         // Get x and y of main nodes
         mnx = parseInt(main_node.getAttribute('cx'));
@@ -209,20 +211,20 @@ $(document).ready(function(){
 
             // Create Sub node DOM objects
             // Make red lines and append main_node on top
-            redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, stroke:'red'});
+            redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, style:'stroke: #808080; stroke-width: 1.5px;'});
             s.appendChild(redline);
+            s.appendChild(main_node);
  
 
             // Make red nodes
             sub_nodes[i] = makeSVG('circle', {cx: sx, 
                                               cy: sy, 
                                                r: 8, 
-                                          stroke: 'red',
-                                            fill: 'red',
+                                           style: 'stroke: red; fill: red;',
                                            class: 'node',
                                     onmouseover : "blowUp(evt)",
                                      onmouseout : "smashDown(evt)"  });
-            s.appendChild(sub_nodes[i]);
+
             
 
             // subtopic text node
@@ -247,12 +249,14 @@ $(document).ready(function(){
                 uy = url_coords[i][j][1];
 
                 // Make blue lines
+                // Append sub-node on top of lines
                 blueline = makeSVG('line', { x1 : sx, 
                                              y1 : sy, 
                                              x2 : ux, 
-                                             y2 : uy,     
-                                         stroke : 'blue'});
+                                             y2 : uy,
+                                          style : 'stroke: #808080; stroke-width: 1.5px' });
                 s.appendChild(blueline);
+                s.appendChild(sub_nodes[i]);
 
 
                 // Make url nodes
