@@ -282,19 +282,16 @@ $(document).ready(function(){
                                         x: ux,
                                         y: uy, 
                                         height: '30px',
-                                        width: '30px',
-                                        'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                                        'xlink:href': $APP.links[urlkey]['favicon'] });
-
-                console.log($APP.links[urlkey]['facicon']);
+                                        width: '30px'  });
                 // make link node
                 aNode = makeSVG('a', {  
                                         x: ux+10, 
                                         y: uy,
-                                   target: '_blank' 
+                                   target: '_blank', 
                                                      }); // http://www.w3schools.com/tags/att_a_target.asp
             
                 // See https://www.w3.org/Graphics/SVG/WG/wiki/Href#xlink:href
+                favNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', $APP.links[urlkey].favicon)
                 aNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', urlkey)
 
                 // Make url text node to put in the a-element.
