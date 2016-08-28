@@ -49,7 +49,9 @@
 <body>
     <nav id="topnav" style="display:flex; justify-content: center"></nav>
 
-    <svg id="s" xmlns="http://www.w3.org/2000/svg">
+    <svg        id="s" 
+                xmlns="http://www.w3.org/2000/svg" 
+                xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <div id="url-overlay" class="hide">
         <!--
@@ -272,7 +274,19 @@ $(document).ready(function(){
                 s.appendChild(url_nodes.subkey[j]);
 
 
+                // make g
+                gNode = makeSVG('g', {});
 
+                // make favicon element
+                favNode = makeSVG('image', {
+                                        x: ux,
+                                        y: uy, 
+                                        height: '30px',
+                                        width: '30px',
+                                        'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                                        'xlink:href': $APP.links[urlkey]['favicon'] });
+
+                console.log($APP.links[urlkey]['facicon']);
                 // make link node
                 aNode = makeSVG('a', {  
                                         x: ux+10, 
@@ -296,8 +310,11 @@ $(document).ready(function(){
 
 
                 urltextNode.appendChild(document.createTextNode($APP.links[urlkey]['title']));
+
                 aNode.appendChild(urltextNode)
-                s.appendChild(aNode);
+                gNode.appendChild(favNode);
+                gNode.appendChild(aNode);
+                s.appendChild(gNode);
 
             };
         };
@@ -341,6 +358,7 @@ $(document).ready(function(){
     });
 
     function newMap(new_topic){
+        initDocumentState();
         console.log("newMap: "+new_topic);
         current_topic = new_topic;
  
@@ -366,6 +384,7 @@ $(document).ready(function(){
             function(data){
                 console.log("LOADED LINKS");
                 $APP.links = data.links;
+                console.log(data.links);
             });
     }
 
@@ -377,7 +396,7 @@ $(document).ready(function(){
     //
     //  Also  JS could alter the browser history to have the old maps added, such that 
     //  a user may use the back button to get the last used map (refreshed)
-    initDocumentState();
+
     newMap(current_topic);
 
 
