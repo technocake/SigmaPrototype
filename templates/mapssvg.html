@@ -181,7 +181,7 @@ $(document).ready(function(){
         main_node = makeSVG('circle', {id: 'main_node', 
                                        cx: ww/2, 
                                        cy: wh/2, 
-                                        r: 10,
+                                        r: 15,
                                     class: 'node',
                                     style: 'stroke: #00e673; fill: #00e673;',
                              onmouseover : "blowUp(evt)",
@@ -192,7 +192,7 @@ $(document).ready(function(){
         mny = parseInt(main_node.getAttribute('cy'));
 
         // Display text at the main_node
-        maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, fill:"black"})
+        maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, style: 'fill: black; font-size: 20px;'})
         maintextNode.appendChild(document.createTextNode(current_topic));
         s.appendChild(maintextNode);
 
