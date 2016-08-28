@@ -290,7 +290,15 @@ def get_map_names():
     user = session['user']
     try:
         the_maps = sigma.get_maps(user)
-        map_names = the_maps.keys()
+        maps_temp = the_maps.keys()
+
+        # The for-loop below is a hack to make the_maps.keys() json serializable
+        #  It looks like this --> dict_keys(['SVG', 'C++'])
+        #  Has to look more like -->        ['SVG', 'C++']
+        map_names = []
+        for mp in maps_temp:
+            map_names.append(mp)
+
         return jsonify(status='Names OK', names=map_names)
 
     except Exception as e:
@@ -499,7 +507,7 @@ def fetch_meta():
         session['last_request'] = time.time()
         url = request.form.get('url', None)
         filters = request.form.get('filter', None)
-        
+
         # Not implemented filters yet. It dumps everything we got.
         meta = sigma.fetch_meta(url)
 
