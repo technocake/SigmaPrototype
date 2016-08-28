@@ -73,6 +73,7 @@ $(document).ready(function(){
     $APP = {
         names: [],
         links: null,
+        searchdata: null,
     }
 
     // GLOBALS
@@ -83,6 +84,7 @@ $(document).ready(function(){
     var s;
     s = document.getElementById('s'); // SVG object
 
+
     // MISC functions
      function updateWwWh(){
         ww = window.innerWidth; 
@@ -90,6 +92,7 @@ $(document).ready(function(){
         // console.log('Width: ' + ww + ' Height: ' + wh);
     }
     
+
     function makeSVG(tag, attrs) {
         var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
         for (var k in attrs)
@@ -125,6 +128,7 @@ $(document).ready(function(){
         };
         return coords;
     };
+
 
     function test_findNodeCoords(bx,by,rx,ry,length){
         // Create coordinates of all sub nodes
@@ -376,41 +380,34 @@ $(document).ready(function(){
  
 // ----------- AJAX request routes --------------
 
-    $.get('/mapnames', function(data){
-        if (data.status === 'Names OK'){
-            $APP.names = data.names
-            initNav(data.names);
-        } else {
-            console.log(data.status);};
+    sigma.mapnames(function(data){
+        $APP.names = data.names;
+        initNav(data.names);
     });
 
+    
     function newMap(new_topic){
         initDocumentState();
         console.log("newMap: "+new_topic);
         current_topic = new_topic;
  
-        $.ajax('/getmap', {
-                    data : JSON.stringify({ 'mapid' : new_topic }),
-                    contentType : 'application/json',
-                    type : 'POST',
-                    success : function(data){
-                        console.log(data.status);
+        sigma.getmap(new_topic, function(data){
+            console.log(data.status);
+            current_map_object = data.map;
+            initSVG(data.map);
+        });
 
-                        current_map_object = data.map;
-                        initSVG(data.map);
-                    },
-                    error : function(data){
-                        console.log(data.status); 
-                    }
-                });
+
+        
     };
 
     function initDocumentState() {
         
-        sigma.fetchlinks(
+        sigma.fetchsearchdata(
             function(data){
-                console.log("LOADED LINKS");
-                $APP.links = data.links;
+                console.log("loaded LINKS and SEARCHDATA");
+                $APP.links = data.linksdata;
+                $APP.searchdata = data.searchdata;
                 console.log(data.links);
             });
     }
