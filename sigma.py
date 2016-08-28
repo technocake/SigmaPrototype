@@ -598,7 +598,11 @@ def fetch_title(url):
             title=""
     else:
         title=""
-    return unicode(title)
+
+    try:
+        return unicode(title)            # python 2
+    except:
+        return str(title)                # python 3
 
 
 
@@ -707,7 +711,11 @@ class LinkMeta(SigmaObject):
             # If description meta tag was found, then get the content attribute and save it to db entry
             if meta_desc:
                 description = meta_desc.get('content')
-        return unicode(description)
+        
+        try:
+            return unicode(title)            # python 2
+        except:
+            return str(title)                # python 3
 
 
     def fetch_favicon(self):

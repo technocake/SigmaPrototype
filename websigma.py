@@ -499,8 +499,10 @@ def fetch_meta():
         session['last_request'] = time.time()
         url = request.form.get('url', None)
         filters = request.form.get('filter', None)
+        
         # Not implemented filters yet. It dumps everything we got.
         meta = sigma.fetch_meta(url)
+
         # This will build a json response based on all the 
         # attributes in the LinkMeta object.
         return jsonify(status="Fetchmeta OK", meta=meta.__dict__)
