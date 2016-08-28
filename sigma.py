@@ -587,6 +587,9 @@ def fetch_title(url):
         based on graph.py.
     """
     # validate url.
+
+    title = ""
+
     if "http" not in url or len(url) <= 11:
        return ""
     r = requests.get(url)
@@ -595,9 +598,7 @@ def fetch_title(url):
         try:
             title = soup.select("title")[0].string
         except:
-            title=""
-    else:
-        title=""
+            pass
 
     try:
         return unicode(title)            # python 2
@@ -713,9 +714,9 @@ class LinkMeta(SigmaObject):
                 description = meta_desc.get('content')
         
         try:
-            return unicode(title)            # python 2
+            return unicode(description)            # python 2
         except:
-            return str(title)                # python 3
+            return str(description)                # python 3
 
 
     def fetch_favicon(self):
