@@ -3,496 +3,496 @@
 {% extends "base.html" %}
 {% block main %}
 
-	<div class="maindiv">
-		<input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
-				onfocus="onfocusHandler(this)" 
-				onblur="onblurHandler(this)" 
-				onkeyup="getMeta(this.value)" 
-				onclick="this.select()"/>
-				
-				
+    <div class="maindiv">
+        <input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
+                onfocus="onfocusHandler(this)" 
+                onblur="onblurHandler(this)" 
+                onkeyup="getMeta(this.value)" 
+                onclick="this.select()"/>
+                
+                
 
-		<div class="metainfo" hidden>	
+        <div class="metainfo" hidden>   
 
-			<div class="kolonne1">
-				<div style="display:flex;">
-					<img id="favicon" width="25px" height="25px" src="#"/>
-					<div id="domain">
-					</div> 
-				</div>
-				<h3>Description:</h3>
-				<div id="description"></div>
-			</div>
+            <div class="kolonne1">
+                <div style="display:flex;">
+                    <img id="favicon" width="25px" height="25px" src="#"/>
+                    <div id="domain">
+                    </div> 
+                </div>
+                <h3>Description:</h3>
+                <div id="description"></div>
+            </div>
 
-			<div class="kolonne2">
-				<input id="maintopicinput" class="topicinput maintopic" type="text" placeholder="Main topic"/>
-				<input id="subtopicinput" class="topicinput subtopic" type="text" placeholder="Sub topic"/>
-			</div>
-			<div>
-				<img class="plusicon" width="100px" height="100px" 
-				     src="static/plus-icon.png" onclick="postMeta()"/>
-			</div>
-		</div>
+            <div class="kolonne2">
+                <input id="maintopicinput" class="topicinput maintopic" type="text" placeholder="Main topic"/>
+                <input id="subtopicinput" class="topicinput subtopic" type="text" placeholder="Sub topic"/>
+            </div>
+            <div>
+                <img class="plusicon" width="100px" height="100px" 
+                     src="static/plus-icon.png" onclick="postMeta()"/>
+            </div>
+        </div>
 
 
-	<div class="maindiv">
-		<input id="searchinput" class="megainput searchinput" type="text" placeholder="search __" 
-		       onfocus="onfocusHandler(this)" 
-		       onblur="onblurHandler(this)" 
-		       onkeyup="search(this.value)"/>
+    <div class="maindiv">
+        <input id="searchinput" class="megainput searchinput" type="text" placeholder="search __" 
+               onfocus="onfocusHandler(this)" 
+               onblur="onblurHandler(this)" 
+               onkeyup="search(this.value)"/>
 
-			<table id="urlliste1" class="tableview">
-			    <colgroup>
-			        <col style="min-width:100px;" />
-			        <col style="min-width:100px;"/>
-			        <col style="min-width:100px;" />
-			        <col style="min-width:100px;" />
-			    </colgroup>
-				<tbody>
-						
-				</tbody>
-			</table>
-		
-	</div>
+            <table id="urlliste1" class="tableview">
+                <colgroup>
+                    <col style="min-width:100px;" />
+                    <col style="min-width:100px;"/>
+                    <col style="min-width:100px;" />
+                    <col style="min-width:100px;" />
+                </colgroup>
+                <tbody>
+                        
+                </tbody>
+            </table>
+        
+    </div>
 
-	
+    
 
 <script type="text/javascript">
 
-	/* Initiating a global APP-object. This object is supposed to hold
-	  all variables that otherwise would be global.
-	  By doing it like this we end having just 1 global variable named
-	   APP. And all other variables are APP.somevariable. 
-	   GLOBAL variables are evil, thats why we do it. - Jonas */
-
-
-	APP = {
-		$urlinput : $('.urlinput'),
-		$searchinput : $('.searchinput'),
-		$metainfo : $('.metainfo'),
-		$tbody : $('.tableview tbody'),
-		$maintop : $('.maintopic'),
-		$subtop : $('.subtopic'),
-		old_url : '',
-		old_title : '',
-		old_favicon : '',
-		meta : ''
-	}; 
-
-	SEARCHDATA = [];
-	LINKSDATA = {};
-
-	function onblurHandler(element){
-		var $ele = $(element);
-
-		if ($ele.hasClass('urlinput')){
-			$ele.attr('placeholder', 'url __');
-			$ele.val(APP.old_title);
-		} else {
-			$ele.attr('placeholder', 'search __');
-		};
-	};
-
-	function onfocusHandler(element){
-		var $ele = $(element);
-		$ele.attr('placeholder', '');
-		if ($ele.hasClass('urlinput')){
-			$ele.val(APP.old_url);
-		} else {
-			$ele.val('');
-		};
-	};
-
-	function resetInput(){
-		APP.old_title = '';
-		APP.old_url = '';
-		APP.$urlinput.val('');
-		APP.$metainfo.hide();
-	};
-
-
-	// --- AJAX request functions ---
-
-	function postMeta(){	
-	/*
-		postMeta() blir trigget av en onclick=""-event 
-		 på class="plusicon".
-		
-		Denne funksjonen reagerer på 5 måter:
-		
-		0 - Skjekke om begge input-feltene for maintopic og subtopic er utfylt.
-		1 - sende en /postmeta med metainformasjon om urlen inkl url.
-		2 - sende en /updatemap med maintopic og subtopic + url.
-		3 - clear input område for å signaliserer at url-en har blitt submitted.
-		4 - update liste med urler slik at den nye url-en dukker opp i listen.
-
-		Det er viktig at post1 skjer først, deretter post2, 
-		 men bare dersom post1 lyktes.
-		Det er for å være sikker på at url-en som blir lagret i map-modellen
-		 allerede finnes i url-databasen.
-		----------------------------------------------------- jonas --- */
-
-		// First of all, check if both topic-fields have a value.
-		// Display necesarry alerts to the user.
-
-		if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
-			console.log('Fill in both topic fields.');
-			APP.$maintop.attr('placeholder', 'Required field');
-			APP.$subtop.attr('placeholder', 'Required field');
-			return 0;
-		};
-
-		var json_meta = {
-			url : APP.old_url, 
-			meta : APP.meta 
-		};
-
-		var json_topics = {
-			url : APP.old_url,
-			main_topic : APP.$maintop.val(),
-			subtopic : APP.$subtop.val(),
-			map_id: APP.$maintop.val(),
-		};
-
-		// Post 1 
-		$.ajax('/postmeta', {
-			data : JSON.stringify(json_meta),
-			contentType : 'application/json',
-			type : 'POST',
-			success: function(data){ 
-				console.log(data.status);
-		
-				resetInput();
-				initDocumentData();
-
-				// Post 2 
-				$.ajax('/updatemap', {
-					data : JSON.stringify(json_topics),
-					contentType : 'application/json',
-					type : 'POST',
-					success : function(ndata){
-						console.log(ndata.status);
-						},
-					error : function(ndata){
-						console.log('Status:'+ndata.status); 
-					}
-				});
-			},
-			error : function(xhr){ 
-				console.log(xhr.status);
-			}
-		});
-	};
-
-
-	function getMeta(iurl){
-
-		var title;
-
-		// Reset page if url is empty
-		if (iurl === ''){
-			resetInput();
-			return 0;
-		};
-
-		console.log(iurl);
-
-		if (iurl != APP.old_url && REGEX.urlpattern2.test(iurl)){
-
-			console.log('Valid URL entered!');
-			APP.old_url = iurl;
-
-			APP.$metainfo.removeAttr('hidden');
-			APP.$metainfo.show();
-
-			APP.$urlinput.val("fetching title and metadata...");
-
-			$.post('/fetchmeta', { 'url': iurl}, 
-
-				function(data){
-					if(data.meta){
-						var meta = data.meta;
-						console.log('Url: ' + data.status);
-						
-						// SHOW metadata
-						APP.$urlinput.val(meta.title);
-						$('#favicon').attr('src', meta.favicon);
-						$('#domain').html(meta.domain);
-						$('#description').html(meta.description);
-						
-
-						// CACHE data for later
-						APP.old_title = meta.title;
-						APP.old_favicon = meta.favicon;
-						APP.meta = meta;
-
-						// Blur the input-field to notify the user that a correct url has been entered.
-						APP.$urlinput.blur();
-					} else {
-						console.log('Status: ' + data.status);
-					};
-				}
-			);
-		};
-	};
-
-
-	// Not active
-	function search(istring) {
-
-		var resultdata = [];
-		resultdata = generalSearch(SEARCHDATA, istring);
-		APP.$tbody.html('');
-		fillTable_2d(APP.$tbody, resultdata);
-
-		return 0;
-	};
-
-	// ----------- FUNCTIONS ON TABLE ------------------
-
-
-	function changeTopic(meta, rowid){
-
-		var rowid = rowid.split('_c_')[0];
-
-		var json_topics = {
-
-				'url' : meta.split(',_')[0],
-				'old' : meta.split(',_')[1],
-				'map_id' : $('#'+rowid+'_m_').val(),
-				'new' : $('#'+rowid+'_s_').val()
-		};
-
-		$.ajax('/moveurl', {
-			data : JSON.stringify(json_topics),
-			contentType : 'application/json',
-			type : 'POST',
-			success : function(data){
-				console.log(data.status);
-				if(data.status = "Relabel OK"){
-
-					initDocumentData();
-				} else {};
-
-			},
-			error : function(data){
-				console.log('Status:'+data.status); 
-			}
-		});
-	};
-
-	function deleteUrl(d_url, rowid){
-
-		var rowid = rowid.split('_d_')[0];
-
-		var json_topics = {
-
-			'url' : d_url,
-			'map_id' : $('#'+rowid+'_m_').val(),
-			'subtopic' : $('#'+rowid+'_s_').val()
-		};
-
-		$.ajax('/deletelink', {
-			data : JSON.stringify(json_topics),
-			contentType : 'application/json',
-			type : 'POST',
-			success : function(data){
-				console.log(data.status);
-
-				if (data.status === 'Delete OK'){
-					initDocumentData();
-				} else {};
-			},
-			error : function(data){
-				console.log('Status:'+data.status); 
-			}
-		});
-	};	
-
-	function revealHiddenRow(rowid){
-		// OBJECTIVE:
-		//		Reveal a row just beneath a row with a click-handler.
-		//       The new row is supposed to show extra information.
-		// INPUT:
-		//    jQuery - row : The row number which was clicked.
-
-		var $hidden = $('#'+rowid+'hidden'); 
-
-		if ($hidden.hasClass('out')){
-
-			$hidden.removeClass('out');
-			$hidden.addClass('in');
-
-		} else{
-
-			$hidden.removeClass('in');
-			$hidden.addClass('out');
-		};
-	};
-
-
-	function fillTable_2d($tbody, arraydata){
-
-		// THOUGHTS:
-		// 		It is really difficult to write something general about 
-		// 		how to fill a table with data. Therefore in most cases it
-		// 		is expected of the user to customize this function.
-		//
-		// OBJECTIVE: To fill a 2d table with 2dArray-data.
-		//             The table may have n columns and n rows. 
-		//
-		// INPUT:
-		// 		jQuery - tbody     - a jQuery object of a html <tbody></tbody>
-		// 		array  - arraydata - eks. [[topic1, topic2, url1],[topic1, topic3, url2]]
-
-		
-		var row;
-		var rowID;
-
-		var $row;
-		var $hiddenrow
-		var cell;
-		
-		var maintopic;
-		var subtopic;
-		var url;
-		var title;
-
-		console.log("TABLE lenght: " + arraydata.length);
-
-		for(var i=0; i < arraydata.length; i++){
-
-			// Construct each row with a unique row ID.
-			row = arraydata[i];
-			rowID = 'rowid_'+i;
-			$tbody.append('<tr id="' + rowID + '" class="mainrow"></tr>');
-			$row = $('#'+rowID);
-
-			// Event handler
-			$row.click(function(){
-				//revealHiddenRow(this); <-- moved down to icon
-				//window.open(url, "_blank"); // opening url on row click instead.
-			});
-
-			// Metainfo
-			maintopic = row[0];
-			subtopic = row[1]
-			url = row[3]; // THIS IS HARDCODE. I suggest having the indexpositions as a parameter to this function. i.e a dict of key --> index mappings.  This could be provided for free by the /fetchsearchdata if wanted. (signal it by making an issue ^^)
-
-			// Should probably not rely on having metadata on ALL urls, 
-			// i.e support hte case when searchdata has a url that has
-			// not been metadata-fetched, and thus is not in links. 
-			title = LINKSDATA[url].title.slice(0, 70);
-			if(LINKSDATA[url].title.length > 70){
-				title += '...';
-			};
-
-			// row[0]
-			$row.append('<td><a href="' + url + '" target="_blank"><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></a></td>');
-			
-			// row[1]
-			$row.append('<td>'+ maintopic +' - </td>');
-
-			//$row.append('<td>'+ subtopic +' - </td>');
-
-			// row[2]
-			$row.append('<td id="urlkey_'+i+'"><a href="' + url + '" target="_blank">' + title +'</a></td>');
-			
-			// row[3]
-			// changed it to open link when clicking the row.
-			$row.append('<td><a href="#" onclick="revealHiddenRow(\'' + rowID + '\');"><i class="fa fa-caret-square-o-down fa-4" aria-hidden="true"></i></a></td>');
-
-			// Insert hidden row
-			$hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
-				             '<td colspan=2></td>' +
-				             '<td style="display: flex; flex-direction: column; align-items: center;">'+
-				             '<input id="'+rowID+'_m_" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
-					         '<input id="'+rowID+'_s_" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
-					         '<button id="'+rowID+'_c_" class="endrebutton" name="'+url+',_'+subtopic+'"' +
-					         	'onclick="changeTopic(this.name, this.id)">Endre</button>' +
-					         '<button id="'+rowID+'_d_" class="endrebutton" name="'+url+'"'+
-					         	'onclick="deleteUrl(this.name, this.id)">Slett</button>'+
-				             '</td>'+
-				           '</tr>');
-
-			$tbody.append($hiddenrow);
-		};
-	};
-
-	function initDocumentData(){
-		// OBJECTIVE:
-		// 		Intialized LINKSDATA and SEARCHDATA and fill up the table
-
-
-		$.get('/fetchlinks', 
-			function(data){
-				if (data.status === 'Links OK'){
-					LINKSDATA = data.links;
-					console.log('LINKSDATA initalized');
-
-					$.post('/fetchsearchdata', 
-						function(ndata){
-
-							if (ndata.status === 'Search OK'){
-								SEARCHDATA = ndata.searchdata;
-								console.log('SEARCHDATA initalized. Building table...');
-
-								APP.$tbody.html('');
-								fillTable_2d(APP.$tbody, SEARCHDATA);
-
-							} else {
-								console.log(ndata.status);
-							};
-						}	
-					);
-
-				} else {
-					console.log(data.status);
-				};
-			}
-		);
-
-	$.ajax({
-			url: '/users',
-			type: 'get',
-			success: function (data) {
-				APP.users = data.users
-				$(".shareinput").autocomplete({
-					source: APP.users
-				});
-			}
-		});
-	};
-	
+    /* Initiating a global APP-object. This object is supposed to hold
+      all variables that otherwise would be global.
+      By doing it like this we end having just 1 global variable named
+       APP. And all other variables are APP.somevariable. 
+       GLOBAL variables are evil, thats why we do it. - Jonas */
+
+
+    APP = {
+        $urlinput : $('.urlinput'),
+        $searchinput : $('.searchinput'),
+        $metainfo : $('.metainfo'),
+        $tbody : $('.tableview tbody'),
+        $maintop : $('.maintopic'),
+        $subtop : $('.subtopic'),
+        old_url : '',
+        old_title : '',
+        old_favicon : '',
+        meta : ''
+    }; 
+
+    SEARCHDATA = [];
+    LINKSDATA = {};
+
+    function onblurHandler(element){
+        var $ele = $(element);
+
+        if ($ele.hasClass('urlinput')){
+            $ele.attr('placeholder', 'url __');
+            $ele.val(APP.old_title);
+        } else {
+            $ele.attr('placeholder', 'search __');
+        };
+    };
+
+    function onfocusHandler(element){
+        var $ele = $(element);
+        $ele.attr('placeholder', '');
+        if ($ele.hasClass('urlinput')){
+            $ele.val(APP.old_url);
+        } else {
+            $ele.val('');
+        };
+    };
+
+    function resetInput(){
+        APP.old_title = '';
+        APP.old_url = '';
+        APP.$urlinput.val('');
+        APP.$metainfo.hide();
+    };
+
+
+    // --- AJAX request functions ---
+
+    function postMeta(){    
+    /*
+        postMeta() blir trigget av en onclick=""-event 
+         på class="plusicon".
+        
+        Denne funksjonen reagerer på 5 måter:
+        
+        0 - Skjekke om begge input-feltene for maintopic og subtopic er utfylt.
+        1 - sende en /postmeta med metainformasjon om urlen inkl url.
+        2 - sende en /updatemap med maintopic og subtopic + url.
+        3 - clear input område for å signaliserer at url-en har blitt submitted.
+        4 - update liste med urler slik at den nye url-en dukker opp i listen.
+
+        Det er viktig at post1 skjer først, deretter post2, 
+         men bare dersom post1 lyktes.
+        Det er for å være sikker på at url-en som blir lagret i map-modellen
+         allerede finnes i url-databasen.
+        ----------------------------------------------------- jonas --- */
+
+        // First of all, check if both topic-fields have a value.
+        // Display necesarry alerts to the user.
+
+        if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
+            console.log('Fill in both topic fields.');
+            APP.$maintop.attr('placeholder', 'Required field');
+            APP.$subtop.attr('placeholder', 'Required field');
+            return 0;
+        };
+
+        var json_meta = {
+            url : APP.old_url, 
+            meta : APP.meta 
+        };
+
+        var json_topics = {
+            url : APP.old_url,
+            main_topic : APP.$maintop.val(),
+            subtopic : APP.$subtop.val(),
+            map_id: APP.$maintop.val(),
+        };
+
+        // Post 1 
+        $.ajax('/postmeta', {
+            data : JSON.stringify(json_meta),
+            contentType : 'application/json',
+            type : 'POST',
+            success: function(data){ 
+                console.log(data.status);
+        
+                resetInput();
+                initDocumentData();
+
+                // Post 2 
+                $.ajax('/updatemap', {
+                    data : JSON.stringify(json_topics),
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success : function(ndata){
+                        console.log(ndata.status);
+                        },
+                    error : function(ndata){
+                        console.log('Status:'+ndata.status); 
+                    }
+                });
+            },
+            error : function(xhr){ 
+                console.log(xhr.status);
+            }
+        });
+    };
+
+
+    function getMeta(iurl){
+
+        var title;
+
+        // Reset page if url is empty
+        if (iurl === ''){
+            resetInput();
+            return 0;
+        };
+
+        console.log(iurl);
+
+        if (iurl != APP.old_url && REGEX.urlpattern2.test(iurl)){
+
+            console.log('Valid URL entered!');
+            APP.old_url = iurl;
+
+            APP.$metainfo.removeAttr('hidden');
+            APP.$metainfo.show();
+
+            APP.$urlinput.val("fetching title and metadata...");
+
+            $.post('/fetchmeta', { 'url': iurl}, 
+
+                function(data){
+                    if(data.meta){
+                        var meta = data.meta;
+                        console.log('Url: ' + data.status);
+                        
+                        // SHOW metadata
+                        APP.$urlinput.val(meta.title);
+                        $('#favicon').attr('src', meta.favicon);
+                        $('#domain').html(meta.domain);
+                        $('#description').html(meta.description);
+                        
+
+                        // CACHE data for later
+                        APP.old_title = meta.title;
+                        APP.old_favicon = meta.favicon;
+                        APP.meta = meta;
+
+                        // Blur the input-field to notify the user that a correct url has been entered.
+                        APP.$urlinput.blur();
+                    } else {
+                        console.log('Status: ' + data.status);
+                    };
+                }
+            );
+        };
+    };
+
+
+    // Not active
+    function search(istring) {
+
+        var resultdata = [];
+        resultdata = generalSearch(SEARCHDATA, istring);
+        APP.$tbody.html('');
+        fillTable_2d(APP.$tbody, resultdata);
+
+        return 0;
+    };
+
+    // ----------- FUNCTIONS ON TABLE ------------------
+
+
+    function changeTopic(meta, rowid){
+
+        var rowid = rowid.split('_c_')[0];
+
+        var json_topics = {
+
+                'url' : meta.split(',_')[0],
+                'old' : meta.split(',_')[1],
+                'map_id' : $('#'+rowid+'_m_').val(),
+                'new' : $('#'+rowid+'_s_').val()
+        };
+
+        $.ajax('/moveurl', {
+            data : JSON.stringify(json_topics),
+            contentType : 'application/json',
+            type : 'POST',
+            success : function(data){
+                console.log(data.status);
+                if(data.status = "Relabel OK"){
+
+                    initDocumentData();
+                } else {};
+
+            },
+            error : function(data){
+                console.log('Status:'+data.status); 
+            }
+        });
+    };
+
+    function deleteUrl(d_url, rowid){
+
+        var rowid = rowid.split('_d_')[0];
+
+        var json_topics = {
+
+            'url' : d_url,
+            'map_id' : $('#'+rowid+'_m_').val(),
+            'subtopic' : $('#'+rowid+'_s_').val()
+        };
+
+        $.ajax('/deletelink', {
+            data : JSON.stringify(json_topics),
+            contentType : 'application/json',
+            type : 'POST',
+            success : function(data){
+                console.log(data.status);
+
+                if (data.status === 'Delete OK'){
+                    initDocumentData();
+                } else {};
+            },
+            error : function(data){
+                console.log('Status:'+data.status); 
+            }
+        });
+    };  
+
+    function revealHiddenRow(rowid){
+        // OBJECTIVE:
+        //      Reveal a row just beneath a row with a click-handler.
+        //       The new row is supposed to show extra information.
+        // INPUT:
+        //    jQuery - row : The row number which was clicked.
+
+        var $hidden = $('#'+rowid+'hidden'); 
+
+        if ($hidden.hasClass('out')){
+
+            $hidden.removeClass('out');
+            $hidden.addClass('in');
+
+        } else{
+
+            $hidden.removeClass('in');
+            $hidden.addClass('out');
+        };
+    };
+
+
+    function fillTable_2d($tbody, arraydata){
+
+        // THOUGHTS:
+        //      It is really difficult to write something general about 
+        //      how to fill a table with data. Therefore in most cases it
+        //      is expected of the user to customize this function.
+        //
+        // OBJECTIVE: To fill a 2d table with 2dArray-data.
+        //             The table may have n columns and n rows. 
+        //
+        // INPUT:
+        //      jQuery - tbody     - a jQuery object of a html <tbody></tbody>
+        //      array  - arraydata - eks. [[topic1, topic2, url1],[topic1, topic3, url2]]
+
+        
+        var row;
+        var rowID;
+
+        var $row;
+        var $hiddenrow
+        var cell;
+        
+        var maintopic;
+        var subtopic;
+        var url;
+        var title;
+
+        console.log("TABLE lenght: " + arraydata.length);
+
+        for(var i=0; i < arraydata.length; i++){
+
+            // Construct each row with a unique row ID.
+            row = arraydata[i];
+            rowID = 'rowid_'+i;
+            $tbody.append('<tr id="' + rowID + '" class="mainrow"></tr>');
+            $row = $('#'+rowID);
+
+            // Event handler
+            $row.click(function(){
+                //revealHiddenRow(this); <-- moved down to icon
+                //window.open(url, "_blank"); // opening url on row click instead.
+            });
+
+            // Metainfo
+            maintopic = row[0];
+            subtopic = row[1]
+            url = row[3]; // THIS IS HARDCODE. I suggest having the indexpositions as a parameter to this function. i.e a dict of key --> index mappings.  This could be provided for free by the /fetchsearchdata if wanted. (signal it by making an issue ^^)
+
+            // Should probably not rely on having metadata on ALL urls, 
+            // i.e support hte case when searchdata has a url that has
+            // not been metadata-fetched, and thus is not in links. 
+            title = LINKSDATA[url].title.slice(0, 70);
+            if(LINKSDATA[url].title.length > 70){
+                title += '...';
+            };
+
+            // row[0]
+            $row.append('<td><a href="' + url + '" target="_blank"><img width="40px" height="40px" src="'+LINKSDATA[url].favicon+'"/></a></td>');
+            
+            // row[1]
+            $row.append('<td>'+ maintopic +'  </td>');
+
+            //$row.append('<td>'+ subtopic +' - </td>');
+
+            // row[2]
+            $row.append('<td id="urlkey_'+i+'"><a href="' + url + '" target="_blank">' + title +'</a></td>');
+            
+            // row[3]
+            // changed it to open link when clicking the row.
+            $row.append('<td><a href="#" onclick="revealHiddenRow(\'' + rowID + '\');"><i class="fa fa-caret-square-o-down fa-4" aria-hidden="true"></i></a></td>');
+
+            // Insert hidden row
+            $hiddenrow = $('<tr id="'+rowID+'hidden" class="collapse out">'+ 
+                             '<td colspan=2></td>' +
+                             '<td style="display: flex; flex-direction: column; align-items: center;">'+
+                             '<input id="'+rowID+'_m_" value="'+maintopic+'" class="topicinput maintopic hidtopic" type="text" placeholder="Main topic"/>' + 
+                             '<input id="'+rowID+'_s_" value="'+subtopic+'" class="topicinput subtopic hidtopic" type="text" placeholder="Sub topic"/>' +
+                             '<button id="'+rowID+'_c_" class="endrebutton" name="'+url+',_'+subtopic+'"' +
+                                'onclick="changeTopic(this.name, this.id)">Endre</button>' +
+                             '<button id="'+rowID+'_d_" class="endrebutton" name="'+url+'"'+
+                                'onclick="deleteUrl(this.name, this.id)">Slett</button>'+
+                             '</td>'+
+                           '</tr>');
+
+            $tbody.append($hiddenrow);
+        };
+    };
+
+    function initDocumentData(){
+        // OBJECTIVE:
+        //      Intialized LINKSDATA and SEARCHDATA and fill up the table
+
+
+        $.get('/fetchlinks', 
+            function(data){
+                if (data.status === 'Links OK'){
+                    LINKSDATA = data.links;
+                    console.log('LINKSDATA initalized');
+
+                    $.post('/fetchsearchdata', 
+                        function(ndata){
+
+                            if (ndata.status === 'Search OK'){
+                                SEARCHDATA = ndata.searchdata;
+                                console.log('SEARCHDATA initalized. Building table...');
+
+                                APP.$tbody.html('');
+                                fillTable_2d(APP.$tbody, SEARCHDATA);
+
+                            } else {
+                                console.log(ndata.status);
+                            };
+                        }   
+                    );
+
+                } else {
+                    console.log(data.status);
+                };
+            }
+        );
+
+    $.ajax({
+            url: '/users',
+            type: 'get',
+            success: function (data) {
+                APP.users = data.users
+                $(".shareinput").autocomplete({
+                    source: APP.users
+                });
+            }
+        });
+    };
+    
 
 // ---------------------- MAIN INIT -----------------------
 
-	$(document).ready(function(){
+    $(document).ready(function(){
 
-		APP.$metainfo.hide();
+        APP.$metainfo.hide();
 
-		initDocumentData();
+        initDocumentData();
 
-		
+        
 
 
-		// building taglist for autocompletion
-		$.get('/tags', 
-			function(data){
-				APP.tags = data.tags;
-				$( "#maintopicinput" ).autocomplete({
-					source: APP.tags
-				});
-				$( "#subtopicinput" ).autocomplete({
-					source: APP.tags
-				});
-				$( "#searchinput" ).autocomplete({
-					source: APP.tags
-				});
-			}
-		);
+        // building taglist for autocompletion
+        $.get('/tags', 
+            function(data){
+                APP.tags = data.tags;
+                $( "#maintopicinput" ).autocomplete({
+                    source: APP.tags
+                });
+                $( "#subtopicinput" ).autocomplete({
+                    source: APP.tags
+                });
+                $( "#searchinput" ).autocomplete({
+                    source: APP.tags
+                });
+            }
+        );
 
-	});
+    });
 
 </script>
 {% endblock %}
