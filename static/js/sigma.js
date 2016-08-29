@@ -81,6 +81,18 @@ var sigma = {
 	},
 
 
+	/*
+	 *	#########################	fetchmeta	#############################
+	 *  #
+	 *	#	doc: https://github.com/technocake/SigmaPrototype/blob/master/DOCS/sigma-api/fetchmeta.md
+	 *	#
+	 */
+	fetchmeta: function(url, handler) {
+		$.post('/fetchmeta', url, function(data){
+			handler(data);
+		});
+	},
+
 
 	/*
 	 *	#########################	getmap	#############################
@@ -107,6 +119,9 @@ var sigma = {
 
 
 	/* -----------------	Updating calls  --------------------- */
+
+
+
 
 	postmeta: function(meta, handler, error_handler) {
 		$.ajax('/postmeta', {
