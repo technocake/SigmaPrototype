@@ -42,6 +42,10 @@
              text-align: center;}
     .vertical-center { margin-top: 35%;}
     .hide{display: none;}
+    #close-btn {
+        color: #FFF;
+        font-size: 3em;
+    }
 </style>
 
 
@@ -54,6 +58,7 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <div id="url-overlay" class="hide">
+        <a href="#" onclick="close_overlay();"><div id="close-btn">Close</div></a>
         <!--
             Overlay stuff in here
         -->
@@ -74,6 +79,7 @@ $(document).ready(function(){
         names: [],
         links: null,
         searchdata: null,
+        selected_node: null,
     }
 
     // GLOBALS
@@ -396,10 +402,9 @@ $(document).ready(function(){
             current_map_object = data.map;
             initSVG(data.map);
         });
-
-
         
     };
+
 
     function initDocumentState() {
         
@@ -413,13 +418,7 @@ $(document).ready(function(){
     }
 
     
-    /*
-        Close overlay on escape key.
-    */
-    $(document).keyup(function(e) {
-        if (e.keyCode == 27) { $("#LoadingData").dialog('close'); }   // esc
-    });
-    
+  
     /*
         Draw map
     */
@@ -468,9 +467,27 @@ $(document).ready(function(){
     function addLink(mapid, topic, node) {
         /*  Opens url-overlay for user to add link  */
         $("#url-overlay").show();
+        $APP.selected_node = $(node);
         $(node).css('fill',  "yellow");
     }
 
+
+    function close_overlay() {
+        /* Closes url overlay. Also removes highlights */
+        $('#url-overlay').hide();
+        $APP.selected_node.css('fill', "red");
+        $APP.selected_node = null;
+    }
+
+    /*
+        Close overlay on escape key.
+    */
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) {  // esc
+            close_overlay(); 
+        }   
+    });
+    
 </script>
 
 </html>
