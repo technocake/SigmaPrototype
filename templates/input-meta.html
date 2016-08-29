@@ -1,0 +1,253 @@
+<script type="text/javascript" charset="utf-8" async defer>
+    
+
+/*
+    MODULE: input-mneta.html 
+
+    This module is aiming to become reusable for views that needs
+    url input and meta tagging functionality.
+
+    Most stuff will work when including this file: 
+        (remove spaces between { and %)
+
+        { % include("input-meta-html")  % }    
+
+
+    However some stuff that needs to be done after the document has been
+    loaded, like loading tags and putting them into the metainputs for
+    autocompletion needs to be done in the file that uses inputmeta.
+
+    For this purpose, this module exposes a public api through the
+    INPUTMETA global var.
+    
+
+    Do this in $(document).ready() in the file using the input-meta module.
+
+        INPUTMETA.load_tags() <-- loads tags and puts them to be autocompleted
+                                      in meta fields. 
+
+
+    NOT COMPLETELY MODULAR:
+        Depends on these js libs to be loaded externally:
+            - jonaslib 
+            - jquery (thats assumed) 
+            - jqueryui (should also be assumed)
+
+*/
+
+INPUTMETA = {
+    load_tags: function(){
+         // building taglist for autocompletion
+        $.get('/tags', 
+            function(data){
+                console.log("Tags loaded")
+                APP.tags = data.tags;
+                $( "#maintopicinput" ).autocomplete({
+                    source: APP.tags
+                });
+                $( "#subtopicinput" ).autocomplete({
+                    source: APP.tags
+                });
+
+                /* should probably not be here,
+                   but in searchinput-module.html or something
+                */
+                $( "#searchinput" ).autocomplete({
+                    source: APP.tags
+                });
+            }
+        );
+
+    
+    }
+}
+
+    LINKSDATA = {};
+
+    function onblurHandler(element){
+        var $ele = $(element);
+
+        if ($ele.hasClass('urlinput')){
+            $ele.attr('placeholder', 'url __');
+            $ele.val(APP.old_title);
+        } else {
+            $ele.attr('placeholder', 'search __');
+        };
+    };
+
+    function onfocusHandler(element){
+        var $ele = $(element);
+        $ele.attr('placeholder', '');
+        if ($ele.hasClass('urlinput')){
+            $ele.val(APP.old_url);
+        } else {
+            $ele.val('');
+        };
+    };
+
+    function resetInput(){
+        APP.old_title = '';
+        APP.old_url = '';
+        APP.$urlinput.val('');
+        APP.$metainfo.hide();
+    };
+
+
+    // --- AJAX request functions ---
+
+    function postMeta(){    
+    /*
+        postMeta() blir trigget av en onclick=""-event 
+         på class="plusicon".
+        
+        Denne funksjonen reagerer på 5 måter:
+        
+        0 - Skjekke om begge input-feltene for maintopic og subtopic er utfylt.
+        1 - sende en /postmeta med metainformasjon om urlen inkl url.
+        2 - sende en /updatemap med maintopic og subtopic + url.
+        3 - clear input område for å signaliserer at url-en har blitt submitted.
+        4 - update liste med urler slik at den nye url-en dukker opp i listen.
+
+        Det er viktig at post1 skjer først, deretter post2, 
+         men bare dersom post1 lyktes.
+        Det er for å være sikker på at url-en som blir lagret i map-modellen
+         allerede finnes i url-databasen.
+        ----------------------------------------------------- jonas --- */
+
+        // First of all, check if both topic-fields have a value.
+        // Display necesarry alerts to the user.
+
+        if(APP.$maintop.val() === '' || APP.$subtop.val() === ''){
+            console.log('Fill in both topic fields.');
+            APP.$maintop.attr('placeholder', 'Required field');
+            APP.$subtop.attr('placeholder', 'Required field');
+            return 0;
+        };
+
+        var json_meta = {
+            url : APP.old_url, 
+            meta : APP.meta 
+        };
+
+        var json_topics = {
+            url : APP.old_url,
+            main_topic : APP.$maintop.val(),
+            subtopic : APP.$subtop.val(),
+            map_id: APP.$maintop.val(),
+        };
+
+        // Post 1 
+        $.ajax('/postmeta', {
+            data : JSON.stringify(json_meta),
+            contentType : 'application/json',
+            type : 'POST',
+            success: function(data){ 
+                console.log(data.status);
+        
+                resetInput();
+                initDocumentData();
+
+                // Post 2 
+                $.ajax('/updatemap', {
+                    data : JSON.stringify(json_topics),
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success : function(ndata){
+                        console.log(ndata.status);
+                        },
+                    error : function(ndata){
+                        console.log('Status:'+ndata.status); 
+                    }
+                });
+            },
+            error : function(xhr){ 
+                console.log(xhr.status);
+            }
+        });
+    };
+
+
+    function getMeta(iurl){
+
+        var title;
+
+        // Reset page if url is empty
+        if (iurl === ''){
+            resetInput();
+            return 0;
+        };
+
+        console.log(iurl);
+
+        if (iurl != APP.old_url && REGEX.urlpattern2.test(iurl)){
+
+            console.log('Valid URL entered!');
+            APP.old_url = iurl;
+
+            APP.$metainfo.removeAttr('hidden');
+            APP.$metainfo.show();
+
+            APP.$urlinput.val("fetching title and metadata...");
+
+            $.post('/fetchmeta', { 'url': iurl}, 
+
+                function(data){
+                    if(data.meta){
+                        var meta = data.meta;
+                        console.log('Url: ' + data.status);
+                        
+                        // SHOW metadata
+                        APP.$urlinput.val(meta.title);
+                        $('#favicon').attr('src', meta.favicon);
+                        $('#domain').html(meta.domain);
+                        $('#description').html(meta.description);
+                        
+
+                        // CACHE data for later
+                        APP.old_title = meta.title;
+                        APP.old_favicon = meta.favicon;
+                        APP.meta = meta;
+
+                        // Blur the input-field to notify the user that a correct url has been entered.
+                        APP.$urlinput.blur();
+                    } else {
+                        console.log('Status: ' + data.status);
+                    };
+                }
+            );
+        };
+    };
+
+
+</script>
+
+
+ <input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
+                onfocus="onfocusHandler(this)" 
+                onblur="onblurHandler(this)" 
+                onkeyup="getMeta(this.value)" 
+                onclick="this.select()"/>
+                
+                
+
+        <div class="metainfo" hidden>   
+
+            <div class="kolonne1">
+                <div style="display:flex;">
+                    <img id="favicon" width="25px" height="25px" src="#"/>
+                    <div id="domain">
+                    </div> 
+                </div>
+                <h3>Description:</h3>
+                <div id="description"></div>
+            </div>
+
+            <div class="kolonne2">
+                <input id="maintopicinput" class="topicinput maintopic" type="text" placeholder="Main topic"/>
+                <input id="subtopicinput" class="topicinput subtopic" type="text" placeholder="Sub topic"/>
+            </div>
+            <div>
+                <img class="plusicon" width="100px" height="100px" 
+                     src="static/plus-icon.png" onclick="postMeta()"/>
+            </div>
+        </div>

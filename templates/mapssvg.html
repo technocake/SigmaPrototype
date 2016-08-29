@@ -10,6 +10,13 @@
 <!-- For using the sigma api !-->
 <script src="/static/js/sigma.js" type="text/javascript" charset="utf-8"></script>
 <script src="/static/js/CONFIG.js" type="text/javascript" charset="utf-8"></script>
+<!--Local files -->
+<script src="/static/js/jonaslib.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Jquery UI  was built with Le Frog as theme. Might be ... a decision to be changed later. !-->
+<link href='/static/js/jquery-ui-1.12.0.custom/jquery-ui.css' rel='stylesheet' type='text/css'>
+<script src="/static/js/jquery-ui-1.12.0.custom/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
+
 <style>
   
     html, body {background-color: #f9f9f9;
@@ -66,8 +73,9 @@
             Overlay stuff in here
         -->
         <div class="middle vertical-center">
-            <input type="url" name="link" value="" placeholder="Enter URL">
-            <input type="button" name="add-link-btn" id="add-link-btn" value="Add Link">
+            
+            {% include('input-meta.html') %}
+
         </div>
     </div>
 
@@ -78,12 +86,23 @@
 <script type="text/javascript">
         
 $(document).ready(function(){
-    $APP = {
+    APP = {
         names: [],
         links: null,
         searchdata: null,
         selected_node: null,
-    }
+
+        // from inputmeta
+        $urlinput : $('.urlinput'),
+        $metainfo : $('.metainfo'),
+        $tbody : $('.tableview tbody'),
+        $maintop : $('.maintopic'),
+        $subtop : $('.subtopic'),
+        old_url : '',
+        old_title : '',
+        old_favicon : '',
+        meta : ''
+    };
 
     // GLOBALS
     var ww;
@@ -335,7 +354,7 @@ $(document).ready(function(){
                                                      }); // http://www.w3schools.com/tags/att_a_target.asp
             
                 // See https://www.w3.org/Graphics/SVG/WG/wiki/Href#xlink:href
-                favNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', $APP.links[urlkey].favicon)
+                favNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', APP.links[urlkey].favicon)
                 aNode.setAttributeNS("http://www.w3.org/1999/xlink", 'href', urlkey)
 
                 // Make url text node to put in the a-element.
@@ -348,7 +367,7 @@ $(document).ready(function(){
                                       onmouseout : "smashDownUrl(evt)" })
 
 
-                urltextNode.appendChild(document.createTextNode($APP.links[urlkey]['title']));
+                urltextNode.appendChild(document.createTextNode(APP.links[urlkey]['title']));
 
                 aNode.appendChild(urltextNode)
                 gNode.appendChild(favNode);
@@ -379,8 +398,8 @@ $(document).ready(function(){
             // Saving a index instead of map-id in 
             // things. resolving map-id from mapindex.
             var mapindex = this.id.split('_')[1];
-            newMap($APP.names[mapindex]);
-            console.log($APP.names)
+            newMap(APP.names[mapindex]);
+            console.log(APP.names)
 
         });
         
@@ -389,13 +408,16 @@ $(document).ready(function(){
 // ----------- AJAX request routes --------------
 
     sigma.mapnames(function(data){
-        $APP.names = data.names;
+        APP.names = data.names;
         initNav(data.names);
     });
 
     
     function newMap(new_topic){
-        initDocumentState();
+        /* removed initState from this function,
+        should ideally separate IO and rendering logic
+        completely.
+        */
         console.log("newMap: "+new_topic);
         current_topic = new_topic;
  
@@ -408,22 +430,14 @@ $(document).ready(function(){
     };
 
 
-    function initDocumentState() {
-        
-        sigma.fetchsearchdata(
-            function(data){
-                console.log("loaded LINKS and SEARCHDATA");
-                $APP.links = data.linksdata;
-                $APP.searchdata = data.searchdata;
-                console.log(data.links);
-            });
-    }
-
     
-  
+    
+    
+    
     /*
         Draw map
     */
+    initDocumentData();
     newMap(current_topic);
 
 
@@ -435,6 +449,20 @@ $(document).ready(function(){
     });*/
 
 });
+
+function initDocumentData() {
+    
+        INPUTMETA.load_tags();
+
+        sigma.fetchsearchdata(
+            function(data){
+                console.log("loaded LINKS and SEARCHDATA");
+                APP.links = data.linksdata;
+                APP.searchdata = data.searchdata;
+                console.log(data.links);
+            });
+}
+
 
 </script>
 
@@ -466,7 +494,7 @@ $(document).ready(function(){
     function addLink(mapid, topic, node) {
         /*  Opens url-overlay for user to add link  */
         $("#url-overlay").show();
-        $APP.selected_node = $(node);
+        APP.selected_node = $(node);
         $(node).css('fill',  CONF.hilight_color);
     }
 
@@ -474,8 +502,8 @@ $(document).ready(function(){
     function close_overlay() {
         /* Closes url overlay. Also removes highlights */
         $('#url-overlay').hide();
-        $APP.selected_node.css('fill', CONF.sub_fillcolor);
-        $APP.selected_node = null;
+        APP.selected_node.css('fill', CONF.sub_fillcolor);
+        APP.selected_node = null;
     }
 
     /*
