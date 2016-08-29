@@ -137,32 +137,14 @@ INPUTMETA = {
         };
 
         // Post 1 
-        $.ajax('/postmeta', {
-            data : JSON.stringify(json_meta),
-            contentType : 'application/json',
-            type : 'POST',
-            success: function(data){ 
-                console.log(data.status);
+        sigma.postmeta(json_meta, function(data){ 
         
-                resetInput();
-                initDocumentData();
+            resetInput();
+            initDocumentData();
 
-                // Post 2 
-                $.ajax('/updatemap', {
-                    data : JSON.stringify(json_topics),
-                    contentType : 'application/json',
-                    type : 'POST',
-                    success : function(ndata){
-                        console.log(ndata.status);
-                        },
-                    error : function(ndata){
-                        console.log('Status:'+ndata.status); 
-                    }
-                });
-            },
-            error : function(xhr){ 
-                console.log(xhr.status);
-            }
+            // Post 2 
+            sigma.updatemap(json_topics, function(ndata){});
+            
         });
     };
 

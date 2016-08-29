@@ -96,14 +96,52 @@ var sigma = {
             success : function(data){
 	                handler(data);
                 },
-            error : function(data){
-	                if (error_handler === undefined) {
-						console.log(data.status);
-					}
-					else {
-						error_handler(data);
-					}
+            error : function(data)
+            	{
+	              if (error_handler === undefined) {console.log(data.status);}
+				  else { error_handler(data); }
+                }
+            });
+	},
+
+
+
+	/* -----------------	Updating calls  --------------------- */
+
+	postmeta: function(meta, handler, error_handler) {
+		$.ajax('/postmeta', {
+            data : JSON.stringify(meta),
+            contentType : 'application/json',
+            type : 'POST',
+            success : function(data){
+            		console.log(data.status);
+	                handler(data);
+                },
+            error : function(data)
+            	{
+	              if (error_handler === undefined) {console.log(data.status);}
+				  else { error_handler(data); }
+                }
+            });
+	},
+
+
+	updatemap: function(mapdata, handler, error_handler) {
+		$.ajax('/updatemap', {
+            data : JSON.stringify(mapdata),
+            contentType : 'application/json',
+            type : 'POST',
+            success : function(data){
+            		console.log(data.status);
+	                handler(data);
+                },
+            error : function(data)
+            	{
+	              if (error_handler === undefined) {console.log(data.status);}
+				  else { error_handler(data); }
                 }
             });
 	}
+
+
 }
