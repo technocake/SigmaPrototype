@@ -27,23 +27,32 @@ CONF = {
 
     // ..and the size of their text
     // CSS font-size in px.
-    main_size_text: '20px',
+    main_size_text: '22px',
     sub_size_text: '18px',
     url_size_text: '15px',
 
     // COLORS
     // Node body colors
-    main_color: 'stroke: #00e673; fill: #00e673;',
-    sub_color: 'stroke: red; fill: red;',
-    url_color: 'stroke: blue; fill: blue;',
+    //main_color: 'stroke: #00e673; fill: #00e673;',
+    main_color: 'stroke: #4e4e4e; fill: #4e4e4e;',
+    sub_color: 'stroke: #4e4e4e; fill: #4e4e4e;',
+    url_color: 'stroke: #4e4e4e; fill: #4e4e4e;',
+   
+    // pure data
+    sub_fillcolor: '#4e4e4e',
+    url_fillcolor: 'red',
+    main_fillcolor: 'red',
+
+    //hilighting
+    hilight_color: 'yellow',
 
     // Line color
     line_color: 'stroke: #808080; stroke-width: 1.5px;',
 
     // Node text colors
     main_color_text: 'black',
-    sub_color_text:  'pink',
-    url_color_text:  'lightblue',
+    sub_color_text:  'black',
+    url_color_text:  'black',
 
 
 

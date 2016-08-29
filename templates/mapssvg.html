@@ -46,6 +46,8 @@
     #close-btn {
         color: #FFF;
         font-size: 3em;
+        float: right;
+        margin: 1em;
     }
 </style>
 
@@ -465,14 +467,14 @@ $(document).ready(function(){
         /*  Opens url-overlay for user to add link  */
         $("#url-overlay").show();
         $APP.selected_node = $(node);
-        $(node).css('fill',  "yellow");
+        $(node).css('fill',  CONF.hilight_color);
     }
 
 
     function close_overlay() {
         /* Closes url overlay. Also removes highlights */
         $('#url-overlay').hide();
-        $APP.selected_node.css('fill', "red");
+        $APP.selected_node.css('fill', CONF.sub_fillcolor);
         $APP.selected_node = null;
     }
 
