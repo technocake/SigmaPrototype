@@ -129,11 +129,13 @@ $(document).ready(function(){
         return coords;
     };
 
+// - THIS SUBROUTINE IS ALMOST IDENTICAL TO THE ONE ABOVE;
+// - THEY SHOULD BE MERGES SOMEHOW
 
     function test_findNodeCoords(bx,by,rx,ry,length){
         // Create coordinates of all sub nodes
         // input bx, by -- basex, basey
-        var step = (Math.PI) / length;
+        var step = (Math.PI) / length * 1.25;
 
         //var alpha = Math.random() * (2 * Math.PI);    // Use this to make view more random
         var alpha = Math.PI/2;                      // Use this to make view static
@@ -442,12 +444,10 @@ $(document).ready(function(){
 /* Handle SVG events */
 
     function blowUpUrl(evt){
-
         evt.target.setAttribute("style", "font-size:25px;");
     }
 
     function smashDownUrl(evt){
-
         evt.target.setAttribute("style", "font-size:15px;");
     }
 
@@ -459,7 +459,6 @@ $(document).ready(function(){
     }
 
     function smashDown(evt){
-
         var r = evt.target.getAttribute("r");
         evt.target.setAttribute("r", r / 2);
     }
