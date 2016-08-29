@@ -217,9 +217,9 @@ $(document).ready(function(){
         main_node = makeSVG('circle', {id: 'main_node', 
                                        cx: ww/2, 
                                        cy: wh/2, 
-                                        r: 15,
+                                        r: CONF.main_size,
                                     class: 'node',
-                                    style: 'stroke: #00e673; fill: #00e673;',
+                                    style: CONF.main_color,
                              onmouseover : "blowUp(evt)",
                               onmouseout : "smashDown(evt)"  });
 
@@ -228,7 +228,7 @@ $(document).ready(function(){
         mny = parseInt(main_node.getAttribute('cy'));
 
         // Display text at the main_node
-        maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, style: 'fill: black; font-size: 20px;'})
+        maintextNode = makeSVG('text', {x:mnx-50, y:mny-20, style: 'fill: '+CONF.main_color_text+'; font-size: '+CONF.main_size_text+';'})
         maintextNode.appendChild(document.createTextNode(current_topic));
         s.appendChild(maintextNode);
 
@@ -249,7 +249,7 @@ $(document).ready(function(){
 
             // Create Sub node DOM objects
             // Make red lines and append main_node on top
-            redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, style:'stroke: #808080; stroke-width: 1.5px;'});
+            redline = makeSVG('line', { x1:mnx, y1:mny, x2:sx, y2:sy, style: CONF.line_color});
             s.appendChild(redline);
             s.appendChild(main_node);
  
@@ -257,8 +257,8 @@ $(document).ready(function(){
             // Make red nodes
             sub_nodes[i] = makeSVG('circle', {cx: sx, 
                                               cy: sy, 
-                                               r: 8, 
-                                           style: 'stroke: red; fill: red;',
+                                               r: CONF.sub_size, 
+                                           style: CONF.sub_color,
                                            class: 'node',
                                     onmouseover : "blowUp(evt)",
                                      onmouseout : "smashDown(evt)",
@@ -267,7 +267,7 @@ $(document).ready(function(){
             
 
             // subtopic text node
-            subtextNode = makeSVG('text', {x:sx-30, y:sy-15, fill:"black" })
+            subtextNode = makeSVG('text', {x:sx-30, y:sy-15, style: 'fill: '+CONF.sub_color_text+'; font-size: '+CONF.sub_size_text+';'})
             subtextNode.appendChild(document.createTextNode(subkey));
             s.appendChild(subtextNode);
 
@@ -293,7 +293,7 @@ $(document).ready(function(){
                                              y1 : sy, 
                                              x2 : ux, 
                                              y2 : uy,
-                                          style : 'stroke: #808080; stroke-width: 1.5px' });
+                                          style : CONF.line_color });
                 s.appendChild(blueline);
                 s.appendChild(sub_nodes[i]);
 
@@ -303,9 +303,8 @@ $(document).ready(function(){
                                                     id : urlkey,
                                                     cx : ux, 
                                                     cy : uy, 
-                                                     r : 6, 
-                                                 stroke: 'blue',
-                                                   fill: 'blue',
+                                                     r : CONF.url_size, 
+                                                  style: CONF.url_color,
                                            onmouseover : "blowUp(evt)",
                                             onmouseout : "smashDown(evt)"   });
                 s.appendChild(url_nodes.subkey[j]);
@@ -336,9 +335,7 @@ $(document).ready(function(){
                                                id: urlkey + 'sub',
                                                 x: ux+42, 
                                                 y: uy,
-                                            style: "font-size: 15px;",
-                                     //visibility: "hidden",
-                                             fill: "black",
+                                            style: 'fill: '+CONF.url_color_text+'; font-size: '+CONF.url_size_text+';',
                                      onmouseover : "blowUpUrl(evt)",
                                       onmouseout : "smashDownUrl(evt)" })
 
