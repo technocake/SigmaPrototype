@@ -52,8 +52,12 @@ CONF = {
     // Node text colors
     main_color_text: 'black',
     sub_color_text:  'black',
-    url_color_text:  'black',
+    url_color_text:  '#337ab7',
 
+
+    // UI animation settings
+    blowUp_font_size: "25px",
+    smashDown_font_size: "15px",
 
 
     bottom_of_config: 'Bye bye! :)'

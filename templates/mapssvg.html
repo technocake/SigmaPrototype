@@ -475,13 +475,24 @@ function refresh_and_draw_map() {
 <script type="text/javascript">
 
 /* Handle SVG events */
+    function _fontsize(fs) {
+        // apparently string "merging" is different with the + and
+        // concat().  Had to use concat to not get css error:
+        //"error in value for font-size declaration."
+        var base = "font-size: "
+        return base.concat(fs).concat(";");
+    }
 
     function blowUpUrl(evt){
-        evt.target.setAttribute("style", "font-size:25px;");
+        evt.target.setAttribute("style", _fontsize(CONF.blowUp_font_size));
+        // above line resets all other css attributes. 
+        // rebuilding fill manualy, for now.
+        $(evt.target).css({"fill": CONF.url_color_text});
     }
 
     function smashDownUrl(evt){
-        evt.target.setAttribute("style", "font-size:15px;");
+        evt.target.setAttribute("style", _fontsize(CONF.smashDown_font_size));
+        $(evt.target).css("fill", CONF.url_color_text);
     }
 
 
