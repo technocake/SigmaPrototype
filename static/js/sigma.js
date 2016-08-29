@@ -87,10 +87,21 @@ var sigma = {
 	 *	#	doc: https://github.com/technocake/SigmaPrototype/blob/master/DOCS/sigma-api/fetchmeta.md
 	 *	#
 	 */
-	fetchmeta: function(url, handler) {
-		$.post('/fetchmeta', url, function(data){
-			handler(data);
-		});
+	fetchmeta: function(url, handler, error_handler) {
+		$.ajax('/fetchmeta', {
+			data: JSON.stringify({'url': url}), 
+			contentType : 'application/json',
+            type : 'POST',
+			success : function(data){
+				console.log(data.status);
+					handler(data);
+				},
+			error : function(data)
+            	{
+	              if (error_handler === undefined) {console.log(data.status);}
+				  else { error_handler(data); }
+                }
+			});
 	},
 
 

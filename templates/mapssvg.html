@@ -248,7 +248,8 @@ $(document).ready(function(){
                                     class: 'node',
                                     style: CONF.main_color,
                              onmouseover : "blowUp(evt)",
-                              onmouseout : "smashDown(evt)"  });
+                              onmouseout : "smashDown(evt)",
+                              onclick: "addLink('"+current_topic +"', null, this)"  });
 
         // Get x and y of main nodes
         mnx = parseInt(main_node.getAttribute('cx'));
@@ -438,24 +439,16 @@ $(document).ready(function(){
     /*
         Draw map
     */
-    initDocumentData();
-    newMap(current_topic);
-
+    refresh_and_draw_map();
+    
     INPUTMETA.onLinkPosted = function(data) {
-        initDocumentData();
+        refresh_and_draw_map();
         close_overlay();
-        newMap(current_topic);
     }
-    // Does not work yet
-    /*$(document).resize(function(){    
+    
 
-        console.log("Resizing - width: " + ww + " height: " + wh);
-        initSVG(current_map_object);    
-    });*/
 
-});
-
-function initDocumentData() {
+function refresh_and_draw_map() {
     
         INPUTMETA.load_tags();
 
@@ -465,8 +458,16 @@ function initDocumentData() {
                 APP.links = data.linksdata;
                 APP.searchdata = data.searchdata;
                 console.log(data.links);
+
+                // Finally, drawing this mappy.
+                newMap(current_topic);
             });
 }
+
+
+});
+
+
 
 
 </script>
@@ -501,6 +502,14 @@ function initDocumentData() {
         $("#url-overlay").show();
         APP.selected_node = $(node);
         $(node).css('fill',  CONF.hilight_color);
+
+        // prefilling main topic
+        APP.$maintop.val(mapid);
+
+        if (topic !== null) {
+            // pre-filling sub topic  
+            APP.$subtop.val(topic);    
+        }
     }
 
 

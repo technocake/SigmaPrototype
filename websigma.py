@@ -500,13 +500,14 @@ def fetch_meta():
     try:
         now = time.time()
         elapsed = now - session['last_request']
-
+        
         if elapsed <= 2: 
             return jsonify(status="Too fast!")
 
         session['last_request'] = time.time()
-        url = request.form.get('url', None)
-        filters = request.form.get('filter', None)
+        json = request.get_json()
+        url = json.get('url', None)
+        filters = json.get('filter', None)
 
         # Not implemented filters yet. It dumps everything we got.
         meta = sigma.fetch_meta(url)
