@@ -9,6 +9,7 @@
 
 <!-- For using the sigma api !-->
 <script src="/static/js/sigma.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/CONFIG.js" type="text/javascript" charset="utf-8"></script>
 <style>
   
     html, body {background-color: #f9f9f9;
@@ -200,8 +201,8 @@ $(document).ready(function(){
         var redline;
         var blueline;
 
-        var subrad = [ww * (2.7/10), wh * (2.5/10)];     // radius x and y from main_node
-        var urlrad = [ww * (4.5/50), ww * (2.5/50)];         // radiues x and y from sub_node
+        var subrad = [ww * (CONF.subradx), wh * (CONF.subrady)];     // radius x and y from main_node
+        var urlrad = [ww * (CONF.urlradx), ww * (CONF.urlrady)];         // radiues x and y from sub_node
         
         // Clear SVG screen of existing elements
         while (s.lastChild) {
