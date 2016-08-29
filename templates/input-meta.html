@@ -29,16 +29,18 @@
 
     NOT COMPLETELY MODULAR:
         Depends on these js libs to be loaded externally:
-            - jonaslib 
+            - jonaslib (magic happens here)
             - jquery (thats assumed) 
             - jqueryui (should also be assumed)
+            - sigma.js (must be assumed :))
 
 */
 
 INPUTMETA = {
+    /* call this from the view using input-meta to get autosuggestions */
     load_tags: function(){
          // building taglist for autocompletion
-        $.get('/tags', 
+        sigma.tags( 
             function(data){
                 console.log("Tags loaded")
                 APP.tags = data.tags;
@@ -57,9 +59,10 @@ INPUTMETA = {
                 });
             }
         );
+    },
 
-    
-    }
+    /* override this to do something after a link has been posted. */
+    onLinkPosted:  function(data) {}, 
 }
 
     LINKSDATA = {};
@@ -138,12 +141,11 @@ INPUTMETA = {
 
         // Post 1 
         sigma.postmeta(json_meta, function(data){ 
-        
-            resetInput();
-            initDocumentData();
-
+            
             // Post 2 
-            sigma.updatemap(json_topics, function(ndata){});
+            sigma.updatemap(json_topics, function(ndata){
+                INPUTMETA.onLinkPosted(ndata);
+            });
             
         });
     };

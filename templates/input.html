@@ -303,6 +303,10 @@
         	from input-meta.html
         */
         INPUTMETA.load_tags();
+        INPUTMETA.onLinkPosted = function(data) {
+        	resetInput();
+            initDocumentData();
+        };
     });
 </script>
 {% endblock %}

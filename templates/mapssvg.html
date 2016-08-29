@@ -433,14 +433,19 @@ $(document).ready(function(){
     
     
     
-    
+    // ---------- Main init -------------- //
+
     /*
         Draw map
     */
     initDocumentData();
     newMap(current_topic);
 
-
+    INPUTMETA.onLinkPosted = function(data) {
+        initDocumentData();
+        close_overlay();
+        newMap(current_topic);
+    }
     // Does not work yet
     /*$(document).resize(function(){    
 
