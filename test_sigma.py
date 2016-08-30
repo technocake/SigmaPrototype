@@ -184,6 +184,24 @@ def test_scenario_shared_map_gets_more_links():
     assert url1 in get_links(owner), " Added link to shared map did not propagate to shared users."
 
 
+def test_fetch_meta():
+    """
+        Should return title, domain, description
+    """
+    url = "https://moz.com/learn/seo/meta-description"
+    TITLE = "Meta Description Tag - Learn SEO - Moz"
+    DOMAIN = "moz.com"
+    FAVICON = "https://moz.com/favicon.ico"
+    META_DESCRIPTION = "Get SEO best practices for the meta description tag, including length and content."    
+    
+    meta = sigma.fetch_meta(url)
+    
+    assert meta.title == TITLE, "Title not extracted properly"
+    assert meta.domain == DOMAIN, "Domain extract failed."
+    assert meta.favicon == FAVICON, "FAVICON extract failed."
+    assert meta.description == META_DESCRIPTION, "Meta Description not extracted properly"
+
+
 def test_make_default_perms():
     """
         Should generate a SharingPermissions object for a map adn save it. 
@@ -314,6 +332,9 @@ def cleanup():
 
 
 if __name__ == '__main__':
+    # LINKS
+    test_fetch_meta()
+
     # setup
     make_and_save_test_map()
     

@@ -727,7 +727,7 @@ class LinkMeta(SigmaObject):
         if r:
             soup = BeautifulSoup(r.text, 'html.parser')
             # First get the meta description tag
-            meta_desc = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'}, recursive=False)
+            meta_desc = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'})
 
             # If description meta tag was found, then get the content attribute and save it to db entry
             if meta_desc:
