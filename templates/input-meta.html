@@ -202,10 +202,10 @@ INPUTMETA = {
 
 </script>
 
- <input id="urlinput" class="megainput urlinput" type="text" placeholder="lim inn en link her"
-..                onfocus="onfocusHandler(this)" 
+ <input id="urlinput" class="megainput urlinput" type="text" placeholder="lim inn en link her.."
+                onfocus="onfocusHandler(this)" 
                 onblur="onblurHandler(this)" 
-         søk i linker her..="getMeta(this.value)" 
+                onkeyup="getMeta(this.value)" 
                 onclick="this.select()"/>
                 
                 
