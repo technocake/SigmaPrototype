@@ -65,6 +65,10 @@ nav {
 	max-width: 1000px; /* wide screen tvs wont have to have wide inputs. */
 }
 
+.megainput:hover {
+	background-color: #dcf4cd;
+}
+
 .metainfo {
 	width: 100%;
 	display: flex;

@@ -196,8 +196,12 @@ def map_thumbnail(user, mapid):
 @login_required
 def maps_svg():
 
-    tags = sigma.get_tags(session['user'])
-    return render_template('mapssvg.html', first_map = tags[0])
+    names = sigma.get_map_names(session['user'])
+    if len(names) > 0:
+        first_map = names[0]
+    else:
+        first_map = "DEMO"
+    return render_template('mapssvg.html', first_map = first_map)
 
 
 @app.route('/testfreemind')
@@ -290,16 +294,7 @@ def get_map_names():
     user = session['user']
     try:
         the_maps = sigma.get_maps(user)
-        maps_temp = the_maps.keys()
-
-        # The for-loop below is a hack to make the_maps.keys() json serializable
-        #  It looks like this --> dict_keys(['SVG', 'C++'])
-        #  Has to look more like -->        ['SVG', 'C++']
-        map_names = []
-        for mp in maps_temp:
-            map_names.append(mp)
-
-        return jsonify(status='Names OK', names=map_names)
+        return jsonify(status='Names OK', names=list(the_maps.keys()))
 
     except Exception as e:
         return jsonify(status='Names ERROR:' + str(e))

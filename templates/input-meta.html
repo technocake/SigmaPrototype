@@ -71,10 +71,10 @@ INPUTMETA = {
         var $ele = $(element);
 
         if ($ele.hasClass('urlinput')){
-            $ele.attr('placeholder', 'url __');
+            $ele.attr('placeholder', 'lim inn en link her..');
             $ele.val(APP.old_title);
         } else {
-            $ele.attr('placeholder', 'search __');
+            $ele.attr('placeholder', 'søk i linker her..');
         };
     };
 
@@ -202,10 +202,10 @@ INPUTMETA = {
 
 </script>
 
- <input id="urlinput" class="megainput urlinput" type="text" placeholder="url __"
-                onfocus="onfocusHandler(this)" 
+ <input id="urlinput" class="megainput urlinput" type="text" placeholder="lim inn en link her"
+..                onfocus="onfocusHandler(this)" 
                 onblur="onblurHandler(this)" 
-                onkeyup="getMeta(this.value)" 
+         søk i linker her..="getMeta(this.value)" 
                 onclick="this.select()"/>
                 
                 

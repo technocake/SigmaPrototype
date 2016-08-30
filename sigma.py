@@ -271,6 +271,7 @@ def get_map(user, mapid, jsonable=False):
     return the_map
 
 
+
 def get_maps(user, jsonable=False):
     """ 
         Retrieves all maps from user
@@ -300,6 +301,14 @@ def get_maps(user, jsonable=False):
     if jsonable:
         return sigmaserialize(maps)
     return maps
+
+
+
+def get_map_names(user):
+    """
+        Returns a list of the mapids associated with a user.
+    """
+    return list(get_maps(user).keys())
 
 
 def delete_map(user, mapid):
