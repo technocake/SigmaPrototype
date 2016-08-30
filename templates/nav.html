@@ -8,13 +8,11 @@
          <img width="300" src="/static/sigma-logo.svg" alt="Sigma" title="Sigma" />
     </a>
 
-    <h2>Good day, {{ session['user'] }}!</h2>
+    <h2>God dag, {{ session['user'] }}!</h2>
 
 	<nav id="navigation">
 	    <a href="{{ url_for('input_url') }}"><h2>Input</h2></a>
-	    <a href="{{ url_for('maps') }}"><h2>Maps</h2></a>
-	    <a href="{{ url_for('maps_svg') }}"><h2>Maps - Full screen</h2></a>
-        <a href="{{ url_for('test_freemind') }}"><h2>Freemind - test </h2></a>
+	    <a href="{{ url_for('maps_svg') }}"><h2>Mind Maps</h2></a>
 	    <a href="/logout"><h2>Logout</h2></a>
 	</nav>
 
