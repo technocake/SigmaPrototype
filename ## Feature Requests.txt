@@ -1,0 +1,7 @@
+## Feature Requests
+
+
+# Extra
+Export maps as images:
+	Could be usefull for presentations /etc. 
+	Source: Khatland
