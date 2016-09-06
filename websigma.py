@@ -54,7 +54,7 @@
 """
 
 from flask import Flask, render_template, request, url_for, \
-                   redirect, session, jsonify, send_from_directory
+                   redirect, session, jsonify, send_from_directory, Response
 import os
 import gc # flask and garbage collection is not a good combo, clear session should invite a gc.collect()
 from functools import wraps
@@ -141,8 +141,8 @@ def login():
 @app.route('/meny')
 @login_required
 def meny():
+    return input_url()
 
-    return render_template('input.html')
 
 
 @app.route('/inputurl')
@@ -151,8 +151,10 @@ def input_url():
 
     user = session['user']
     searchdata = sigma.get_searchdata(user)
-
-    return render_template('input.html', searchdata=searchdata)
+    resp = Response(render_template('input.html', searchdata=searchdata))
+    # allows js to fetch urls client side.
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 @app.route('/maps')
