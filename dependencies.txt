@@ -2,4 +2,4 @@ requests
 requests-cache
 flask
 werkzeug
-beautifulsoup
+beautifulsoup4
