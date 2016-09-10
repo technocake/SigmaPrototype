@@ -5,9 +5,10 @@
 import sigma
 robin_invited = ["amund", "oliwia", "lars", "lasseeli", "roverelk", "fredrik", "hatland", "vegar", "Myhres", "knutovsthus", "kim", "confusus", "per", "janne", "marte", "khatland", "eliasdale"]
 jonas_invited = ["kjell"]
+bgc = ["rainypete", "jørgen"]
 demo_accounts = ["morten", "xavier"]
 hib_students  = ["edle", "eigil" ]
-users = ["technocake", "jonas", "carl henrik", "andre"] + robin_invited + jonas_invited + demo_accounts + hib_students
+users = ["technocake", "jonas", "carl henrik", "andre"] + robin_invited + jonas_invited + demo_accounts + hib_students + bgc
 
 
 def authenticate(user, password):
