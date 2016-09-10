@@ -47,7 +47,7 @@ CONF = {
     hilight_color: 'yellow',
 
     // Line color
-    line_color: 'stroke: #808080; stroke-width: 1.5px;',
+    line_color: 'stroke: #c0c0c0; stroke-width: 0.1em;',
 
     // Node text colors
     main_color_text: 'black',

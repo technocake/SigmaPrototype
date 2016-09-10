@@ -126,7 +126,7 @@ def index():
 def logout():
 
     session.clear()
-    gc.collect()  
+    gc.collect()
     return redirect(url_for('index'))
 
 
