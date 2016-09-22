@@ -3,7 +3,7 @@
 
 # auth.py
 import sigma
-robin_invited = ["amund", "oliwia", "lars", "lasseeli", "roverelk", "fredrik", "hatland", "vegar", "Myhres", "knutovsthus", "kim", "confusus", "per", "janne", "marte", "khatland", "eliasdale", "tuliq"]
+robin_invited = ["amund", "oliwia", "lars", "lasseeli", "roverelk", "fredrik", "hatland", "vegar", "Myhres", "knutovsthus", "kim", "confusus", "per", "janne", "marte", "khatland", "eliasdale", "tuliq", "christer"]
 jonas_invited = ["kjell"]
 bgc = ["rainypete", "jørgen"]
 demo_accounts = ["morten", "xavier"]
