@@ -8,8 +8,9 @@ jonas_invited = ["kjell"]
 bgc = ["rainypete", "jørgen"]
 demo_accounts = ["morten", "xavier"]
 hib_students  = ["edle", "eigil" ]
+srib = ["teknisk"]
 komponistkollektivet = ["komponist"]
-users = ["technocake", "jonas", "carl henrik", "andre"] + robin_invited + jonas_invited + demo_accounts + hib_students + bgc + komponistkollektivet
+users = ["technocake", "jonas", "carl henrik", "andre"] + robin_invited + jonas_invited + demo_accounts + hib_students + bgc + komponistkollektivet + srib
 
 
 def authenticate(user, password):
