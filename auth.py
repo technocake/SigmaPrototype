@@ -5,7 +5,7 @@
 import sigma
 robin_invited = ["amund", "oliwia", "lars", "lasseeli", "roverelk", "fredrik", "hatland", "vegar", "Myhres", "knutovsthus", "kim", "confusus", "per", "janne", "marte", "khatland", "eliasdale", "tuliq", "christer"]
 jonas_invited = ["kjell"]
-bgc = ["rainypete", "jørgen"]
+bgc = ["rainypete", "jorgen"]
 demo_accounts = ["morten", "xavier"]
 hib_students  = ["edle", "eigil" ]
 srib = ["teknisk", "AR"]
