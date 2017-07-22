@@ -4,7 +4,10 @@
 	For speaking with a sigma engine.	
 */
 
+var baseUrl = '/';
+
 var sigma = {
+	
 	/*
 	 *	#########################	fetchlinks	#############################
 	 *  #
@@ -12,7 +15,7 @@ var sigma = {
 	 *	#
 	 */
 	fetchlinks: function(handler) {
-		$.get('/fetchlinks', function(data){
+		$.get(baseUrl + 'fetchlinks', function(data){
 			handler(data);
 		});
 	},
@@ -25,7 +28,7 @@ var sigma = {
 	 *	#
 	 */
 	fetchsearchdata: function(handler) {
-		$.post('/fetchsearchdata', function(data){
+		$.post(baseUrl + 'fetchsearchdata', function(data){
 			handler(data);
 		});
 	},
@@ -38,7 +41,7 @@ var sigma = {
 	 *	#
 	 */
 	mapnames: function(handler, error_handler) {
-		$.get('/mapnames', function(data){
+		$.get(baseUrl + 'mapnames', function(data){
         	if (data.status === 'Names OK'){
 				handler(data);
 			}
@@ -62,7 +65,7 @@ var sigma = {
 	 *	#
 	 */
 	tags: function(handler) {
-		$.get('/tags', function(data){
+		$.get(baseUrl + 'tags', function(data){
 			handler(data);
 		});
 	},
@@ -75,7 +78,7 @@ var sigma = {
 	 *	#
 	 */
 	users: function(handler) {
-		$.get('/users', function(data){
+		$.get(baseUrl + 'users', function(data){
 			handler(data);
 		});
 	},
@@ -88,7 +91,7 @@ var sigma = {
 	 *	#
 	 */
 	fetchmeta: function(url, handler, error_handler) {
-		$.ajax('/fetchmeta', {
+		$.ajax(baseUrl + 'fetchmeta', {
 			data: JSON.stringify({'url': url}), 
 			contentType : 'application/json',
             type : 'POST',
@@ -112,7 +115,7 @@ var sigma = {
 	 *	#
 	 */
 	getmap: function(mapid, handler, error_handler) {
-		$.ajax('/getmap', {
+		$.ajax(baseUrl + 'getmap', {
             data : JSON.stringify({ 'mapid' : mapid }),
             contentType : 'application/json',
             type : 'POST',
@@ -135,7 +138,7 @@ var sigma = {
 
 
 	postmeta: function(meta, handler, error_handler) {
-		$.ajax('/postmeta', {
+		$.ajax(baseUrl + 'postmeta', {
             data : JSON.stringify(meta),
             contentType : 'application/json',
             type : 'POST',
@@ -153,7 +156,7 @@ var sigma = {
 
 
 	updatemap: function(mapdata, handler, error_handler) {
-		$.ajax('/updatemap', {
+		$.ajax(baseUrl + 'updatemap', {
             data : JSON.stringify(mapdata),
             contentType : 'application/json',
             type : 'POST',
